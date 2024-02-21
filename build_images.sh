@@ -188,6 +188,7 @@ build_or_list_images() {
     fi
 }
 
+
 # 不同发行版的配置
 # build_or_list_images 镜像名字 镜像版本号 variants的值
 case "$run_funct" in
@@ -200,38 +201,54 @@ ubuntu)
 kali)
     build_or_list_images "kali-rolling" "latest" "default cloud"
     ;;
-centos)
-    build_or_list_images "7 8-Stream 9-Stream" "7 8 9" "default cloud"
-    ;;
-almalinux)
-    build_or_list_images "8 9" "8 9" "default cloud"
-    ;;
-rockylinux)
-    build_or_list_images "8 9" "8 9" "default cloud"
-    ;;
-alpine)
-    build_or_list_images "3.17 3.18 3.19 edge" "3.17 3.18 3.19 edge" "default cloud"
-    ;;
-openwrt)
-    build_or_list_images "snapshot 21.02 22.03 23.05" "snapshot 21.02 22.03 23.05" "default cloud"
-    ;;
-oracle)
-    build_or_list_images "7 8 9" "7 8 9" "default cloud"
-    ;;
 archlinux)
     build_or_list_images "current" "current" "default cloud"
     ;;
 gentoo)
     build_or_list_images "current" "current" "cloud systemd openrc"
     ;;
+centos)
+    build_or_list_images "7 8-Stream 9-Stream" "7 8 9" "default cloud"
+    ;;
+almalinux)
+    URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-almalinux.yaml"
+    curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+    build_or_list_images "$curl_output" "$curl_output" "default cloud"
+    ;;
+rockylinux)
+    URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-rockylinux.yaml"
+    curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+    build_or_list_images "$curl_output" "$curl_output" "default cloud"
+    ;;
+alpine)
+    URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-alpine.yaml"
+    curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+    build_or_list_images "$curl_output" "$curl_output" "default cloud"
+    ;;
+openwrt)
+    URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-openwrt.yaml"
+    curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+    build_or_list_images "$curl_output" "$curl_output" "default cloud"
+    ;;
+oracle)
+    URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-oracle.yaml"
+    curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+    build_or_list_images "$curl_output" "$curl_output" "default cloud"
+    ;;
 fedora)
-    build_or_list_images "37 38 39" "37 38 39" "default cloud"
+    URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-fedora.yaml"
+    curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+    build_or_list_images "$curl_output" "$curl_output" "default cloud"
     ;;
 opensuse)
-    build_or_list_images "15.4 15.5 tumbleweed" "15.4 15.5 tumbleweed" "default cloud"
+    URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-opensuse.yaml"
+    curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+    build_or_list_images "$curl_output" "$curl_output" "default cloud"
     ;;
 openeuler)
-    build_or_list_images "22.03 20.03 23.03" "22.03 20.03 23.03" "default cloud"
+    URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-openeuler.yaml"
+    curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+    build_or_list_images "$curl_output" "$curl_output" "default cloud"
     ;;
 *)
     echo "Invalid distribution specified."
