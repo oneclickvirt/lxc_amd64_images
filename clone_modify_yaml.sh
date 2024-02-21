@@ -3,6 +3,7 @@
 # Thanks https://github.com/lxc/lxc-ci/tree/main/images
 
 cd /home/runner/work/lxc_amd64_images/lxc_amd64_images/images_yaml/
+
 # debian
 rm -rf debian.yaml
 wget https://raw.githubusercontent.com/lxc/lxc-ci/main/images/debian.yaml
@@ -169,7 +170,6 @@ echo "$insert_content_2" >> temp.yaml
 mv temp.yaml openwrt.yaml
 
 # opensuse
-
 rm -rf opensuse.yaml
 wget https://raw.githubusercontent.com/lxc/lxc-ci/main/images/opensuse.yaml
 chmod 777 opensuse.yaml
@@ -183,7 +183,6 @@ echo "$insert_content_2" >> temp.yaml
 mv temp.yaml opensuse.yaml
 
 # openeuler
-
 rm -rf openeuler.yaml
 wget https://raw.githubusercontent.com/lxc/lxc-ci/main/images/openeuler.yaml
 chmod 777 openeuler.yaml
@@ -195,3 +194,89 @@ cat openeuler.yaml > temp.yaml
 echo "" >> temp.yaml
 echo "$insert_content_2" >> temp.yaml
 mv temp.yaml openeuler.yaml
+
+cd /home/runner/work/incus_images/incus_images
+# 更新支持的镜像列表
+build_or_list_images() {
+    local versions=()
+    local ver_nums=()
+    local variants=()
+    read -ra versions <<< "$1"
+    read -ra ver_nums <<< "$2"
+    read -ra variants <<< "$3"
+    local architectures=("$build_arch")
+    local len=${#versions[@]}
+    for ((i = 0; i < len; i++)); do
+        version=${versions[i]}
+        ver_num=${ver_nums[i]}
+        for arch in "${architectures[@]}"; do
+            for variant in "${variants[@]}"; do
+                local url="https://github.com/oneclickvirt/incus_images/releases/download/${run_funct}/${run_funct}_${ver_num}_${version}_${arch}_${variant}.tar.xz"
+                if curl --output /dev/null --silent --head --fail "$url"; then
+                    echo "${run_funct}_${ver_num}_${version}_${arch}_${variant}.tar.xz" >> fixed_images.txt
+                else
+                    echo "File not found: $url"
+                fi
+            done
+        done
+    done
+}
+
+# 不同发行版的配置
+# build_or_list_images 镜像名字 镜像版本号 variants的值
+build_arch="x86_64"
+run_funct="debian"
+build_or_list_images "buster bullseye bookworm trixie" "10 11 12 13" "default cloud"
+run_funct="ubuntu"
+build_or_list_images "bionic focal jammy lunar mantic noble" "18.04 20.04 22.04 23.04 23.10 24.04" "default cloud"
+run_funct="kali"
+build_or_list_images "kali-rolling" "latest" "default cloud"
+run_funct="archlinux"
+build_or_list_images "current" "current" "default cloud"
+run_funct="gentoo"
+build_or_list_images "current" "current" "cloud systemd openrc"
+run_funct="centos"
+build_or_list_images "7 8-Stream 9-Stream" "7 8 9" "default cloud"
+run_funct="almalinux"
+URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-almalinux.yaml"
+curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+build_or_list_images "$curl_output" "$curl_output" "default cloud"
+run_funct="rockylinux"
+URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-rockylinux.yaml"
+curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+build_or_list_images "$curl_output" "$curl_output" "default cloud"
+run_funct="alpine"
+URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-alpine.yaml"
+curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+build_or_list_images "$curl_output" "$curl_output" "default cloud"
+run_funct="openwrt"
+URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-openwrt.yaml"
+curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+build_or_list_images "$curl_output" "$curl_output" "default cloud"
+run_funct="oracle"
+URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-oracle.yaml"
+curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+build_or_list_images "$curl_output" "$curl_output" "default cloud"
+run_funct="fedora"
+URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-fedora.yaml"
+curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+build_or_list_images "$curl_output" "$curl_output" "default cloud"
+run_funct="opensuse"
+URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-opensuse.yaml"
+curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+build_or_list_images "$curl_output" "$curl_output" "default cloud"
+run_funct="openeuler"
+URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-openeuler.yaml"
+curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+build_or_list_images "$curl_output" "$curl_output" "default cloud"
+# 去除重复行
+remove_duplicate_lines() {
+    # 预处理：去除行尾空格和制表符
+    sed -i 's/[ \t]*$//' "$1"
+    # 去除重复行并跳过空行和注释行
+    if [ -f "$1" ]; then
+        awk '{ line = $0; gsub(/^[ \t]+/, "", line); gsub(/[ \t]+/, " ", line); if (!NF || !seen[line]++) print $0 }' "$1" >"$1.tmp" && mv -f "$1.tmp" "$1"
+    fi
+}
+remove_duplicate_lines "fixed_images.txt"
+sed -i '/^$/d' "fixed_images.txt"
