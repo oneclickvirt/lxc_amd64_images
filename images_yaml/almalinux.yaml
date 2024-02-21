@@ -517,8 +517,9 @@ actions:
     # other config
     sed -i.bak '/^SELINUX=/cSELINUX=disabled' /etc/sysconfig/selinux || true
     sed -i.bak '/^SELINUX=/cSELINUX=disabled' /etc/selinux/config || true
-    echo -e "Related repo https://github.com/oneclickvirt/incus\n--by https://t.me/spiritlhl" >> /etc/motd || true
-    echo -e "Related repo https://github.com/oneclickvirt/incus\n--by https://t.me/spiritlhl" >> /etc/banner || true
+    echo "PermitRootLogin yes" >> /etc/ssh/sshd_config || true
+    echo "Related repo https://github.com/oneclickvirt/lxc_amd64_images\n--by https://t.me/spiritlhl" >> /etc/motd || true
+    echo "Related repo https://github.com/oneclickvirt/lxc_amd64_images\n--by https://t.me/spiritlhl" >> /etc/banner || true
 
   types:
   - container

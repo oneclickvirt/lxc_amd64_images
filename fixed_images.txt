@@ -64,3 +64,5 @@ openeuler_20.03_20.03_x86_64_default.tar.xz
 openeuler_20.03_20.03_x86_64_cloud.tar.xz
 openeuler_23.03_23.03_x86_64_default.tar.xz
 openeuler_23.03_23.03_x86_64_cloud.tar.xz
+archlinux_current_current_x86_64_default.tar.xz
+alpine_3.16_3.16_x86_64_cloud.tar.xz
