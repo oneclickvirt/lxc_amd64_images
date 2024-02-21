@@ -195,7 +195,7 @@ echo "" >> temp.yaml
 echo "$insert_content_2" >> temp.yaml
 mv temp.yaml openeuler.yaml
 
-cd /home/runner/work/incus_images/incus_images
+cd /home/runner/work/lxc_amd64_images/lxc_amd64_images
 # 更新支持的镜像列表
 build_or_list_images() {
     local versions=()
@@ -211,7 +211,7 @@ build_or_list_images() {
         ver_num=${ver_nums[i]}
         for arch in "${architectures[@]}"; do
             for variant in "${variants[@]}"; do
-                local url="https://github.com/oneclickvirt/incus_images/releases/download/${run_funct}/${run_funct}_${ver_num}_${version}_${arch}_${variant}.tar.xz"
+                local url="https://github.com/oneclickvirt/lxc_amd64_images/releases/download/${run_funct}/${run_funct}_${ver_num}_${version}_${arch}_${variant}.tar.xz"
                 if curl --output /dev/null --silent --head --fail "$url"; then
                     echo "${run_funct}_${ver_num}_${version}_${arch}_${variant}.tar.xz" >> fixed_images.txt
                 else
