@@ -1,0 +1,71 @@
+name: Build kali images arm64
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_kali_images_arm64:
+    runs-on: self-hosted
+    name: Build on ubuntu-latest aarch64
+    steps:
+      - uses: actions/checkout@v2
+      - uses: uraimo/run-on-arch-action@v2
+        name: Run commands
+        id: runcmd
+        with:
+          arch: aarch64
+          distro: ubuntu_latest
+
+          # Not required, but speeds up builds by storing container images in
+          # a GitHub package registry.
+          # githubToken: ${{ github.token }}
+
+          dockerRunArgs: |
+            --cap-add SYS_ADMIN
+
+          # Set an output parameter `uname` for use in subsequent steps
+          run: |
+            uname -a
+            echo ::set-output name=uname::$(uname -a)
+            pwd
+            apt-get update -q -y
+            apt-get install -q -y apt-utils
+            apt-get install -q -y git curl jq sudo wget
+            distros=("kali")
+            # ("debian" "ubuntu" "kali" "centos" "almalinux" "rockylinux" "alpine" "openwrt" "oracle" "archlinux")
+            for distro in "${distros[@]}"; do
+                zip_name_list=($(bash build_images.sh $distro false arm64 | tail -n 1))
+                release_id=$(curl -s -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/oneclickvirt/lxc_amd64_images/releases/tags/$distro" | jq -r '.id')
+                echo "Building $distro and packge zips"
+                bash build_images.sh $distro true arm64
+                for file in "${zip_name_list[@]}"; do
+                    if [ -f "$file" ] && [ $(stat -c %s "$file") -gt 10485760 ]; then
+                        echo "Checking if $file already exists in release..."
+                        existing_asset_id=$(curl -s -H "Accept: application/vnd.github.v3+json" \
+                          "https://api.github.com/repos/oneclickvirt/lxc_amd64_images/releases/$release_id/assets" \
+                          | jq -r --arg name "$(basename "$file")" '.[] | select(.name == $name) | .id')
+                        if [ -n "$existing_asset_id" ]; then
+                            echo "Asset $file already exists in release, deleting existing asset..."
+                            delete_response=$(curl -s -X DELETE -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/oneclickvirt/lxc_amd64_images/releases/assets/$existing_asset_id")
+                            echo "$delete_response"
+                            if [ $? -eq 0 ] && ! echo "$delete_response" | grep -q "error"; then
+                                echo "Existing asset deleted successfully."
+                            else
+                                echo "Failed to delete existing asset. Skipping file upload..."
+                                rm -rf $file
+                                continue
+                            fi
+                        else
+                            echo "No $file file."
+                        fi
+                        echo "Uploading $file to release..."
+                        curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                          -H "Content-Type: application/zip" \
+                          --data-binary @"$file" \
+                          "https://uploads.github.com/repos/oneclickvirt/lxc_amd64_images/releases/$release_id/assets?name=$(basename "$file")"
+                        rm -rf $file
+                    else
+                        echo "No $file or less than 10 MB"
+                    fi
+                done
+            done

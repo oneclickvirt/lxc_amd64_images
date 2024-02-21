@@ -1,0 +1,1001 @@
+image:
+  distribution: centos
+
+source:
+  downloader: centos-http
+  url: https://mirror.math.princeton.edu/pub/centos/
+  keys:
+  # RPM-GPG-KEY-CentOS-6
+  - |-
+    -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+    mQINBE4P06MBEACqn48FZgYkG2QrtUAVDV58H6LpDYEcTcv4CIFSkgs6dJ9TavCW
+    NyPBZRpM2R+Rg5eVqlborp7TmktBP/sSsxc8eJ+3P2aQWSWc5ol74Y0OznJUCrBr
+    bIdypJllsD9Fe+h7gLBXTh3vdBEWr2lR+xA+Oou8UlO2gFbVFQqMafUgU1s0vqaE
+    /hHH0TzwD0/tJ6eqIbHwVR/Bu6kHFK4PwePovhfvyYD9Y+C0vOYd5Ict2vbLHz1f
+    QBDZObv4M6KN3j7nzme47hKtdMd+LwFqxM5cXfM6b5doDulWPmuGV78VoX6OR7el
+    x1tlfpuiFeuXYnImm5nTawArcQ1UkXUSYcTUKShJebRDLR3BycxR39Q9jtbOQ29R
+    FumHginovEhdUcinRr22eRXgcmzpR00zFIWoFCwHh/OCtG14nFhefuZ8Z80qbVhW
+    2J9+/O4tksv9HtQBmQNOK5S8C4HNF2M8AfOWNTr8esFSDc0YA5/cxzdfOOtWam/w
+    lBpNcUUSSgddRsBwijPuWhVA3NmA/uQlJtAo4Ji5vo8cj5MTPG3+U+rfNqRxu1Yc
+    ioXRo4LzggPscaTZX6V24n0fzw0J2k7TT4sX007k+7YXwEMqmHpcMYbDNzdCzUer
+    Zilh5hihJwvGfdi234W3GofttoO+jaAZjic7a3p6cO1ICMgfVqrbZCUQVQARAQAB
+    tEZDZW50T1MtNiBLZXkgKENlbnRPUyA2IE9mZmljaWFsIFNpZ25pbmcgS2V5KSA8
+    Y2VudG9zLTYta2V5QGNlbnRvcy5vcmc+iQI8BBMBAgAmBQJOD9OjAhsDBQkSzAMA
+    BgsJCAcDAgQVAggDBBYCAwECHgECF4AACgkQCUb8osEFud6ajRAAnb6d+w6Y/v/d
+    MSy7UEy4rNquArix8xhqBwwjoGXpa37OqTvvcJrftZ1XgtzmTbkqXc+9EFch0C+w
+    ST10f+H0SPTUGuPwqLkg27snUkDAv1B8laub+l2L9erzCaRriH8MnFyxt5v1rqWA
+    mVlRymzgXK+EQDr+XOgMm1CvxVY3OwdjdoHNox4TdVQWlZl83xdLXBxkd5IRciNm
+    sg5fJAzAMeg8YsoDee3m4khg9gEm+/Rj5io8Gfk0nhQpgGGeS1HEXl5jzTb44zQW
+    qudkfcLEdUMOECbu7IC5Z1wrcj559qcp9C94IwQQO+LxLwg4kHffvZjCaOXDRiya
+    h8KGsEDuiqwjU9HgGq9fa0Ceo3OyUazUi+WnOxBLVIQ8cUZJJ2Ia5PDnEsz59kCp
+    JmBZaYPxUEteMtG3yDTa8c8jUnJtMPpkwpSkeMBeNr/rEH4YcBoxuFjppHzQpJ7G
+    hZRbOfY8w97TgJbfDElwTX0/xX9ypsmBezgGoOvOkzP9iCy9YUBc9q/SNnflRWPO
+    sMVrjec0vc6ffthu2xBdigBXhL7x2bphWzTXf2T067k+JOdoh5EGney6LhQzcp8m
+    YCTENStCR+L/5XwrvNgRBnoXe4e0ZHet1CcCuBCBvSmsPHp5ml21ahsephnHx+rl
+    JNGtzulnNP07RyfzQcpCNFH7W4lXzqM=
+    =jrWY
+    -----END PGP PUBLIC KEY BLOCK-----
+
+  # RPM-GPG-KEY-CentOS-Security-6
+  - |-
+    -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+    mQINBE4P134BEAC+ho3SNeLTnB4VaQHl1MFnsRHPEseN82AGiusUYlu+MR8pZ90P
+    F9Kv97idgKcEhdG7kGrCqGS5DOvLbv5UOyOEeNf9Zd9bvE2MEQ6XWa6IcffeunAp
+    RfFo71CAuTfvix7ewCkFf/SvRx28mHVOeCtpjVU6BQ9XXMnXPFiD1YALJEif8YF1
+    qq3tJbtpzcM+W0b5VyCUqWf44bb4M8WtLmHcTjHmQgoulPWxGqS2rmZ3qM2kqh+Q
+    QUqsPH8isfp/6WN0A7LtsZ326PV2FuEe/qVaT4+wNgqpI6hYiaYj6BQTuc7dV8gS
+    xhnVXH5MIDYw9LBIAhiATAr93CQTxcG1Gdk0wdGZaZGtDig+mXD9RsDBF+R1N18t
+    D98xQ5wpU4buIAcqBj2nC/c1trfO5KoWGepyuABYT0+Dz2DLhr6AwEuWymDhD4zl
+    PMxU4YsCWh3rhx8kU85ByRQQk/dNmFQ7VdJeKb4ct0nxW+Yi8pMmB3mLXlzo+LqT
+    CIa71e+lQjQKtJoFUMdIHEk9acMirXdbG0keXUfG/DnNA+dj+egAKlbu0id8Au97
+    EuZaWyXVSZ8LXapG+wkaMvE+CGY4idvDd3xPDfXhEwRkSQVFe1DPVCL9QV1tUnJK
+    Zy4kV6u85Pu+4XHlPT26nuKBvfpXwEaDBYoowClj/xz7y2nRlav0CXLG4wARAQAB
+    tFlDZW50T1MtNiBTZWN1cml0eSBLZXkgKENlbnRPUy02IE9mZmljaWFsIFNlY3Vy
+    aXR5IEtleSkgPGNlbnRvcy02LXNlY3VyaXR5LWtleUBjZW50b3Mub3JnPokCPAQT
+    AQIAJgUCTg/XfgIbAwUJEswDAAYLCQgHAwIEFQIIAwQWAgMBAh4BAheAAAoJEAsT
+    LD/+g39vajgP/1S17nqnos8aoc17pXMr0u5DKlT4oV/aQp+V8stjmz+geyH91Lax
+    jNNE9GQdcqXQH8Hyp3xtdLape0kLgPH5mwDk8yL39uzgzoqZpq2iAeHQfkQ8fqt6
+    6WwADRF9t7rDYNJwmPdVka9kL5oGs1Q7xS56x6zgG1CVPzQOCVIbgXDdD7I8nuHr
+    9en/5f3FmGJ3yGps6wUWETU9BrApat2Z7kY2ZM2ZiW5M/qY1pA/nxS3oTc90o//l
+    NQbZC5i1kPz6hCxlc1+41pXwL/IB7yYqbnVsc2ZVEncMegbCwQ7yaBrzrNSM+YuC
+    +z6wFnokthqK/JzYc1/rEfN3IzsadBW6S5mcFvYHNwyo7eeGtIwgQXOheBvyB/0E
+    23BdT/XjdWxHGP2eOh6v32WzBiA97dU195SFB8j36qx0mKWJujbxKxo4lWlRxvLk
+    27XEEW9rox5Tiv7XgNUp47wQHe11ADQ/+iyAVPV7ixCT/JV4r+VPA1o9VMggVnTe
+    ZjeK2coO1sawX7Gx87HwB36JmmEQ6RKJWHyeUodoUKjDcOZqyC9tanGD1lyZ4Oi1
+    4CzQlt+gYkRCdYAt2L7KoyjTMp7lde7wF8TuGAM1I9WZs6RACxkAguSbh6L5CtrO
+    t7DA2xeQfBNNggS4vN018S4qXioeEKMBKrXQTDfsG+tF8DQSyIDQ/pmg
+    =yuja
+    -----END PGP PUBLIC KEY BLOCK-----
+
+  # RPM-GPG-KEY-CentOS-7
+  - |-
+    -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+    mQINBFOn/0sBEADLDyZ+DQHkcTHDQSE0a0B2iYAEXwpPvs67cJ4tmhe/iMOyVMh9
+    Yw/vBIF8scm6T/vPN5fopsKiW9UsAhGKg0epC6y5ed+NAUHTEa6pSOdo7CyFDwtn
+    4HF61Esyb4gzPT6QiSr0zvdTtgYBRZjAEPFVu3Dio0oZ5UQZ7fzdZfeixMQ8VMTQ
+    4y4x5vik9B+cqmGiq9AW71ixlDYVWasgR093fXiD9NLT4DTtK+KLGYNjJ8eMRqfZ
+    Ws7g7C+9aEGHfsGZ/SxLOumx/GfiTloal0dnq8TC7XQ/JuNdB9qjoXzRF+faDUsj
+    WuvNSQEqUXW1dzJjBvroEvgTdfCJfRpIgOrc256qvDMp1SxchMFltPlo5mbSMKu1
+    x1p4UkAzx543meMlRXOgx2/hnBm6H6L0FsSyDS6P224yF+30eeODD4Ju4BCyQ0jO
+    IpUxmUnApo/m0eRelI6TRl7jK6aGqSYUNhFBuFxSPKgKYBpFhVzRM63Jsvib82rY
+    438q3sIOUdxZY6pvMOWRkdUVoz7WBExTdx5NtGX4kdW5QtcQHM+2kht6sBnJsvcB
+    JYcYIwAUeA5vdRfwLKuZn6SgAUKdgeOtuf+cPR3/E68LZr784SlokiHLtQkfk98j
+    NXm6fJjXwJvwiM2IiFyg8aUwEEDX5U+QOCA0wYrgUQ/h8iathvBJKSc9jQARAQAB
+    tEJDZW50T1MtNyBLZXkgKENlbnRPUyA3IE9mZmljaWFsIFNpZ25pbmcgS2V5KSA8
+    c2VjdXJpdHlAY2VudG9zLm9yZz6JAjUEEwECAB8FAlOn/0sCGwMGCwkIBwMCBBUC
+    CAMDFgIBAh4BAheAAAoJECTGqKf0qA61TN0P/2730Th8cM+d1pEON7n0F1YiyxqG
+    QzwpC2Fhr2UIsXpi/lWTXIG6AlRvrajjFhw9HktYjlF4oMG032SnI0XPdmrN29lL
+    F+ee1ANdyvtkw4mMu2yQweVxU7Ku4oATPBvWRv+6pCQPTOMe5xPG0ZPjPGNiJ0xw
+    4Ns+f5Q6Gqm927oHXpylUQEmuHKsCp3dK/kZaxJOXsmq6syY1gbrLj2Anq0iWWP4
+    Tq8WMktUrTcc+zQ2pFR7ovEihK0Rvhmk6/N4+4JwAGijfhejxwNX8T6PCuYs5Jiv
+    hQvsI9FdIIlTP4XhFZ4N9ndnEwA4AH7tNBsmB3HEbLqUSmu2Rr8hGiT2Plc4Y9AO
+    aliW1kOMsZFYrX39krfRk2n2NXvieQJ/lw318gSGR67uckkz2ZekbCEpj/0mnHWD
+    3R6V7m95R6UYqjcw++Q5CtZ2tzmxomZTf42IGIKBbSVmIS75WY+cBULUx3PcZYHD
+    ZqAbB0Dl4MbdEH61kOI8EbN/TLl1i077r+9LXR1mOnlC3GLD03+XfY8eEBQf7137
+    YSMiW5r/5xwQk7xEcKlbZdmUJp3ZDTQBXT06vavvp3jlkqqH9QOE8ViZZ6aKQLqv
+    pL+4bs52jzuGwTMT7gOR5MzD+vT0fVS7Xm8MjOxvZgbHsAgzyFGlI1ggUQmU7lu3
+    uPNL0eRx4S1G4Jn5
+    =OGYX
+    -----END PGP PUBLIC KEY BLOCK-----
+
+  # RPM-GPG-KEY-CentOS-7-aarch64
+  - |-
+    -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+    mQENBFW3h2gBCADPM3WDbdHNnMAB0FPvVRIBjGpkpeWT5rsbMZbk35tCx7MbAhMk
+    zcN519xw7DGVLigFd68S3W2Lrde6ioyVQ1SVSJ7z84U4uYUfSa858Dskxxy021Ip
+    NrocTrziy773v1gCPwA5xeT89bgzsMVMzCSy0U7TeqMDhN2urEMG5CCEpy0K9XZv
+    bpUexhn7TbP10g5BzC9igd498QcW/69Oz5OK7WcZOtqmGn78pGBCH2ly+IqIV6ZS
+    9yXC6jOmOnA8fM0gKJAelhQALd77cULMSGbu96ReG3BEFlgWQjbtZG3L5BvMVInw
+    MkUQEntHvjp6oHtPiIAc3VtLq0IxWVygFHNRABEBAAG0cENlbnRPUyBBbHRBcmNo
+    IFNJRyAtIEFBcmNoNjQgKGh0dHA6Ly93aWtpLmNlbnRvcy5vcmcvU3BlY2lhbElu
+    dGVyZXN0R3JvdXAvQWx0QXJjaC9BQXJjaDY0KSA8c2VjdXJpdHlAY2VudG9zLm9y
+    Zz6JATkEEwECACMFAlW3h2gCGwMHCwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAK
+    CRBsfLbvMF1J1pSFCACQbLvjwCFdgr0DpVJZ0o50Dcl8jYzZtd/NZOBNYXi/TQza
+    c6DFhiAj72zkgOGb+xznUXJJIiOLCgyJBUdJQSRx/EfVb9ftd4kSOA/wErOhDV71
+    Hyww9M/gz82SjHF9qq8ofDto6ZfJMfiLX4aZwR39jZzS5Gm+bH5FfgxlwG0V88fu
+    aKlzsn3p975uD659tSKae4xLysxkBG6oDaXvnWI2/UGC724gN+R3aKe9kI0wk8wA
+    h5Qzf7+jRk0qb859rryno1rBpuzxJcwg5qvN2PXG3xDFOHG+3LX3mV3UnVAqCjHO
+    zyGnzAAiNfBwgMyu6bu4lXd4hbZKy73RwnouQkuA
+    =qiwp
+    -----END PGP PUBLIC KEY BLOCK-----
+
+  # RPM-GPG-KEY-CentOS-SIG-AltArch-Arm32
+  - |-
+    -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+    mQENBFZYUi8BCADtrzJRu2Q3WGb5ExbmAB8CGWDAbVOTLZBA0bSj+i63LsUDdHkU
+    sKpOGEaRPhagB27lkVUMOkcOIodYAbQZDbF788KDxeF4BopORbGXdo14OMEmoVq6
+    rWPDoYs7Zv7G8blQa0IBE/BqdjYxyXZ0CSt+OLQ8r3G8ZB//SbZSTWWJcp2aN5oE
+    79yB+tEfYznGzETZY8gzBOcKIk/ifYVNHHS65ldgOd3KQK7/vjWVc9LDOLcFcwXj
+    YABSaUTsc3SkYKQ71SuxLssBWxSGaiZWBdN7s0FZFMDagWtKW1jQDlIhoRSULfpL
+    m5Y306pEqNOdiNgAnipXPL4NzWv0zFVHoWaFABEBAAG0bUNlbnRPUyBBbHRBcmNo
+    IFNJRyAtIEFybTMyIChodHRwczovL3dpa2kuY2VudG9zLm9yZy9TcGVjaWFsSW50
+    ZXJlc3RHcm91cC9BbHRBcmNoL0FybTMyKSA8c2VjdXJpdHlAY2VudG9zLm9yZz6J
+    ATkEEwECACMFAlZYUi8CGwMHCwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRDK
+    /vEbYlBf5qvhB/9R8GXKz71u66U1VTvlDEh4tz7LzKNUBAtEH9fvox1Y8Mh1+VKK
+    h7WtAWXsAkBvy7HeJ/GCUgvbgBjc7qpVjq/dipUTt+c51TLkoSa0msv4aJnA5azU
+    7+9qD/qvnjEZVgstFGyTQ+m5v9N3KdAWyw2Xi1V820bmmj+vlVzGFbQo2UPps+7d
+    bXZ9xI9Lmme/KD4tctjg9lnoCXmFIHGZfMVCoCyk42+p5EHlSZhYIRyIIhjpELlL
+    gllMZz1Bdp+V51zndIm7Fe1d6jcSEjpPjRecIxfr5PBLAu3j/VbjBK90u8AKSKY9
+    q5eFcyxxA1r2IdmItGVwz73gSz8WkJoh8QeN
+    =72OZ
+    -----END PGP PUBLIC KEY BLOCK-----
+
+  # RPM-GPG-KEY-CentOS-SIG-AltArch-7-ppc64
+  - |-
+    -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+    mQENBFZYUWkBCADomwJs4B6eBhhHmkBxaTQBNg2SicdZZWfb9+VArLqZ+Qyez3YQ
+    V1Bq2dBaDv2HIpTI8AHyT/KL/VuF1cdmGK8Q+uhqVxbFIP3giuaNHdV+DLx7suid
+    aKP0MA/1fs5x4RDvRmHVm0bPRwUWK84aWyh2Ux1D9I8HWsmDamAVKUinocnWWG0K
+    sNsV2uTuHeXYrJB0lex1nD1ColEa4CjmRxHMFYhoaFfw+mUUJ6rrN+zPdettxzbe
+    HPBVhNWpfOcQdEIrPWwhMCJJYOnPQ7OpZBZ7088Bc7JVA4RHMo54MuuU2t1Th71H
+    l7hcF9ueIKXqnsoAWFoG+p4UOy+OHU11THp3ABEBAAG0aUNlbnRPUyBBbHRBcmNo
+    IFNJRyAtIFBvd2VyUEMgKGh0dHBzOi8vd2lraS5jZW50b3Mub3JnL1NwZWNpYWxJ
+    bnRlcmVzdEdyb3VwL0FsdEFyY2gpIDxzZWN1cml0eUBjZW50b3Mub3JnPokBOQQT
+    AQIAIwUCVlhRaQIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEKlju9v1
+    M/T6HPsH/jLoRihPGZrdNjnVRSx/7hzQ+csdpgwRYSgJOeLTJAmemXYxiAQ0Wh+Z
+    AiDA6hdUu973Y/aTZbOoX+trb6SaEquGLLxhFgC21whVYfRznxE3FQv02a/hjp/3
+    a+i0GDT4ExSNuMxAqEewnWTymHS8bAsPGKuEMk9zElMZgeM6RrZUT+RL/ybjw5Mi
+    H8mP/tEcR1jAsm30BSoWV0nKHMXLpuOVTQS2V3ngzMWoA/l/9t7CafhkpV7IGfnB
+    HwQChc3L9fyZ/LwCo0WR1mHbzoPq+K4fwOnjdFEbgUSvfQ3+QiXXrfWt7C9IYAmA
+    /6cxo9vG1NH6sQ3BJiEyJNaWj3q2c5U=
+    =E+yp
+    -----END PGP PUBLIC KEY BLOCK-----
+
+  # RPM-GPG-KEY-CentOS-Official
+  - |-
+    -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+    mQINBFzMWxkBEADHrskpBgN9OphmhRkc7P/YrsAGSvvl7kfu+e9KAaU6f5MeAVyn
+    rIoM43syyGkgFyWgjZM8/rur7EMPY2yt+2q/1ZfLVCRn9856JqTIq0XRpDUe4nKQ
+    8BlA7wDVZoSDxUZkSuTIyExbDf0cpw89Tcf62Mxmi8jh74vRlPy1PgjWL5494b3X
+    5fxDidH4bqPZyxTBqPrUFuo+EfUVEqiGF94Ppq6ZUvrBGOVo1V1+Ifm9CGEK597c
+    aevcGc1RFlgxIgN84UpuDjPR9/zSndwJ7XsXYvZ6HXcKGagRKsfYDWGPkA5cOL/e
+    f+yObOnC43yPUvpggQ4KaNJ6+SMTZOKikM8yciyBwLqwrjo8FlJgkv8Vfag/2UR7
+    JINbyqHHoLUhQ2m6HXSwK4YjtwidF9EUkaBZWrrskYR3IRZLXlWqeOi/+ezYOW0m
+    vufrkcvsh+TKlVVnuwmEPjJ8mwUSpsLdfPJo1DHsd8FS03SCKPaXFdD7ePfEjiYk
+    nHpQaKE01aWVSLUiygn7F7rYemGqV9Vt7tBw5pz0vqSC72a5E3zFzIIuHx6aANry
+    Gat3aqU3qtBXOrA/dPkX9cWE+UR5wo/A2UdKJZLlGhM2WRJ3ltmGT48V9CeS6N9Y
+    m4CKdzvg7EWjlTlFrd/8WJ2KoqOE9leDPeXRPncubJfJ6LLIHyG09h9kKQARAQAB
+    tDpDZW50T1MgKENlbnRPUyBPZmZpY2lhbCBTaWduaW5nIEtleSkgPHNlY3VyaXR5
+    QGNlbnRvcy5vcmc+iQI3BBMBAgAhBQJczFsZAhsDBgsJCAcDAgYVCAIJCgsDFgIB
+    Ah4BAheAAAoJEAW1VbOEg8ZdjOsP/2ygSxH9jqffOU9SKyJDlraL2gIutqZ3B8pl
+    Gy/Qnb9QD1EJVb4ZxOEhcY2W9VJfIpnf3yBuAto7zvKe/G1nxH4Bt6WTJQCkUjcs
+    N3qPWsx1VslsAEz7bXGiHym6Ay4xF28bQ9XYIokIQXd0T2rD3/lNGxNtORZ2bKjD
+    vOzYzvh2idUIY1DgGWJ11gtHFIA9CvHcW+SMPEhkcKZJAO51ayFBqTSSpiorVwTq
+    a0cB+cgmCQOI4/MY+kIvzoexfG7xhkUqe0wxmph9RQQxlTbNQDCdaxSgwbF2T+gw
+    byaDvkS4xtR6Soj7BKjKAmcnf5fn4C5Or0KLUqMzBtDMbfQQihn62iZJN6ZZ/4dg
+    q4HTqyVpyuzMXsFpJ9L/FqH2DJ4exGGpBv00ba/Zauy7GsqOc5PnNBsYaHCply0X
+    407DRx51t9YwYI/ttValuehq9+gRJpOTTKp6AjZn/a5Yt3h6jDgpNfM/EyLFIY9z
+    V6CXqQQ/8JRvaik/JsGCf+eeLZOw4koIjZGEAg04iuyNTjhx0e/QHEVcYAqNLhXG
+    rCTTbCn3NSUO9qxEXC+K/1m1kaXoCGA0UWlVGZ1JSifbbMx0yxq/brpEZPUYm+32
+    o8XfbocBWljFUJ+6aljTvZ3LQLKTSPW7TFO+GXycAOmCGhlXh2tlc6iTc41PACqy
+    yy+mHmSv
+    =kkH7
+    -----END PGP PUBLIC KEY BLOCK-----
+
+  variant: minimal
+
+targets:
+  lxc:
+    create_message: |
+      You just created a {{ image.description }} container.
+    config:
+    - type: all
+      before: 5
+      content: |-
+        lxc.include = LXC_TEMPLATE_CONFIG/centos.common.conf
+
+    - type: user
+      before: 5
+      content: |-
+        lxc.include = LXC_TEMPLATE_CONFIG/centos.userns.conf
+
+    - type: all
+      after: 4
+      content: |-
+        lxc.include = LXC_TEMPLATE_CONFIG/common.conf
+
+    - type: user
+      after: 4
+      content: |-
+        lxc.include = LXC_TEMPLATE_CONFIG/userns.conf
+
+    - type: all
+      content: |-
+        lxc.arch = {{ image.architecture_kernel }}
+
+files:
+- name: hostname
+  path: /etc/hostname
+  generator: hostname
+
+- name: hosts
+  path: /etc/hosts
+  generator: hosts
+
+- path: /etc/machine-id
+  generator: dump
+
+- path: /etc/fstab
+  generator: dump
+
+- path: /var/lib/dbus/machine-id
+  generator: remove
+
+- name: ifcfg-eth0
+  path: /etc/sysconfig/network-scripts/ifcfg-eth0
+  generator: dump
+  templated: true
+  content: |-
+    DEVICE=eth0
+    BOOTPROTO=dhcp
+    ONBOOT=yes
+    HOSTNAME=LXC_NAME
+    NM_CONTROLLED=no
+    TYPE=Ethernet
+    MTU=
+    DHCP_HOSTNAME=LXC_NAME
+  releases:
+  - 7
+  types:
+  - container
+
+- name: ifcfg-eth0
+  path: /etc/sysconfig/network-scripts/ifcfg-eth0
+  generator: dump
+  templated: true
+  content: |-
+    DEVICE=eth0
+    BOOTPROTO=dhcp
+    ONBOOT=yes
+    HOSTNAME=LXC_NAME
+    TYPE=Ethernet
+    MTU=
+    DHCP_HOSTNAME=LXC_NAME
+  releases:
+  - 8-Stream
+  types:
+  - container
+
+- name: ifcfg-eth0.incus
+  path: /etc/sysconfig/network-scripts/ifcfg-eth0
+  generator: template
+  content: |-
+    DEVICE=eth0
+    BOOTPROTO=dhcp
+    ONBOOT=yes
+    HOSTNAME={{ container.name }}
+    NM_CONTROLLED=no
+    TYPE=Ethernet
+    MTU=
+    DHCP_HOSTNAME={{ container.name }}
+  releases:
+  - 7
+
+- name: ifcfg-eth0.incus
+  path: /etc/sysconfig/network-scripts/ifcfg-eth0
+  generator: template
+  content: |-
+    DEVICE=eth0
+    BOOTPROTO=dhcp
+    ONBOOT=yes
+    HOSTNAME={{ container.name }}
+    TYPE=Ethernet
+    MTU=
+    DHCP_HOSTNAME={{ container.name }}
+    IPV6INIT=yes
+  releases:
+  - 8-Stream
+  types:
+  - container
+
+- name: ifcfg-enp5s0.incus
+  path: /etc/sysconfig/network-scripts/ifcfg-enp5s0
+  generator: template
+  content: |-
+    DEVICE=enp5s0
+    BOOTPROTO=dhcp
+    ONBOOT=yes
+    HOSTNAME={{ container.name }}
+    TYPE=Ethernet
+    MTU=
+    DHCP_HOSTNAME={{ container.name }}
+  releases:
+  - 8-Stream
+  types:
+  - vm
+
+- path: /etc/default/grub
+  generator: dump
+  content: |-
+    # Set the recordfail timeout
+    GRUB_RECORDFAIL_TIMEOUT=0
+    # Do not wait on grub prompt
+    GRUB_TIMEOUT=0
+    # Set the default commandline
+    GRUB_CMDLINE_LINUX_DEFAULT="${GRUB_CMDLINE_LINUX_DEFAULT} console=tty1 console=ttyS0"
+    # Set the grub console type
+    GRUB_TERMINAL=console
+    # Disable os-prober
+    GRUB_DISABLE_OS_PROBER=true
+  types:
+  - vm
+
+- path: /etc/dracut.conf.d/incus.conf
+  generator: dump
+  content: |-
+    add_drivers+="virtio_scsi virtio_pci virtio_console"
+  types:
+  - vm
+  releases:
+  - 7
+
+- path: /etc/dracut.conf.d/incus.conf
+  generator: dump
+  content: |-
+    add_drivers+="virtio_scsi virtio_console sd_mod"
+  types:
+  - vm
+  releases:
+  - 8-Stream
+  - 9-Stream
+
+- generator: fstab
+  types:
+  - vm
+
+- name: incus-agent-workaround.service
+  path: /etc/systemd/system/incus-agent-workaround.service
+  generator: dump
+  content: |-
+    [Unit]
+    Description=LXD - agent (centos workaround)
+    Before=incus-agent.service
+
+    [Service]
+    Type=oneshot
+    ExecStart=-/bin/mkdir /run/incus_agent
+
+    [Install]
+    WantedBy=multi-user.target
+  types:
+  - vm
+  releases:
+  - 7
+
+- name: incus-agent.override
+  path: /etc/systemd/system/incus-agent.service.d/incus.conf
+  generator: dump
+  content: |-
+    [Service]
+    WorkingDirectory=/run/incus_agent
+  types:
+  - vm
+  releases:
+  - 7
+
+- name: 86-nm-unmanaged.rules
+  path: /etc/udev/rules.d/86-nm-unmanaged.rules
+  generator: dump
+  content: |-
+    ENV{ID_NET_DRIVER}=="veth", ENV{NM_UNMANAGED}="0"
+  releases:
+  - 8-Stream
+  - 9-Stream
+
+- name: network
+  path: /etc/sysconfig/network
+  generator: dump
+  templated: true
+  content: |-
+    NETWORKING=yes
+    HOSTNAME=LXC_NAME
+
+- name: network.incus
+  path: /etc/sysconfig/network
+  generator: template
+  content: |-
+    NETWORKING=yes
+    HOSTNAME={{ container.name }}
+
+- name: meta-data
+  generator: cloud-init
+  variants:
+  - cloud
+
+- name: network-config
+  generator: cloud-init
+  variants:
+  - cloud
+  releases:
+  - 7
+  types:
+  - container
+
+- name: network-config
+  generator: cloud-init
+  content: |-
+    {%- if config_get("cloud-init.network-config", "") == "" -%}
+    {%- if config_get("user.network-config", "") == "" -%}
+    version: 1
+    config:
+    - type: physical
+      name: eth0
+      subnets:
+      - type: dhcp
+        control: auto
+    {%- else -%}
+    {{- config_get("user.network-config", "") -}}
+    {%- endif -%}
+    {%- else -%}
+    {{- config_get("cloud-init.network-config", "") -}}
+    {%- endif %}
+  variants:
+  - cloud
+  releases:
+  - 7
+  types:
+  - vm
+
+- name: network-config
+  generator: cloud-init
+  variants:
+  - cloud
+  releases:
+  - 8-Stream
+  - 9-Stream
+
+- name: user-data
+  generator: cloud-init
+  variants:
+  - cloud
+
+- name: vendor-data
+  generator: cloud-init
+  variants:
+  - cloud
+
+- generator: incus-agent
+  types:
+  - vm
+
+- name: ipmi_si
+  path: /etc/modprobe.d/blacklist-ipmi.conf
+  generator: dump
+  content: |-
+    blacklist ipmi_si
+  types:
+  - vm
+  releases:
+  - 8-Stream
+
+packages:
+  manager: dnf
+  update: true
+  cleanup: true
+  sets:
+  - packages:
+    - cronie
+    - curl
+    - dhclient
+    - glibc-langpack-en
+    - hostname
+    - initscripts
+    - openssh-clients
+    - passwd
+    - policycoreutils
+    - rootfiles
+    - sudo
+    - rsyslog
+    - vim-minimal
+    - curl
+    - wget
+    - bash
+    - lsof
+    - sshpass
+    - openssh-server
+    - iptables
+    - dos2unix
+    - cronie
+    action: install
+
+  - packages:
+    - cronie-noanacron
+    action: install
+    releases:
+    - 7
+    - 8-Stream
+
+  - packages:
+    - cronie-anacron
+    - NetworkManager
+    action: install
+    releases:
+    - 9-Stream
+
+  - packages:
+    - glibc-locale-source
+    architectures:
+    - aaarch64
+    - i386
+    - ppc64le
+    - x86_64
+    action: install
+
+  - packages:
+    - network-scripts
+    action: install
+    types:
+    - container
+    variants:
+    - default
+    releases:
+    - 8-Stream
+    architectures:
+    - x86_64
+    - aarch64
+    - i386
+    - ppc64le
+
+  - packages:
+    - NetworkManager
+    action: install
+    types:
+    - container
+    variants:
+    - default
+    releases:
+    - 8-Stream
+    architectures:
+    - armhfp
+
+  - packages:
+    - NetworkManager
+    action: install
+    types:
+    - vm
+    variants:
+    - default
+
+  - packages:
+    - cloud-init
+    - openssh-server
+    - NetworkManager
+    action: install
+    variants:
+    - cloud
+
+  - packages:
+    - cloud-utils-growpart
+    - gdisk
+    action: install
+    types:
+    - vm
+    variants:
+    - cloud
+
+  - packages:
+    - shim
+    action: install
+    types:
+    - vm
+    releases:
+    - 7
+    - 8-Stream
+    - 9-Stream
+
+  - packages:
+    - kernel-plus
+    - irqbalance
+    action: install
+    types:
+    - vm
+    releases:
+    - 7
+
+  - packages:
+    - kernel
+    action: install
+    types:
+    - vm
+    releases:
+    - 8-Stream
+    - 9-Stream
+
+  - packages:
+    - grub2-efi-x64
+    action: install
+    types:
+    - vm
+    releases:
+    - 7
+    - 8-Stream
+    - 9-Stream
+    architectures:
+    - x86_64
+
+  - packages:
+    - grub2-efi-aarch64
+    action: install
+    types:
+    - vm
+    releases:
+    - 7
+    - 8-Stream
+    architectures:
+    - aaarch64
+
+actions:
+- trigger: post-unpack
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    # Enable the centosplus repo which has a kernel with 9p support
+    sed -i 's/^enabled=0/enabled=1/' /etc/yum.repos.d/CentOS-Base.repo
+  types:
+  - vm
+  releases:
+  - 7
+
+- trigger: post-unpack
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    # Note: This will be reverted at the end of the build
+
+    # Disable fastestmirror plugin
+    if [ -f /etc/yum/pluginconf.d/fastestmirror.conf ]; then
+      sed -ri 's/enabled=1/enabled=0/g' /etc/yum/pluginconf.d/fastestmirror.conf
+    fi
+
+- trigger: post-unpack
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    # Note: This will be reverted at the end of the build
+
+    # Use baseurl instead of mirrorlist to avoid networking issues
+    for repo in $(ls /etc/yum.repos.d/*.repo); do
+      grep -q '^#baseurl' "${repo}" || continue
+
+      cp "${repo}" "${repo}.bak"
+
+      sed -ri 's/^mirrorlist=.*/#\0/g;s@^#(baseurl=)http://mirror.centos.org/(.*)@\1https://mirror.csclub.uwaterloo.ca/\2@g' "${repo}"
+    done
+  releases:
+  - 7
+  architectures:
+  - x86_64
+
+- trigger: post-unpack
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    # Note: This will be reverted at the end of the build
+
+    # Use baseurl instead of mirrorlist to avoid networking issues
+    for repo in $(ls /etc/yum.repos.d/*.repo); do
+      grep -q '^#baseurl' "${repo}" || continue
+
+      cp "${repo}" "${repo}.bak"
+
+      sed -ri 's/^mirrorlist=.*/#\0/g;s@^#(baseurl=)http://mirror.centos.org/altarch/(.*)@\1https://mirror.init7.net/centos-altarch/\2@g' "${repo}"
+    done
+  releases:
+  - 7
+  architectures:
+  - aarch64
+  - armhfp
+  - ppc64le
+  - i386
+
+- trigger: post-unpack
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    # Note: This will be reverted at the end of the build
+
+    # Use baseurl instead of mirrorlist to avoid networking issues
+    for repo in $(ls /etc/yum.repos.d/*.repo); do
+      grep -q '^#baseurl' "${repo}" || continue
+
+      cp "${repo}" "${repo}.bak"
+
+      sed -ri 's/^mirrorlist=.*/#\0/g;s@^#(baseurl=)http://mirror.centos.org/(.*)@\1https://mirror.csclub.uwaterloo.ca/\2@g' "${repo}"
+    done
+  releases:
+  - 8-Stream
+
+- trigger: post-unpack
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    # Note: This will be reverted at the end of the build
+
+    for repo in $(ls /etc/yum.repos.d/*.repo); do
+      cp "${repo}" "${repo}.bak"
+    done
+
+    cat << "EOF" > /etc/yum.repos.d/centos.repo
+    [baseos]
+    name=CentOS Stream $releasever - BaseOS
+    baseurl=https://mirror1.hs-esslingen.de/pub/Mirrors/centos-stream/$stream/BaseOS/$basearch/os/
+    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+    gpgcheck=1
+    repo_gpgcheck=0
+    metadata_expire=6h
+    countme=1
+    enabled=1
+
+    [appstream]
+    name=CentOS Stream $releasever - AppStream
+    baseurl=https://mirror1.hs-esslingen.de/pub/Mirrors/centos-stream/$stream/AppStream/$basearch/os/
+    metalink=https://mirrors.centos.org/metalink?repo=centos-appstream-$stream&arch=$basearch&protocol=https,http
+    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+    gpgcheck=1
+    repo_gpgcheck=0
+    metadata_expire=6h
+    countme=1
+    enabled=1
+    EOF
+
+    cat << "EOF" > /etc/yum.repos.d/centos-addons.repo
+    [extras-common]
+    name=CentOS Stream $releasever - Extras packages
+    baseurl=https://mirror1.hs-esslingen.de/pub/Mirrors/centos-stream/SIGs/$stream/extras/$basearch/extras-common
+    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Extras-SHA512
+    gpgcheck=1
+    repo_gpgcheck=0
+    metadata_expire=6h
+    countme=1
+    enabled=1
+    EOF
+  releases:
+  - 9-Stream
+
+- trigger: post-unpack
+  action: |-
+    #!/bin/sh
+    # Generate machine-id in order for the kernel stuff to be configured properly
+    systemd-machine-id-setup
+  types:
+  - vm
+  releases:
+  - 7
+  - 8-Stream
+  - 9-Stream
+
+- trigger: post-packages
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    # Disable SELinux
+    mkdir -p /selinux
+    echo 0 > /selinux/enforce
+
+    # Disable loginuid in PAM stack
+    sed -i '/^session.*pam_loginuid.so/s/^session/# session/' /etc/pam.d/*
+
+- trigger: post-packages
+  architectures:
+  - aaarch64
+  - i386
+  - ppc64le
+  - x86_64
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    # Set default locale
+    localedef -i en_US -f UTF-8 en_US.UTF-8
+    echo 'LANG=en_US.utf8' > /etc/locale.conf
+
+- trigger: post-files
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    mount -t tmpfs tmpfs /sys/firmware
+    mkdir /sys/firmware/efi
+
+    # Regenerate initramfs
+    kver=$(ls /boot/initramfs-*.img | sed -r 's#.*initramfs-(.+)\.img#\1#')
+    dracut --kver "${kver}" -f
+
+    target="$(readlink -f /etc/grub2-efi.cfg)"
+    grub2-mkconfig -o "${target}"
+
+    umount /sys/firmware
+
+    sed -i "s#root=[^ ]*#root=/dev/sda2#g" "${target}"
+
+    # Workaround for broken systemd in centos7
+    systemctl enable incus-agent-workaround.service
+  types:
+  - vm
+  releases:
+  - 7
+
+- trigger: post-files
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    # Regenerate initramfs
+    kver=$(ls /boot/initramfs-*.img | sed -r 's#.*initramfs-(.+)\.img#\1#')
+    dracut --kver "${kver}" -f
+
+    target="$(readlink -f /etc/grub2-efi.cfg)"
+    grub2-mkconfig -o "${target}"
+
+    sed -i "s#root=[^ ]*#root=/dev/sda2#g" "${target}"
+  types:
+  - vm
+  releases:
+  - 8-Stream
+
+- trigger: post-files
+  action: |-
+    #!/bin/sh
+    set -eux
+    kver=$(ls /boot/initramfs-*.img | sed -r 's#.*initramfs-(.+)\.img#\1#')
+    target=/boot/efi/EFI/centos/grub.cfg
+
+    # Create grub.cfg file
+    grub2-mkconfig -o "${target}"
+    sed -i "s#root=[^ ]*#root=/dev/sda2#g" "${target}"
+
+    # Update files in /boot/loader/entries/. `grubby` needs to be run after
+    # `grub2-mkconfig` as the latter overwrites files in /boot/loader/entries/.
+    grubby --update-kernel=/boot/vmlinuz-${kver} --args="root=/dev/sda2 ro"
+
+    # Regenerate initramfs
+    dracut --kver "${kver}" -f
+  types:
+  - vm
+  releases:
+  - 9-Stream
+
+- trigger: post-files
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    systemctl enable NetworkManager.service
+  types:
+  - vm
+  variants:
+  - default
+
+- trigger: post-files
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    systemctl enable network
+  types:
+  - container
+  variants:
+  - default
+  releases:
+  - 8-Stream
+  architectures:
+  - x86_64
+  - aarch64
+  - i386
+  - ppc64le
+
+- trigger: post-files
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    systemctl enable NetworkManager.service
+  types:
+  - container
+  variants:
+  - default
+  releases:
+  - 8-Stream
+  architectures:
+  - armhfp
+
+- trigger: post-files
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    mkdir -p /etc/NetworkManager/conf.d/
+    printf "[main]\ndhcp=dhclient" > /etc/NetworkManager/conf.d/dhcp-client.conf
+
+    systemctl enable NetworkManager.service
+  releases:
+  - 9-Stream
+
+- trigger: post-files
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    # Restore repos
+    for repo in $(ls /etc/yum.repos.d/*.bak); do
+      mv "${repo}" ${repo%.*}
+    done
+
+    # Enable fastestmirror plugin
+    if [ -f /etc/yum/pluginconf.d/fastestmirror.conf ]; then
+      sed -ri 's/enabled=0/enabled=1/g' /etc/yum/pluginconf.d/fastestmirror.conf
+    fi
+
+- trigger: post-files
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    systemctl disable iptables || true
+    systemctl enable sshd || true
+    systemctl enable ssh || true
+    # sshd_config
+    sed -i \"s/^#\\?Port.*/Port 22/g\" /etc/ssh/sshd_config || true
+    sed -i \"s/^#\\?PermitRootLogin.*/PermitRootLogin yes/g\" /etc/ssh/sshd_config || true
+    sed -i \"s/^#\\?PasswordAuthentication.*/PasswordAuthentication yes/g\" /etc/ssh/sshd_config || true
+    sed -i 's/#ListenAddress 0.0.0.0/ListenAddress 0.0.0.0/' /etc/ssh/sshd_config || true
+    sed -i 's/#ListenAddress ::/ListenAddress ::/' /etc/ssh/sshd_config || true
+    sed -i 's/#AddressFamily any/AddressFamily any/' /etc/ssh/sshd_config || true
+    sed -i \"s/^#\\?PubkeyAuthentication.*/PubkeyAuthentication no/g\" /etc/ssh/sshd_config || true
+    sed -i '/^#UsePAM\\|UsePAM/c #UsePAM no' /etc/ssh/sshd_config || true
+    sed -i '/^AuthorizedKeysFile/s/^/#/' /etc/ssh/sshd_config || true
+    # cloud-init
+    sed -i \"s/^#\\?Port.*/Port 22/g\" /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    sed -i \"s/^#\\?PermitRootLogin.*/PermitRootLogin yes/g\" /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    sed -i \"s/^#\\?PasswordAuthentication.*/PasswordAuthentication yes/g\" /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    sed -i 's/#ListenAddress 0.0.0.0/ListenAddress 0.0.0.0/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    sed -i 's/#ListenAddress ::/ListenAddress ::/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    sed -i 's/#AddressFamily any/AddressFamily any/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    sed -i \"s/^#\\?PubkeyAuthentication.*/PubkeyAuthentication no/g\" /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    sed -i '/^#UsePAM\\|UsePAM/c #UsePAM no' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    sed -i '/^AuthorizedKeysFile/s/^/#/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    # other config
+    sed -i.bak '/^SELINUX=/cSELINUX=disabled' /etc/sysconfig/selinux || true
+    sed -i.bak '/^SELINUX=/cSELINUX=disabled' /etc/selinux/config || true
+    echo -e "Related repo https://github.com/oneclickvirt/incus\n--by https://t.me/spiritlhl" >> /etc/motd || true
+    echo -e "Related repo https://github.com/oneclickvirt/incus\n--by https://t.me/spiritlhl" >> /etc/banner || true
+
+  types:
+  - container
+  variants:
+  - cloud
+  - default
