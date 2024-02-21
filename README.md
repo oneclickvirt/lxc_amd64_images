@@ -34,6 +34,16 @@ Unchanged default password, consistent with official repository.
 
 This repository container images serves https://github.com/spiritLHLS/pve
 
+## Sponsor
+
+Thanks to 
+
+<a href="https://ekire.net/" target="_blank">
+  <img src="https://ekire.net/assets/img/bl.png" alt="ekire">
+</a>
+
+for providing support for images test.
+
 ## Thanks
 
 https://github.com/spiritLHLS/pve
