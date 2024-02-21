@@ -87,7 +87,7 @@ build_or_list_images() {
                         EXTRA_ARGS="${EXTRA_ARGS} -o source.url=https://mirror1.hs-esslingen.de/pub/Mirrors/centos-stream"
                     fi
                 elif [[ "$run_funct" == "archlinux" ]]; then
-                    if [ "${arch}" != "amd64" ] && [ "${arch}" != "i386" && [ "${arch}" != "x86_64" ]; then
+                    if [ "${arch}" != "amd64" ] && [ "${arch}" != "i386" ] && [ "${arch}" != "x86_64" ]; then
                         EXTRA_ARGS="-o source.url=http://os.archlinuxarm.org"
                     fi
                 elif [[ "$run_funct" == "alpine" ]]; then
@@ -97,7 +97,7 @@ build_or_list_images() {
                 elif [[ "$run_funct" == "almalinux" ]]; then
                     EXTRA_ARGS="-o source.variant=boot"
                 elif [[ "$run_funct" == "ubuntu" ]]; then
-                    if [ "${arch}" != "amd64" ] && [ "${arch}" != "i386" && [ "${arch}" != "x86_64" ]; then
+                    if [ "${arch}" != "amd64" ] && [ "${arch}" != "i386" ] && [ "${arch}" != "x86_64" ]; then
                         EXTRA_ARGS="-o source.url=http://ports.ubuntu.com/ubuntu-ports"
                     fi
                 elif [[ "$run_funct" == "gentoo" ]]; then
