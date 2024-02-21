@@ -193,13 +193,9 @@ build_or_list_images() {
 case "$run_funct" in
 debian)
     build_or_list_images "jessie stretch buster bullseye bookworm trixie" "8 9 10 11 12 13" "default cloud"
-    # "jessie stretch" "8 9" "default cloud"
-    # "buster bullseye bookworm trixie" "10 11 12 13" "default cloud"
     ;;
 ubuntu)
     build_or_list_images "bionic focal jammy lunar mantic noble" "18.04 20.04 22.04 23.04 23.10 24.04" "default cloud"
-    # "bionic focal jammy lunar" "18.04 20.04 22.04 23.04" "default cloud"
-    # "mantic noble" "23.10 24.04" "default cloud"
     ;;
 kali)
     build_or_list_images "kali-rolling" "latest" "default cloud"
