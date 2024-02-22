@@ -6,6 +6,7 @@
 rm -rf log
 date=$(date)
 echo "$date" >> log
+echo "------------------------------------------" >> log
 release_names=("ubuntu" "debian" "kali" "centos" "almalinux" "rockylinux" "fedora" "opensuse" "alpine" "archlinux" "gentoo" "openwrt" "oracle" "openeuler")
 response=$(curl -slk -m 6 "https://raw.githubusercontent.com/oneclickvirt/lxc_amd64_images/main/fixed_images.txt")
 system_names=()
