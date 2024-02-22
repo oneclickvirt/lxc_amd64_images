@@ -18,7 +18,10 @@ for ((i = 0; i < ${#release_names[@]}; i++)); do
     temp_images=()
     for sy in "${system_names[@]}"; do
         if [[ $sy == "${release_name}"* ]]; then
-            curl -LO "https://github.com/oneclickvirt/lxc_amd64_images/releases/download/${release_name}/${sy}"
+            curl -m 60 -LO "https://github.com/oneclickvirt/lxc_amd64_images/releases/download/${release_name}/${sy}"
+            if [ $? -ne 0 ]; then
+                curl -m 60 -LO "https://cdn.spiritlhl.net/https://github.com/oneclickvirt/lxc_amd64_images/releases/download/${release_name}/${sy}"
+            fi
             temp_images+=("${sy}")
         fi
     done
