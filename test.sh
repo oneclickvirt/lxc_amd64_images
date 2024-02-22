@@ -68,6 +68,7 @@ for ((i=0; i<${#release_names[@]}; i++)); do
       fi
       pct stop 102
       pct destroy 102
+      rm -rf $image
       echo "------------------------------------------" >> log
     done
 done
