@@ -34,6 +34,29 @@ Unchanged default password, consistent with official repository.
 
 This repository container images serves https://github.com/spiritLHLS/pve
 
+## Test
+
+```
+image=""
+pct create 101 "$image" -cores 1 -cpuunits 1024 -memory 1024 -swap 0 -rootfs local:10 -onboot 1 -features nesting=1
+pct start 101
+pct set 101 --hostname 101
+pct set 101 --net0 name=spiritlhl,ip=172.16.1.2/24,bridge=vmbr1,gw=172.16.1.1
+pct set 101 --nameserver 1.1.1.1
+pct set 101 --searchdomain local
+sleep 3
+echo "nameserver 8.8.8.8" | pct exec $CTID -- tee -a /etc/resolv.conf
+echo "nameserver 8.8.4.4" | pct exec $CTID -- tee -a /etc/resolv.conf
+```
+
+```
+pct enter 101
+```
+
+```
+pct stop 101 && pct destroy 101
+```
+
 ## Sponsor
 
 Thanks to 
