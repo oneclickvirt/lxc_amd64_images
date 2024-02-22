@@ -16,7 +16,7 @@ jobs:
       run: |
         pwd
       
-    - name: clone yaml
+    - name: test images
       run: |
         bash test.sh
         

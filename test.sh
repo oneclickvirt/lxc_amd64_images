@@ -4,7 +4,9 @@
 # curl -L https://raw.githubusercontent.com/oneclickvirt/lxc_amd64_images/main/test.sh -o test.sh && chmod +x test.sh && ./test.sh
 
 rm -rf log
-release_names=("ubuntu" "debian" "kali" "centos" "almalinux" "rockylinux" "fedora" "opensuse" "alpine" "openeuler" "archlinux")
+date=$(date)
+echo "$date" >> log
+release_names=("ubuntu" "debian" "kali" "centos" "almalinux" "rockylinux" "fedora" "opensuse" "alpine" "archlinux" "gentoo" "openwrt" "oracle" "openeuler")
 response=$(curl -slk -m 6 "https://raw.githubusercontent.com/oneclickvirt/lxc_amd64_images/main/fixed_images.txt")
 system_names=()
 if [ $? -eq 0 ] && [ -n "$response" ]; then
