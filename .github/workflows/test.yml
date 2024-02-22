@@ -1,0 +1,47 @@
+name: test images
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  test_images:
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: check path
+      run: |
+        pwd
+      
+    - name: clone yaml
+      run: |
+        bash test.sh
+        
+    - name: Configure Git
+      run: |
+        git config --global user.name "daily-update"
+        git config --global user.email "tg@spiritlhl.top"
+      
+    - name: Add files to Git staging area
+      run: |
+        ls
+        pwd
+        git add .
+        
+    - name: Check Git status
+      run: |
+        git branch -a
+        git remote -v
+        git status
+    
+    - name: Commit changes
+      run: |
+        git commit -m "Update files" | true
+    
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
