@@ -67,13 +67,11 @@ pct stop 101 && pct destroy 101
 
 ## Sponsor
 
-Thanks to 
+Thanks to [dartnode](https://dartnode.com/?via=server) for providing support for images compiling.
 
 <a href="https://dartnode.com/?via=server" target="_blank">
   <img src="https://snaju.com/assets/img/logo_dark.svg" alt="ekire">
 </a>
-
-for providing support for images compiling.
 
 Thanks to 
 
