@@ -16,6 +16,10 @@ Releases中的镜像(每日拉取镜像进行自动修补和更新)：
 
 未修改默认密码，与官方仓库一致
 
+本仓库所有镜像的名字列表：https://github.com/oneclickvirt/lxc_amd64_images/blob/main/fixed_images.txt
+
+本仓库每日检测可用性的日志：https://github.com/oneclickvirt/lxc_amd64_images/blob/main/log
+
 本仓库的容器镜像服务于： https://github.com/spiritLHLS/pve
 
 ## Introduce
@@ -31,6 +35,10 @@ All mirrors are enabled to allow SSH login for root users.
 Default username: ```root```.
 
 Unchanged default password, consistent with official repository.
+
+A list of names for all images in this repository: https://github.com/oneclickvirt/lxc_amd64_images/blob/main/fixed_images.txt
+
+A log of daily availability tests for this repository: https://github.com/oneclickvirt/lxc_amd64_images/blob/main/log
 
 This repository container images serves https://github.com/spiritLHLS/pve
 
