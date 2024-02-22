@@ -1796,29 +1796,33 @@ actions:
     systemctl enable sshd || true
     systemctl enable ssh || true
     # sshd_config
-    sed -i \"s/^#\\?Port.*/Port 22/g\" /etc/ssh/sshd_config || true
-    sed -i \"s/^#\\?PermitRootLogin.*/PermitRootLogin yes/g\" /etc/ssh/sshd_config || true
-    sed -i \"s/^#\\?PasswordAuthentication.*/PasswordAuthentication yes/g\" /etc/ssh/sshd_config || true
+    sed -i "s/^#\?\(Port\).*/\1 22/" /etc/ssh/sshd_config || true
+    sed -i -E 's/^#?(Port).*/\1 22/' /etc/ssh/sshd_config || true
+    sed -i 's/^#\?Port.*/Port 22/g' /etc/ssh/sshd_config || true
+    sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/g' /etc/ssh/sshd_config || true
+    sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/sshd_config || true
     sed -i 's/#ListenAddress 0.0.0.0/ListenAddress 0.0.0.0/' /etc/ssh/sshd_config || true
     sed -i 's/#ListenAddress ::/ListenAddress ::/' /etc/ssh/sshd_config || true
     sed -i 's/#AddressFamily any/AddressFamily any/' /etc/ssh/sshd_config || true
-    sed -i \"s/^#\\?PubkeyAuthentication.*/PubkeyAuthentication no/g\" /etc/ssh/sshd_config || true
+    sed -i 's/^#\?PubkeyAuthentication.*/PubkeyAuthentication no/g' /etc/ssh/sshd_config || true
     sed -i '/^#UsePAM\\|UsePAM/c #UsePAM no' /etc/ssh/sshd_config || true
     sed -i '/^AuthorizedKeysFile/s/^/#/' /etc/ssh/sshd_config || true
     # cloud-init
-    sed -i \"s/^#\\?Port.*/Port 22/g\" /etc/ssh/sshd_config.d/50-cloud-init.conf || true
-    sed -i \"s/^#\\?PermitRootLogin.*/PermitRootLogin yes/g\" /etc/ssh/sshd_config.d/50-cloud-init.conf || true
-    sed -i \"s/^#\\?PasswordAuthentication.*/PasswordAuthentication yes/g\" /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    sed -i "s/^#\?\(Port\).*/\1 22/" /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    sed -i -E 's/^#?(Port).*/\1 22/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    sed -i 's/^#\?Port.*/Port 22/g' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/g' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     sed -i 's/#ListenAddress 0.0.0.0/ListenAddress 0.0.0.0/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     sed -i 's/#ListenAddress ::/ListenAddress ::/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     sed -i 's/#AddressFamily any/AddressFamily any/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
-    sed -i \"s/^#\\?PubkeyAuthentication.*/PubkeyAuthentication no/g\" /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    sed -i 's/^#\?PubkeyAuthentication.*/PubkeyAuthentication no/g' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     sed -i '/^#UsePAM\\|UsePAM/c #UsePAM no' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     sed -i '/^AuthorizedKeysFile/s/^/#/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     # other config
     sed -i.bak '/^SELINUX=/cSELINUX=disabled' /etc/sysconfig/selinux || true
     sed -i.bak '/^SELINUX=/cSELINUX=disabled' /etc/selinux/config || true
-    echo "PermitRootLogin yes" >> /etc/ssh/sshd_config || true
+    grep -q '^PermitRootLogin yes' /etc/ssh/sshd_config || echo "PermitRootLogin yes" >> /etc/ssh/sshd_config || true
     echo "Related repo https://github.com/oneclickvirt/lxc_amd64_images\n--by https://t.me/spiritlhl" >> /etc/motd || true
     echo "Related repo https://github.com/oneclickvirt/lxc_amd64_images\n--by https://t.me/spiritlhl" >> /etc/banner || true
 
