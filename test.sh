@@ -4,12 +4,13 @@
 # curl -L https://raw.githubusercontent.com/oneclickvirt/lxc_amd64_images/main/test.sh -o test.sh && chmod +x test.sh && ./test.sh
 
 rm -rf log
+rm -rf fixed_images.txt
 date=$(date)
 system_names=()
 echo "$date" >>log
 echo "------------------------------------------" >>log
 release_names=("ubuntu" "debian" "kali" "centos" "almalinux" "rockylinux" "fedora" "opensuse" "alpine" "archlinux" "gentoo" "openwrt" "oracle" "openeuler")
-response=$(curl -slk -m 6 "https://raw.githubusercontent.com/oneclickvirt/lxc_amd64_images/main/fixed_images.txt")
+response=$(curl -slk -m 6 "https://raw.githubusercontent.com/oneclickvirt/lxc_amd64_images/main/all_images.txt")
 if [ $? -eq 0 ] && [ -n "$response" ]; then
     system_names+=($(echo "$response"))
 fi
@@ -28,12 +29,18 @@ for ((i = 0; i < ${#release_names[@]}; i++)); do
     for image in "${temp_images[@]}"; do
         echo "$image"
         echo "$image" >>log
+        echo "$image" >>fixed_images.txt
+        delete_status=false
         pct create 102 "$image" -cores 2 -cpuunits 1024 -memory 2048 -swap 0 -rootfs local:10 -onboot 1 -features nesting=1
         pct start 102
         pct set 102 --hostname 102
         res0=$(pct set 102 --net0 name=eth0,ip=172.16.1.111/24,bridge=vmbr1,gw=172.16.1.1)
         if [[ $res0 == *"error"* || $res0 == *"failed: exit code"* ]]; then
             echo "set eth0 failed" >>log
+            if [ "$delete_status" = false ];then
+                delete_status=true
+                head -n -1 fixed_images.txt > temp.txt && mv temp.txt fixed_images.txt
+            fi
         fi
         pct set 102 --nameserver 1.1.1.1
         pct set 102 --searchdomain local
@@ -46,6 +53,11 @@ for ((i = 0; i < ${#release_names[@]}; i++)); do
         res1=$(pct exec 102 -- lsof -i:22)
         if [[ $res1 == *"ssh"* ]]; then
             echo "ssh config correct"
+        else
+            if [ "$delete_status" = false ];then
+                delete_status=true
+                head -n -1 fixed_images.txt > temp.txt && mv temp.txt fixed_images.txt
+            fi
         fi
         res2=$(pct exec 102 -- curl --version)
         if [[ $res2 == *"command not found"* ]]; then
@@ -61,6 +73,10 @@ for ((i = 0; i < ${#release_names[@]}; i++)); do
             echo "network is public"
         else
             echo "no public network" >>log
+            if [ "$delete_status" = false ];then
+                delete_status=true
+                head -n -1 fixed_images.txt > temp.txt && mv temp.txt fixed_images.txt
+            fi
         fi
         pct stop 102
         if [ $? -eq 0 ]; then

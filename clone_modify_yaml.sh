@@ -213,7 +213,7 @@ build_or_list_images() {
             for variant in "${variants[@]}"; do
                 local url="https://github.com/oneclickvirt/lxc_amd64_images/releases/download/${run_funct}/${run_funct}_${ver_num}_${version}_${arch}_${variant}.tar.xz"
                 if curl --output /dev/null --silent --head --fail "$url"; then
-                    echo "${run_funct}_${ver_num}_${version}_${arch}_${variant}.tar.xz" >> fixed_images.txt
+                    echo "${run_funct}_${ver_num}_${version}_${arch}_${variant}.tar.xz" >> all_images.txt
                 else
                     echo "File not found: $url"
                 fi
@@ -278,5 +278,5 @@ remove_duplicate_lines() {
         awk '{ line = $0; gsub(/^[ \t]+/, "", line); gsub(/[ \t]+/, " ", line); if (!NF || !seen[line]++) print $0 }' "$1" >"$1.tmp" && mv -f "$1.tmp" "$1"
     fi
 }
-remove_duplicate_lines "fixed_images.txt"
-sed -i '/^$/d' "fixed_images.txt"
+remove_duplicate_lines "all_images.txt"
+sed -i '/^$/d' "all_images.txt"
