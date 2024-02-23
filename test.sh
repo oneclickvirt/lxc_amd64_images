@@ -1,15 +1,15 @@
 #!/bin/bash
 # by https://github.com/oneclickvirt/lxc_amd64_images
-# 2024.02.22
+# 2024.02.23
 # curl -L https://raw.githubusercontent.com/oneclickvirt/lxc_amd64_images/main/test.sh -o test.sh && chmod +x test.sh && ./test.sh
 
 rm -rf log
 date=$(date)
+system_names=()
 echo "$date" >>log
 echo "------------------------------------------" >>log
 release_names=("ubuntu" "debian" "kali" "centos" "almalinux" "rockylinux" "fedora" "opensuse" "alpine" "archlinux" "gentoo" "openwrt" "oracle" "openeuler")
 response=$(curl -slk -m 6 "https://raw.githubusercontent.com/oneclickvirt/lxc_amd64_images/main/fixed_images.txt")
-system_names=()
 if [ $? -eq 0 ] && [ -n "$response" ]; then
     system_names+=($(echo "$response"))
 fi
@@ -28,7 +28,7 @@ for ((i = 0; i < ${#release_names[@]}; i++)); do
     for image in "${temp_images[@]}"; do
         echo "$image"
         echo "$image" >>log
-        pct create 102 "$image" -cores 6 -cpuunits 1024 -memory 26480 -swap 0 -rootfs local:10 -onboot 1 -features nesting=1
+        pct create 102 "$image" -cores 2 -cpuunits 1024 -memory 2048 -swap 0 -rootfs local:10 -onboot 1 -features nesting=1
         pct start 102
         pct set 102 --hostname 102
         res0=$(pct set 102 --net0 name=eth0,ip=172.16.1.111/24,bridge=vmbr1,gw=172.16.1.1)
