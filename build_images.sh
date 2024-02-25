@@ -1,8 +1,13 @@
 #!/bin/bash
-# 从 https://github.com/oneclickvirt/lxc_amd64_images 获取
+# 从 https://github.com/oneclickvirt/lxc_arm_images 获取
 
+run_funct="${1:-debian}"
+is_build_image="${2:-false}"
+build_arch="${3:-amd64}"
+zip_name_list=()
 opath=$(pwd)
-
+rm -rf *.tar.xz
+ls
 # 检查并安装依赖工具
 if command -v apt-get >/dev/null 2>&1; then
     # ubuntu debian kali
@@ -20,43 +25,52 @@ if command -v apt-get >/dev/null 2>&1; then
         if ! command -v snap >/dev/null 2>&1; then
             sudo apt-get install snapd -y
         fi
+        sudo systemctl start snapd
         if ! command -v distrobuilder >/dev/null 2>&1; then
             sudo snap install distrobuilder --classic
         fi
+    else
+        # if ! command -v snap >/dev/null 2>&1; then
+        #     sudo apt-get install snapd -y
+        # fi
+        # sudo systemctl start snapd
+        # if ! command -v distrobuilder >/dev/null 2>&1; then
+        #     sudo snap install distrobuilder --classic
+        # fi
+        if ! command -v distrobuilder >/dev/null 2>&1; then
+            $HOME/goprojects/bin/distrobuilder --version
+        fi
+        if [ $? -ne 0 ]; then
+            sudo apt-get install build-essential -y
+            export CGO_ENABLED=1
+            export CC=gcc
+            wget https://go.dev/dl/go1.21.6.linux-arm64.tar.gz
+            chmod 777 go1.21.6.linux-arm64.tar.gz
+            rm -rf /usr/local/go && tar -C /usr/local -xzf go1.21.6.linux-arm64.tar.gz
+            export GOROOT=/usr/local/go
+            export PATH=$GOROOT/bin:$PATH
+            export GOPATH=$HOME/goprojects/
+            go version
+            apt-get install -q -y debootstrap rsync gpg squashfs-tools git make
+            git config --global user.name "daily-update"
+            git config --global user.email "tg@spiritlhl.top"
+            mkdir -p $HOME/go/src/github.com/lxc/
+            cd $HOME/go/src/github.com/lxc/
+            git clone https://github.com/lxc/distrobuilder
+            cd ./distrobuilder
+            make
+            export PATH=$HOME/goprojects/bin/distrobuilder:$PATH
+            echo $PATH
+            find $HOME -name distrobuilder -type f 2>/dev/null
+            $HOME/goprojects/bin/distrobuilder --version
+        fi
+        # wget https://api.ilolicon.com/distrobuilder.deb
+        # dpkg -i distrobuilder.deb
     fi
-    # else
-    #     sudo apt-get install build-essential -y
-    #     export CGO_ENABLED=1
-    #     export CC=gcc
-    #     wget https://go.dev/dl/go1.21.6.linux-arm64.tar.gz
-    #     chmod 777 go1.21.6.linux-arm64.tar.gz
-    #     rm -rf /usr/local/go && tar -C /usr/local -xzf go1.21.6.linux-arm64.tar.gz
-    #     export GOROOT=/usr/local/go
-    #     export PATH=$GOROOT/bin:$PATH
-    #     export GOPATH=$HOME/goprojects/
-    #     go version
-    #     apt-get install -q -y debootstrap rsync gpg squashfs-tools git make
-    #     git config --global user.name "daily-update"
-    #     git config --global user.email "tg@spiritlhl.top"
-    #     mkdir -p $HOME/go/src/github.com/lxc/
-    #     cd $HOME/go/src/github.com/lxc/
-    #     git clone https://github.com/lxc/distrobuilder
-    #     cd ./distrobuilder
-    #     make
-    #     export PATH=$HOME/goprojects/bin/distrobuilder:$PATH
-    #     echo $PATH
-    #     find $HOME -name distrobuilder -type f 2>/dev/null
-    #     distrobuilder --version
-    #     $HOME/goprojects/bin/distrobuilder --version
-    # fi
     if ! command -v debootstrap >/dev/null 2>&1; then
         sudo apt-get install debootstrap -y
     fi
 fi
-run_funct="${1:-debian}"
-is_build_image="${2:-false}"
-build_arch="${3:-amd64}"
-zip_name_list=()
 
 # 构建或列出不同发行版的镜像
 build_or_list_images() {
@@ -73,50 +87,6 @@ build_or_list_images() {
         ver_num=${ver_nums[i]}
         for arch in "${architectures[@]}"; do
             for variant in "${variants[@]}"; do
-                EXTRA_ARGS=""
-                if [[ "$run_funct" == "oracle" && "$version" == "9" ]]; then
-                    EXTRA_ARGS="-o source.url=https://yum.oracle.com/ISOS/OracleLinux"
-                elif [[ "$run_funct" == "centos" ]]; then
-                    if [ "$version" = "7" ] && [ "${arch}" != "amd64" ] && [ "${arch}" != "x86_64" ]; then
-                        EXTRA_ARGS="-o source.url=http://mirror.math.princeton.edu/pub/centos-altarch/ -o source.skip_verification=true"
-                    fi
-                    if [ "$version" = "8-Stream" ] || [ "$version" = "9-Stream" ]; then
-                        EXTRA_ARGS="${EXTRA_ARGS} -o source.variant=boot"
-                    fi
-                    if [ "$version" = "9-Stream" ]; then
-                        EXTRA_ARGS="${EXTRA_ARGS} -o source.url=https://mirror1.hs-esslingen.de/pub/Mirrors/centos-stream"
-                    fi
-                elif [[ "$run_funct" == "archlinux" ]]; then
-                    if [ "${arch}" != "amd64" ] && [ "${arch}" != "i386" ] && [ "${arch}" != "x86_64" ]; then
-                        EXTRA_ARGS="-o source.url=http://os.archlinuxarm.org"
-                    fi
-                elif [[ "$run_funct" == "alpine" ]]; then
-                    EXTRA_ARGS="-o source.same_as=3.19"
-                elif [[ "$run_funct" == "rockylinux" ]]; then
-                    EXTRA_ARGS="-o source.variant=boot"
-                elif [[ "$run_funct" == "almalinux" ]]; then
-                    EXTRA_ARGS="-o source.variant=boot"
-                elif [[ "$run_funct" == "ubuntu" ]]; then
-                    if [ "${arch}" != "amd64" ] && [ "${arch}" != "i386" ] && [ "${arch}" != "x86_64" ]; then
-                        EXTRA_ARGS="-o source.url=http://ports.ubuntu.com/ubuntu-ports"
-                    fi
-                elif [[ "$run_funct" == "gentoo" ]]; then
-                    if [ "${variant}" = "cloud" ]; then
-                        EXTRA_ARGS="-o source.variant=openrc"
-                    else
-                        EXTRA_ARGS="-o source.variant=${variant}"
-                    fi
-                    [ "${arch}" = "x86_64" ] && arch="amd64"
-                elif [[ "$run_funct" == "fedora" ]]; then
-                    [ "${arch}" = "amd64" ] && arch="x86_64"
-                    [ "${arch}" = "arm64" ] && arch="aarch64"
-                elif [[ "$run_funct" == "opensuse" ]]; then
-                    [ "${arch}" = "amd64" ] && arch="x86_64"
-                    [ "${arch}" = "arm64" ] && arch="aarch64"
-                elif [[ "$run_funct" == "openeuler" ]]; then
-                    [ "${arch}" = "amd64" ] && arch="x86_64"
-                    [ "${arch}" = "arm64" ] && arch="aarch64"
-                fi
                 # apk apt dnf egoportage opkg pacman portage yum equo xbps zypper luet slackpkg
                 if [[ "$run_funct" == "centos" || "$run_funct" == "fedora" || "$run_funct" == "openeuler" ]]; then
                     manager="yum"
@@ -138,44 +108,123 @@ build_or_list_images() {
                     echo "Unsupported distribution: $run_funct"
                     exit 1
                 fi
+                EXTRA_ARGS=""
+                if [[ "$run_funct" == "centos" ]]; then
+                    [ "${arch}" = "amd64" ] && arch="x86_64"
+                    [ "${arch}" = "arm64" ] && arch="aarch64"
+                    if [ "$version" = "7" ] && [ "${arch}" != "amd64" ] && [ "${arch}" != "x86_64" ]; then
+                        EXTRA_ARGS="-o source.url=http://mirror.math.princeton.edu/pub/centos-altarch/ -o source.skip_verification=true"
+                    fi
+                    if [ "$version" = "8-Stream" ] || [ "$version" = "9-Stream" ]; then
+                        EXTRA_ARGS="${EXTRA_ARGS} -o source.variant=boot"
+                    fi
+                    if [ "$version" = "9-Stream" ]; then
+                        EXTRA_ARGS="${EXTRA_ARGS} -o source.url=https://mirror1.hs-esslingen.de/pub/Mirrors/centos-stream"
+                    fi
+                elif [[ "$run_funct" == "rockylinux" ]]; then
+                    [ "${arch}" = "amd64" ] && arch="x86_64"
+                    [ "${arch}" = "arm64" ] && arch="aarch64"
+                    EXTRA_ARGS="-o source.variant=boot"
+                elif [[ "$run_funct" == "almalinux" ]]; then
+                    [ "${arch}" = "amd64" ] && arch="x86_64"
+                    [ "${arch}" = "arm64" ] && arch="aarch64"
+                    EXTRA_ARGS="-o source.variant=boot"
+                elif [[ "$run_funct" == "oracle" ]]; then
+                    [ "${arch}" = "amd64" ] && arch="x86_64"
+                    [ "${arch}" = "arm64" ] && arch="aarch64"
+                    if [[ "$version" == "9" ]]; then
+                        EXTRA_ARGS="-o source.url=https://yum.oracle.com/ISOS/OracleLinux"
+                    fi
+                elif [[ "$run_funct" == "archlinux" ]]; then
+                    [ "${arch}" = "amd64" ] && arch="x86_64"
+                    [ "${arch}" = "arm64" ] && arch="aarch64"
+                    if [ "${arch}" != "amd64" ] && [ "${arch}" != "i386" ] && [ "${arch}" != "x86_64" ]; then
+                        EXTRA_ARGS="-o source.url=http://os.archlinuxarm.org"
+                    fi
+                elif [[ "$run_funct" == "alpine" ]]; then
+                    [ "${arch}" = "amd64" ] && arch="x86_64"
+                    [ "${arch}" = "arm64" ] && arch="aarch64"
+                    if [ "${release}" = "edge" ]; then
+                        EXTRA_ARGS="-o source.same_as=3.19"
+                    fi
+                elif [[ "$run_funct" == "fedora" || "$run_funct" == "openeuler" || "$run_funct" == "opensuse" ]]; then
+                    [ "${arch}" = "amd64" ] && arch="x86_64"
+                    [ "${arch}" = "arm64" ] && arch="aarch64"
+                elif [[ "$run_funct" == "gentoo" ]]; then
+                    [ "${arch}" = "x86_64" ] && arch="amd64"
+                    [ "${arch}" = "aarch64" ] && arch="arm64"
+                    if [ "${variant}" = "cloud" ]; then
+                        EXTRA_ARGS="-o source.variant=openrc"
+                    else
+                        EXTRA_ARGS="-o source.variant=${variant}"
+                    fi
+                elif [[ "$run_funct" == "debian" ]]; then
+                    [ "${arch}" = "x86_64" ] && arch="amd64"
+                    [ "${arch}" = "aarch64" ] && arch="arm64"
+                elif [[ "$run_funct" == "ubuntu" ]]; then
+                    [ "${arch}" = "x86_64" ] && arch="amd64"
+                    [ "${arch}" = "aarch64" ] && arch="arm64"
+                    if [ "${arch}" != "amd64" ] && [ "${arch}" != "i386" ] && [ "${arch}" != "x86_64" ]; then
+                        EXTRA_ARGS="-o source.url=http://ports.ubuntu.com/ubuntu-ports"
+                    fi
+                fi
                 if [ "$is_build_image" == true ]; then
-                    if [[ "$run_funct" == "gentoo" ]]; then
-                        echo "sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} ${EXTRA_ARGS}"
-                        if sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} ${EXTRA_ARGS}; then
-                            echo "Command succeeded"
-                        fi
-                    elif [[ "$run_funct" != "archlinux" ]]; then
-                        echo "sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.release=${version} -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}"
-                        if sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.release=${version} -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}; then
-                            echo "Command succeeded"
+                    if command -v distrobuilder >/dev/null 2>&1; then
+                        if [[ "$run_funct" == "gentoo" ]]; then
+                            echo "sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} ${EXTRA_ARGS}"
+                            if sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} ${EXTRA_ARGS}; then
+                                echo "Command succeeded"
+                            fi
+                        elif [[ "$run_funct" != "archlinux" ]]; then
+                            echo "sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.release=${version} -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}"
+                            if sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.release=${version} -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}; then
+                                echo "Command succeeded"
+                            fi
+                        else
+                            echo "sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}"
+                            if sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}; then
+                                echo "Command succeeded"
+                            fi
                         fi
                     else
-                        echo "sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}"
-                        if sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}; then
-                            echo "Command succeeded"
+                        if [[ "$run_funct" == "gentoo" ]]; then
+                            echo "sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} ${EXTRA_ARGS}"
+                            if sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} ${EXTRA_ARGS}; then
+                                echo "Command succeeded"
+                            fi
+                        elif [[ "$run_funct" != "archlinux" ]]; then
+                            echo "sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.release=${version} -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}"
+                            if sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.release=${version} -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}; then
+                                echo "Command succeeded"
+                            fi
+                        else
+                            echo "sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}"
+                            if sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}; then
+                                echo "Command succeeded"
+                            fi
                         fi
                     fi
                     if [[ "$run_funct" == "gentoo" ]]; then
                         [ "${arch}" = "amd64" ] && arch="x86_64"
-                    elif [[ "$run_funct" == "fedora" ]]; then
+                    elif [[ "$run_funct" == "fedora" || "$run_funct" == "openeuler" || "$run_funct" == "opensuse" || "$run_funct" == "alpine" || "$run_funct" == "oracle" || "$run_funct" == "archlinux" ]]; then
                         [ "${arch}" = "aarch64" ] && arch="arm64"
-                    elif [[ "$run_funct" == "opensuse" ]]; then
+                    elif [[ "$run_funct" == "almalinux" || "$run_funct" == "centos" || "$run_funct" == "rockylinux" ]]; then
                         [ "${arch}" = "aarch64" ] && arch="arm64"
-                    elif [[ "$run_funct" == "openeuler" ]]; then
-                        [ "${arch}" = "aarch64" ] && arch="arm64"
+                    elif [[ "$run_funct" == "debian" || "$run_funct" == "ubuntu" ]]; then
+                        [ "${arch}" = "amd64" ] && arch="x86_64"
                     fi
+                    ls
                     if [ -f rootfs.tar.xz ]; then
                         mv rootfs.tar.xz "${run_funct}_${ver_num}_${version}_${arch}_${variant}.tar.xz"
                         rm -rf rootfs.tar.xz
                     fi
+                    ls
                 else
-                    if [[ "$run_funct" == "gentoo" ]]; then
+                    if [[ "$run_funct" == "gentoo" || "$run_funct" == "debian" || "$run_funct" == "ubuntu" ]]; then
                         [ "${arch}" = "amd64" ] && arch="x86_64"
-                    elif [[ "$run_funct" == "fedora" ]]; then
+                    elif [[ "$run_funct" == "fedora" || "$run_funct" == "openeuler" || "$run_funct" == "opensuse" ]]; then
                         [ "${arch}" = "aarch64" ] && arch="arm64"
-                    elif [[ "$run_funct" == "opensuse" ]]; then
-                        [ "${arch}" = "aarch64" ] && arch="arm64"
-                    elif [[ "$run_funct" == "openeuler" ]]; then
+                    elif [[ "$run_funct" == "almalinux" || "$run_funct" == "centos" || "$run_funct" == "rockylinux" ]]; then
                         [ "${arch}" = "aarch64" ] && arch="arm64"
                     fi
                     zip_name_list+=("${run_funct}_${ver_num}_${version}_${arch}_${variant}.tar.xz")
