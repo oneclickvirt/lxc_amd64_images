@@ -68,3 +68,5 @@ archlinux_current_current_x86_64_default.tar.xz
 alpine_3.16_3.16_x86_64_cloud.tar.xz
 opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
 opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
+openeuler_23.09_23.09_x86_64_default.tar.xz
+openeuler_23.09_23.09_x86_64_cloud.tar.xz
