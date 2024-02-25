@@ -1,5 +1,5 @@
 #!/bin/bash
-# 从 https://github.com/oneclickvirt/lxc_arm_images 获取
+# 从 https://github.com/oneclickvirt/lxc_amd64_images 获取
 
 run_funct="${1:-debian}"
 is_build_image="${2:-false}"
