@@ -1,4 +1,4 @@
-Sat Feb 24 01:31:14 UTC 2024
+Sun Feb 25 01:38:20 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -133,6 +133,8 @@ no public network
 reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
+no public network
+reboot failed
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
@@ -176,6 +178,14 @@ no public network
 reboot failed
 ------------------------------------------
 openeuler_23.03_23.03_x86_64_cloud.tar.xz
+no public network
+reboot failed
+------------------------------------------
+openeuler_23.09_23.09_x86_64_default.tar.xz
+no public network
+reboot failed
+------------------------------------------
+openeuler_23.09_23.09_x86_64_cloud.tar.xz
 no public network
 reboot failed
 ------------------------------------------
