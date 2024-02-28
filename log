@@ -1,4 +1,4 @@
-Wed Feb 28 01:34:42 UTC 2024
+Wed Feb 28 09:49:10 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -38,7 +38,6 @@ debian_11_bullseye_x86_64_default.tar.xz
 reboot failed
 ------------------------------------------
 debian_11_bullseye_x86_64_cloud.tar.xz
-reboot failed
 ------------------------------------------
 debian_12_bookworm_x86_64_default.tar.xz
 reboot failed
@@ -111,9 +110,11 @@ opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
 opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.17_3.17_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 alpine_3.18_3.18_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 alpine_3.19_3.19_x86_64_cloud.tar.xz
@@ -121,6 +122,7 @@ alpine_3.19_3.19_x86_64_cloud.tar.xz
 alpine_edge_edge_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.16_3.16_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 archlinux_current_current_x86_64_cloud.tar.xz
@@ -129,13 +131,13 @@ archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
 no public network
-reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
 reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
+no public network
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
