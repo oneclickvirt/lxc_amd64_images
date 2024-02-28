@@ -88,9 +88,17 @@ for ((i = 0; i < ${#release_names[@]}; i++)); do
                 echo "reboot success"
             else
                 echo "reboot failed" >>log
+                if [ "$delete_status" = false ];then
+                    delete_status=true
+                    head -n -1 fixed_images.txt > temp.txt && mv temp.txt fixed_images.txt
+                fi
             fi
         else
             echo "reboot failed" >>log
+            if [ "$delete_status" = false ];then
+                delete_status=true
+                head -n -1 fixed_images.txt > temp.txt && mv temp.txt fixed_images.txt
+            fi
         fi
         pct stop 102
         pct destroy 102
