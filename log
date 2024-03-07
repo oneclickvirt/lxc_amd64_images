@@ -1,4 +1,4 @@
-Wed Mar  6 01:34:32 UTC 2024
+Thu Mar  7 01:20:30 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -38,7 +38,6 @@ debian_11_bullseye_x86_64_default.tar.xz
 reboot failed
 ------------------------------------------
 debian_11_bullseye_x86_64_cloud.tar.xz
-reboot failed
 ------------------------------------------
 debian_12_bookworm_x86_64_default.tar.xz
 reboot failed
@@ -67,7 +66,6 @@ centos_8_8-Stream_x86_64_default.tar.xz
 centos_8_8-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
 centos_9_9-Stream_x86_64_default.tar.xz
-no public network
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
