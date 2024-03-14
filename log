@@ -1,4 +1,4 @@
-Wed Mar 13 01:37:13 UTC 2024
+Thu Mar 14 01:34:24 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -113,6 +113,7 @@ alpine_3.17_3.17_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 alpine_3.18_3.18_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 alpine_3.19_3.19_x86_64_cloud.tar.xz
