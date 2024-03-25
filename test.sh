@@ -1,6 +1,6 @@
 #!/bin/bash
 # by https://github.com/oneclickvirt/lxc_amd64_images
-# 2024.02.23
+# 2024.03.25
 # curl -L https://raw.githubusercontent.com/oneclickvirt/lxc_amd64_images/main/test.sh -o test.sh && chmod +x test.sh && ./test.sh
 
 rm -rf log
@@ -11,6 +11,9 @@ echo "$date" >>log
 echo "------------------------------------------" >>log
 release_names=("ubuntu" "debian" "kali" "centos" "almalinux" "rockylinux" "fedora" "opensuse" "alpine" "archlinux" "gentoo" "openwrt" "oracle" "openeuler")
 response=$(curl -slk -m 6 "https://raw.githubusercontent.com/oneclickvirt/lxc_amd64_images/main/all_images.txt")
+if [ $? -ne 0 ]; then
+    response=$(curl -slk -m 6 "https://cdn.spiritlhl.net/https://raw.githubusercontent.com/oneclickvirt/lxc_amd64_images/main/all_images.txt")
+fi
 if [ $? -eq 0 ] && [ -n "$response" ]; then
     system_names+=($(echo "$response"))
 fi
@@ -68,7 +71,7 @@ for ((i = 0; i < ${#release_names[@]}; i++)); do
             echo "no wget" >>log
         fi
         echo "nameserver 8.8.8.8" | pct exec 102 -- tee -a /etc/resolv.conf
-        res4=$(pct exec 102 -- curl -lk https://raw.githubusercontent.com/spiritLHLS/ecs/main/back/test)
+        res4=$(pct exec 102 -- curl -lk https://cdn.spiritlhl.net/https://raw.githubusercontent.com/spiritLHLS/ecs/main/back/test)
         if [[ $res4 == *"success"* ]]; then
             echo "network is public"
         else
@@ -83,7 +86,7 @@ for ((i = 0; i < ${#release_names[@]}; i++)); do
             pct start 102
             sleep 10
             echo "nameserver 8.8.8.8" | pct exec 102 -- tee -a /etc/resolv.conf
-            res5=$(pct exec 102 -- curl -lk https://raw.githubusercontent.com/spiritLHLS/ecs/main/back/test)
+            res5=$(pct exec 102 -- curl -lk https://cdn.spiritlhl.net/https://raw.githubusercontent.com/spiritLHLS/ecs/main/back/test)
             if [[ $res5 == *"success"* ]]; then
                 echo "reboot success"
             else
