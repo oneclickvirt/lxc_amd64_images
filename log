@@ -1,4 +1,4 @@
-Tue Mar 26 01:35:07 UTC 2024
+Wed Mar 27 01:35:34 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -68,6 +68,7 @@ centos_8_8-Stream_x86_64_cloud.tar.xz
 centos_9_9-Stream_x86_64_default.tar.xz
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 almalinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
