@@ -1,4 +1,4 @@
-Sat Mar 30 01:32:15 UTC 2024
+Sun Mar 31 01:41:04 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -68,6 +68,7 @@ centos_8_8-Stream_x86_64_cloud.tar.xz
 centos_9_9-Stream_x86_64_default.tar.xz
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 almalinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
@@ -76,17 +77,14 @@ almalinux_8_8_x86_64_cloud.tar.xz
 almalinux_9_9_x86_64_default.tar.xz
 ------------------------------------------
 almalinux_9_9_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 rockylinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
 rockylinux_8_8_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 rockylinux_9_9_x86_64_default.tar.xz
 ------------------------------------------
 rockylinux_9_9_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 fedora_37_37_x86_64_default.tar.xz
 ------------------------------------------
@@ -130,12 +128,14 @@ archlinux_current_current_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
 reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
+no public network
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
@@ -156,7 +156,6 @@ reboot failed
 oracle_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 openeuler_22.03_22.03_x86_64_default.tar.xz
