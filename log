@@ -1,4 +1,4 @@
-Wed Apr  3 01:36:13 UTC 2024
+Thu Apr  4 01:37:14 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -49,6 +49,7 @@ debian_13_trixie_x86_64_default.tar.xz
 reboot failed
 ------------------------------------------
 debian_13_trixie_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 kali_latest_kali-rolling_x86_64_default.tar.xz
@@ -110,7 +111,6 @@ opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
 opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.17_3.17_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 alpine_3.18_3.18_x86_64_cloud.tar.xz
