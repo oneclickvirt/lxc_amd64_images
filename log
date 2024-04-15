@@ -1,4 +1,4 @@
-Sun Apr 14 02:25:58 UTC 2024
+Mon Apr 15 03:43:46 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -35,7 +35,6 @@ debian_10_buster_x86_64_default.tar.xz
 debian_10_buster_x86_64_cloud.tar.xz
 ------------------------------------------
 debian_11_bullseye_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 debian_11_bullseye_x86_64_cloud.tar.xz
@@ -121,7 +120,6 @@ alpine_3.19_3.19_x86_64_cloud.tar.xz
 alpine_edge_edge_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.16_3.16_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 archlinux_current_current_x86_64_cloud.tar.xz
