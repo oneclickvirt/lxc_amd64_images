@@ -1,4 +1,4 @@
-Tue May  7 01:40:42 UTC 2024
+Wed May  8 01:24:14 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -159,6 +159,7 @@ reboot failed
 oracle_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 openeuler_22.03_22.03_x86_64_default.tar.xz
