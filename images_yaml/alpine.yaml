@@ -325,6 +325,7 @@ packages:
   - packages:
     - cloud-init
     - openssh
+    - e2fsprogs-extra
     action: install
     variants:
     - cloud
