@@ -1,4 +1,4 @@
-Mon May 13 01:43:19 UTC 2024
+Tue May 14 01:40:42 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -52,6 +52,8 @@ debian_13_trixie_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 kali_latest_kali-rolling_x86_64_default.tar.xz
+no public network
+reboot failed
 ------------------------------------------
 kali_latest_kali-rolling_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -98,6 +100,8 @@ fedora_39_39_x86_64_default.tar.xz
 fedora_39_39_x86_64_cloud.tar.xz
 ------------------------------------------
 fedora_40_40_x86_64_default.tar.xz
+no public network
+reboot failed
 ------------------------------------------
 fedora_40_40_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -112,11 +116,14 @@ opensuse_15.5_15.5_x86_64_cloud.tar.xz
 opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
 ------------------------------------------
 opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
+no public network
+reboot failed
 ------------------------------------------
 alpine_3.17_3.17_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 alpine_3.18_3.18_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 alpine_3.19_3.19_x86_64_cloud.tar.xz
@@ -124,11 +131,14 @@ alpine_3.19_3.19_x86_64_cloud.tar.xz
 alpine_edge_edge_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.16_3.16_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 archlinux_current_current_x86_64_cloud.tar.xz
 ------------------------------------------
 archlinux_current_current_x86_64_default.tar.xz
+no public network
+reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
 no public network
@@ -139,6 +149,7 @@ reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
 no public network
+reboot failed
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
