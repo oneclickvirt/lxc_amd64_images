@@ -1,4 +1,4 @@
-Sat May 25 01:41:02 UTC 2024
+Sun May 26 01:47:07 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -127,13 +127,14 @@ alpine_3.16_3.16_x86_64_cloud.tar.xz
 no public network
 reboot failed
 ------------------------------------------
+alpine_3.20_3.20_x86_64_cloud.tar.xz
+------------------------------------------
 archlinux_current_current_x86_64_cloud.tar.xz
 ------------------------------------------
 archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
 no public network
-reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
