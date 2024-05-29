@@ -1,4 +1,4 @@
-Tue May 28 01:43:49 UTC 2024
+Wed May 29 01:46:13 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -142,6 +142,7 @@ reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
 no public network
+reboot failed
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
@@ -160,6 +161,8 @@ no public network
 reboot failed
 ------------------------------------------
 oracle_8_8_x86_64_cloud.tar.xz
+no public network
+reboot failed
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
 reboot failed
