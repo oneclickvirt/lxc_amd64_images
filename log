@@ -1,4 +1,4 @@
-Thu May 30 01:44:11 UTC 2024
+Fri May 31 01:44:27 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -80,7 +80,6 @@ almalinux_9_9_x86_64_cloud.tar.xz
 rockylinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
 rockylinux_8_8_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 rockylinux_9_9_x86_64_default.tar.xz
 ------------------------------------------
@@ -125,6 +124,7 @@ alpine_3.19_3.19_x86_64_cloud.tar.xz
 alpine_edge_edge_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.16_3.16_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 alpine_3.20_3.20_x86_64_cloud.tar.xz
