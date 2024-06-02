@@ -1,4 +1,4 @@
-Sat Jun  1 01:47:27 UTC 2024
+Sun Jun  2 01:47:31 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -92,6 +92,7 @@ fedora_37_37_x86_64_cloud.tar.xz
 fedora_38_38_x86_64_default.tar.xz
 ------------------------------------------
 fedora_38_38_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 fedora_39_39_x86_64_default.tar.xz
 ------------------------------------------
@@ -124,6 +125,7 @@ alpine_3.19_3.19_x86_64_cloud.tar.xz
 alpine_edge_edge_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.16_3.16_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 alpine_3.20_3.20_x86_64_cloud.tar.xz
@@ -134,6 +136,7 @@ archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
 no public network
+reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
@@ -141,6 +144,7 @@ reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
 no public network
+reboot failed
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
@@ -159,6 +163,8 @@ no public network
 reboot failed
 ------------------------------------------
 oracle_8_8_x86_64_cloud.tar.xz
+no public network
+reboot failed
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
 reboot failed
