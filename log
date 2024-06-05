@@ -1,4 +1,4 @@
-Tue Jun  4 01:44:41 UTC 2024
+Wed Jun  5 01:44:26 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -114,6 +114,7 @@ opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
 opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.17_3.17_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 alpine_3.18_3.18_x86_64_cloud.tar.xz
