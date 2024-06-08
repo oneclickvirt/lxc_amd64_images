@@ -1,4 +1,4 @@
-Fri Jun  7 01:46:22 UTC 2024
+Sat Jun  8 01:44:05 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -70,16 +70,12 @@ centos_9_9-Stream_x86_64_default.tar.xz
 centos_9_9-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
 almalinux_8_8_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 almalinux_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 almalinux_9_9_x86_64_default.tar.xz
 ------------------------------------------
 almalinux_9_9_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 rockylinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
@@ -135,18 +131,16 @@ alpine_3.20_3.20_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_cloud.tar.xz
 ------------------------------------------
 archlinux_current_current_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
+no public network
+reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
 reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
