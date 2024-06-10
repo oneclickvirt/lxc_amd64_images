@@ -1,4 +1,4 @@
-Sun Jun  9 01:50:47 UTC 2024
+Mon Jun 10 01:47:57 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -82,8 +82,6 @@ rockylinux_8_8_x86_64_default.tar.xz
 rockylinux_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 rockylinux_9_9_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 rockylinux_9_9_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -135,8 +133,6 @@ archlinux_current_current_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
