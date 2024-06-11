@@ -1,4 +1,4 @@
-Mon Jun 10 01:47:57 UTC 2024
+Tue Jun 11 01:46:18 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -52,6 +52,8 @@ debian_13_trixie_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 kali_latest_kali-rolling_x86_64_default.tar.xz
+no public network
+reboot failed
 ------------------------------------------
 kali_latest_kali-rolling_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -159,6 +161,7 @@ reboot failed
 oracle_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 openeuler_22.03_22.03_x86_64_default.tar.xz
