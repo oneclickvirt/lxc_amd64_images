@@ -1,4 +1,4 @@
-Thu Jun 13 01:45:02 UTC 2024
+Fri Jun 14 01:45:44 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -35,7 +35,6 @@ debian_10_buster_x86_64_default.tar.xz
 debian_10_buster_x86_64_cloud.tar.xz
 ------------------------------------------
 debian_11_bullseye_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 debian_11_bullseye_x86_64_cloud.tar.xz
@@ -134,8 +133,6 @@ archlinux_current_current_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
