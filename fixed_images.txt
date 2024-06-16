@@ -36,3 +36,4 @@ alpine_edge_edge_x86_64_cloud.tar.xz
 alpine_3.20_3.20_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_default.tar.xz
+oracle_8_8_x86_64_cloud.tar.xz
