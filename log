@@ -1,4 +1,4 @@
-Mon Jun 17 01:48:49 UTC 2024
+Tue Jun 18 01:46:26 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -66,14 +66,12 @@ centos_8_8-Stream_x86_64_default.tar.xz
 centos_8_8-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
 centos_9_9-Stream_x86_64_default.tar.xz
-no public network
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
 almalinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
 almalinux_8_8_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 almalinux_9_9_x86_64_default.tar.xz
 ------------------------------------------
@@ -102,6 +100,7 @@ fedora_39_39_x86_64_cloud.tar.xz
 fedora_40_40_x86_64_default.tar.xz
 ------------------------------------------
 fedora_40_40_x86_64_cloud.tar.xz
+reboot failed
 ------------------------------------------
 opensuse_15.4_15.4_x86_64_default.tar.xz
 ------------------------------------------
