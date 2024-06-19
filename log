@@ -1,4 +1,4 @@
-Tue Jun 18 01:46:26 UTC 2024
+Wed Jun 19 01:46:30 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -100,7 +100,6 @@ fedora_39_39_x86_64_cloud.tar.xz
 fedora_40_40_x86_64_default.tar.xz
 ------------------------------------------
 fedora_40_40_x86_64_cloud.tar.xz
-reboot failed
 ------------------------------------------
 opensuse_15.4_15.4_x86_64_default.tar.xz
 ------------------------------------------
@@ -115,7 +114,6 @@ opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
 opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.17_3.17_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 alpine_3.18_3.18_x86_64_cloud.tar.xz
