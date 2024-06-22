@@ -1,4 +1,4 @@
-Fri Jun 21 01:44:43 UTC 2024
+Sat Jun 22 01:43:26 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -35,7 +35,6 @@ debian_10_buster_x86_64_default.tar.xz
 debian_10_buster_x86_64_cloud.tar.xz
 ------------------------------------------
 debian_11_bullseye_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 debian_11_bullseye_x86_64_cloud.tar.xz
@@ -44,7 +43,6 @@ debian_12_bookworm_x86_64_default.tar.xz
 reboot failed
 ------------------------------------------
 debian_12_bookworm_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 debian_13_trixie_x86_64_default.tar.xz
@@ -90,7 +88,6 @@ rockylinux_9_9_x86_64_cloud.tar.xz
 fedora_37_37_x86_64_default.tar.xz
 ------------------------------------------
 fedora_37_37_x86_64_cloud.tar.xz
-reboot failed
 ------------------------------------------
 fedora_38_38_x86_64_default.tar.xz
 ------------------------------------------
@@ -144,7 +141,6 @@ reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
 no public network
-reboot failed
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
@@ -165,7 +161,6 @@ reboot failed
 oracle_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 openeuler_22.03_22.03_x86_64_default.tar.xz
