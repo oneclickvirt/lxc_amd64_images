@@ -1,4 +1,4 @@
-Mon Jun 24 01:47:41 UTC 2024
+Tue Jun 25 01:46:17 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -16,8 +16,6 @@ ubuntu_23.04_lunar_x86_64_default.tar.xz
 reboot failed
 ------------------------------------------
 ubuntu_23.04_lunar_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_23.10_mantic_x86_64_default.tar.xz
 reboot failed
@@ -110,7 +108,6 @@ opensuse_15.4_15.4_x86_64_cloud.tar.xz
 opensuse_15.5_15.5_x86_64_default.tar.xz
 ------------------------------------------
 opensuse_15.5_15.5_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
 ------------------------------------------
@@ -137,6 +134,7 @@ archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
 no public network
+reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
@@ -162,11 +160,8 @@ no public network
 reboot failed
 ------------------------------------------
 oracle_8_8_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 openeuler_22.03_22.03_x86_64_default.tar.xz
