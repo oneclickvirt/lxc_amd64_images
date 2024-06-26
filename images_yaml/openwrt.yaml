@@ -390,8 +390,8 @@ actions:
     /etc/init.d/cron enable || true
     /etc/init.d/cron start || true
     grep -q '^PermitRootLogin yes' /etc/ssh/sshd_config || echo "PermitRootLogin yes" >> /etc/ssh/sshd_config || true
-    echo "Related repo https://github.com/oneclickvirt/lxc_amd64_images\n--by https://t.me/spiritlhl" >> /etc/motd || true
-    echo "Related repo https://github.com/oneclickvirt/lxc_amd64_images\n--by https://t.me/spiritlhl" >> /etc/banner || true
+    echo -e "Related repo https://github.com/oneclickvirt/lxc_amd64_images\n--by https://t.me/spiritlhl" >> /etc/motd || true
+    echo -e "Related repo https://github.com/oneclickvirt/lxc_amd64_images\n--by https://t.me/spiritlhl" >> /etc/banner || true
     
   types:
   - container
