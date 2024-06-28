@@ -1,4 +1,4 @@
-Thu Jun 27 01:46:07 UTC 2024
+Fri Jun 28 01:46:41 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -134,7 +134,6 @@ archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
 no public network
-reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
@@ -160,11 +159,8 @@ no public network
 reboot failed
 ------------------------------------------
 oracle_8_8_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 openeuler_22.03_22.03_x86_64_default.tar.xz
