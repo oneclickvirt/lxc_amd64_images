@@ -343,7 +343,6 @@ files:
   - bionic
   - focal
   - jammy
-  - lunar
   - mantic
   - noble
   types:
@@ -384,7 +383,6 @@ files:
   - bionic
   - focal
   - jammy
-  - lunar
   - mantic
   - noble
   types:
@@ -489,7 +487,6 @@ packages:
     - fuse3
     releases:
     - jammy
-    - lunar
     - mantic
     - noble
     action: install
@@ -528,7 +525,6 @@ packages:
     - xenial
     - bionic
     - jammy
-    - lunar
     - mantic
     - noble
 
@@ -542,7 +538,6 @@ packages:
     - systemd-resolved
     action: install
     releases:
-    - lunar
     - mantic
     - noble
 
@@ -582,7 +577,6 @@ packages:
     releases:
     - focal
     - jammy
-    - lunar
     - mantic
     - noble
     types:
@@ -603,7 +597,6 @@ packages:
     - bionic
     - focal
     - jammy
-    - lunar
     - mantic
     - noble
     types:
@@ -653,6 +646,25 @@ packages:
     - riscv64
 
 actions:
+- trigger: post-unpack
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    # Make sure systemd doesn't think it's running.
+    [ ! -d /run/systemd ] && exit 0
+    rm -Rf /run/systemd/system
+    chattr +i /run/systemd
+
+- trigger: post-packages
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    # Remove the immutable flag.
+    [ ! -d /run/systemd ] && exit 0
+    chattr -i /run/systemd
+
 - trigger: post-update
   action: |-
     #!/bin/sh
@@ -683,7 +695,6 @@ actions:
     # Ensure /etc/resolv.conf is symlinked to /run/systemd/resolve/stub-resolv.conf
     ln -sf ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
   releases:
-  - lunar
   - mantic
   - noble
 
@@ -744,6 +755,7 @@ actions:
     [Install]
     WantedBy=default.target
     EOF
+
     systemctl enable incus-growpart
   types:
   - vm
@@ -757,7 +769,7 @@ actions:
     set -eux
 
     # Disable location service
-    systemctl mask geoclue.service || true
+    systemctl mask geoclue.service
 
     # Timezone
     rm -f /etc/localtime
