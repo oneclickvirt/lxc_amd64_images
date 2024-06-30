@@ -1,4 +1,4 @@
-Sat Jun 29 01:44:21 UTC 2024
+Sun Jun 30 01:52:05 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -13,7 +13,6 @@ ubuntu_22.04_jammy_x86_64_default.tar.xz
 ubuntu_22.04_jammy_x86_64_cloud.tar.xz
 ------------------------------------------
 ubuntu_23.04_lunar_x86_64_default.tar.xz
-reboot failed
 ------------------------------------------
 ubuntu_23.04_lunar_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -66,6 +65,7 @@ centos_8_8-Stream_x86_64_default.tar.xz
 centos_8_8-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
 centos_9_9-Stream_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -113,11 +113,14 @@ opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
 ------------------------------------------
 opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
 ------------------------------------------
+opensuse_15.6_15.6_x86_64_default.tar.xz
+------------------------------------------
+opensuse_15.6_15.6_x86_64_cloud.tar.xz
+------------------------------------------
 alpine_3.17_3.17_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 alpine_3.18_3.18_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 alpine_3.19_3.19_x86_64_cloud.tar.xz
