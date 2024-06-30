@@ -73,3 +73,5 @@ openeuler_23.09_23.09_x86_64_cloud.tar.xz
 fedora_40_40_x86_64_default.tar.xz
 fedora_40_40_x86_64_cloud.tar.xz
 alpine_3.20_3.20_x86_64_cloud.tar.xz
+opensuse_15.6_15.6_x86_64_default.tar.xz
+opensuse_15.6_15.6_x86_64_cloud.tar.xz
