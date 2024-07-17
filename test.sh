@@ -1,6 +1,6 @@
 #!/bin/bash
 # by https://github.com/oneclickvirt/lxc_amd64_images
-# 2024.03.25
+# 2024.07.17
 # curl -L https://raw.githubusercontent.com/oneclickvirt/lxc_amd64_images/main/test.sh -o test.sh && chmod +x test.sh && ./test.sh
 
 rm -rf log
@@ -107,5 +107,6 @@ for ((i = 0; i < ${#release_names[@]}; i++)); do
         pct destroy 102
         rm -rf $image
         echo "------------------------------------------" >>log
+        sleep 10
     done
 done
