@@ -1,4 +1,4 @@
-Mon Jul 22 01:51:26 UTC 2024
+Tue Jul 23 01:49:24 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -29,7 +29,6 @@ debian_10_buster_x86_64_default.tar.xz
 debian_10_buster_x86_64_cloud.tar.xz
 ------------------------------------------
 debian_11_bullseye_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 debian_11_bullseye_x86_64_cloud.tar.xz
@@ -61,6 +60,7 @@ centos_8_8-Stream_x86_64_default.tar.xz
 centos_8_8-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
 centos_9_9-Stream_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -138,6 +138,7 @@ no public network
 reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
+no public network
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
