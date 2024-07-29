@@ -1,4 +1,4 @@
-Sun Jul 28 01:58:22 UTC 2024
+Mon Jul 29 01:51:37 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -68,6 +68,7 @@ almalinux_8_8_x86_64_default.tar.xz
 almalinux_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 almalinux_9_9_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 almalinux_9_9_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -84,7 +85,6 @@ fedora_37_37_x86_64_default.tar.xz
 fedora_37_37_x86_64_cloud.tar.xz
 ------------------------------------------
 fedora_38_38_x86_64_default.tar.xz
-no public network
 ------------------------------------------
 fedora_38_38_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -133,7 +133,6 @@ archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
 no public network
-reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
@@ -161,7 +160,6 @@ reboot failed
 oracle_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 openeuler_22.03_22.03_x86_64_default.tar.xz
