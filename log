@@ -1,4 +1,4 @@
-Mon Jul 29 01:51:37 UTC 2024
+Tue Jul 30 01:49:20 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -68,7 +68,6 @@ almalinux_8_8_x86_64_default.tar.xz
 almalinux_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 almalinux_9_9_x86_64_default.tar.xz
-no public network
 ------------------------------------------
 almalinux_9_9_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -113,6 +112,7 @@ opensuse_15.6_15.6_x86_64_default.tar.xz
 opensuse_15.6_15.6_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.17_3.17_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 alpine_3.18_3.18_x86_64_cloud.tar.xz
