@@ -1,4 +1,4 @@
-Sat Aug 10 01:50:48 UTC 2024
+Sun Aug 11 02:00:50 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -78,10 +78,12 @@ rockylinux_8_8_x86_64_cloud.tar.xz
 rockylinux_9_9_x86_64_default.tar.xz
 ------------------------------------------
 rockylinux_9_9_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 fedora_37_37_x86_64_default.tar.xz
 ------------------------------------------
 fedora_37_37_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 fedora_38_38_x86_64_default.tar.xz
 ------------------------------------------
@@ -122,6 +124,7 @@ alpine_3.19_3.19_x86_64_cloud.tar.xz
 alpine_edge_edge_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.16_3.16_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 alpine_3.20_3.20_x86_64_cloud.tar.xz
