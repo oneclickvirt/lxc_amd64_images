@@ -1,4 +1,4 @@
-Sun Aug 25 02:01:39 UTC 2024
+Mon Aug 26 01:53:59 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -48,7 +48,6 @@ reboot failed
 kali_latest_kali-rolling_x86_64_default.tar.xz
 ------------------------------------------
 kali_latest_kali-rolling_x86_64_cloud.tar.xz
-reboot failed
 ------------------------------------------
 centos_7_7_x86_64_default.tar.xz
 reboot failed
@@ -113,6 +112,7 @@ opensuse_15.6_15.6_x86_64_default.tar.xz
 opensuse_15.6_15.6_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.17_3.17_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 alpine_3.18_3.18_x86_64_cloud.tar.xz
