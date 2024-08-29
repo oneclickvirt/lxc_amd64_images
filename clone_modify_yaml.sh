@@ -121,7 +121,7 @@ chmod 777 gentoo.yaml
 insert_content_1="    - curl\n    - wget\n    - bash\n    - lsof\n    - sshpass\n    - iptables\n    - dos2unix"
 sed -i "/- sudo/ a\\$insert_content_1" gentoo.yaml
 insert_content_2=$(cat /home/runner/work/lxc_amd64_images/lxc_amd64_images/bash_insert_content.text)
-line_number=$(($(wc -l < gentoo.yaml) - 7))
+line_number=$(($(wc -l < gentoo.yaml) - 3))
 head -n $line_number gentoo.yaml > temp.yaml
 echo "$insert_content_2" >> temp.yaml
 tail -n 7 gentoo.yaml >> temp.yaml
@@ -162,7 +162,7 @@ rm -rf openwrt.yaml
 wget https://raw.githubusercontent.com/lxc/lxc-ci/main/images/openwrt.yaml
 chmod 777 openwrt.yaml
 # cronie 不可用 cron 不可用
-insert_content_1="    - curl\n    - wget\n    - bash\n    - lsof\n    - sshpass\n    - openssh-server\n    - openssh-keygen\n    - iptables\n    - dos2unix"
+insert_content_1="    - curl\n    - wget\n    - bash\n    - lsof\n    - sshpass\n    - openssh-server\n    - openssh-keygen\n    - iptables"
 sed -i "/- sudo/ a\\$insert_content_1" openwrt.yaml
 insert_content_2=$(cat /home/runner/work/lxc_amd64_images/lxc_amd64_images/sh_insert_content.text)
 cat openwrt.yaml > temp.yaml
