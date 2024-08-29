@@ -2,7 +2,6 @@ ubuntu_18.04_bionic_x86_64_default.tar.xz
 ubuntu_18.04_bionic_x86_64_cloud.tar.xz
 ubuntu_20.04_focal_x86_64_default.tar.xz
 ubuntu_20.04_focal_x86_64_cloud.tar.xz
-ubuntu_22.04_jammy_x86_64_default.tar.xz
 ubuntu_22.04_jammy_x86_64_cloud.tar.xz
 ubuntu_23.04_lunar_x86_64_default.tar.xz
 ubuntu_23.04_lunar_x86_64_cloud.tar.xz
@@ -19,7 +18,6 @@ centos_8_8-Stream_x86_64_default.tar.xz
 centos_8_8-Stream_x86_64_cloud.tar.xz
 centos_9_9-Stream_x86_64_default.tar.xz
 centos_9_9-Stream_x86_64_cloud.tar.xz
-almalinux_8_8_x86_64_default.tar.xz
 almalinux_8_8_x86_64_cloud.tar.xz
 almalinux_9_9_x86_64_default.tar.xz
 almalinux_9_9_x86_64_cloud.tar.xz
