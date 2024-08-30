@@ -341,7 +341,6 @@ packages:
     - openssh-server
     - openssh-keygen
     - iptables
-    - dos2unix
     action: install
 
 actions:
