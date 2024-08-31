@@ -1,4 +1,4 @@
-Fri Aug 30 02:00:15 UTC 2024
+Sat Aug 31 01:59:10 UTC 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -62,7 +62,6 @@ centos_8_8-Stream_x86_64_cloud.tar.xz
 centos_9_9-Stream_x86_64_default.tar.xz
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 almalinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
@@ -155,6 +154,22 @@ no public network
 reboot failed
 ------------------------------------------
 openwrt_23.05_23.05_x86_64_cloud.tar.xz
+no public network
+reboot failed
+------------------------------------------
+openwrt_21.02_21.02_x86_64_default.tar.xz
+no public network
+reboot failed
+------------------------------------------
+openwrt_21.02_21.02_x86_64_cloud.tar.xz
+no public network
+reboot failed
+------------------------------------------
+openwrt_22.03_22.03_x86_64_default.tar.xz
+no public network
+reboot failed
+------------------------------------------
+openwrt_22.03_22.03_x86_64_cloud.tar.xz
 no public network
 reboot failed
 ------------------------------------------
