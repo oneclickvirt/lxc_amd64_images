@@ -682,10 +682,6 @@ actions:
   variants:
   - cloud
   - openrc
-    systemctl enable systemd-resolved
-    systemctl enable systemd-networkd
-  variants:
-  - systemd
 
 mappings:
   architecture_map: gentoo
