@@ -651,6 +651,11 @@ packages:
     architectures:
     - aaarch64
 
+  - packages:
+    - selinux-policy
+    - selinux-policy-targeted
+    action: remove
+
 actions:
 - trigger: post-unpack
   action: |-
@@ -966,6 +971,9 @@ actions:
     if [ -f /etc/yum/pluginconf.d/fastestmirror.conf ]; then
       sed -ri 's/enabled=0/enabled=1/g' /etc/yum/pluginconf.d/fastestmirror.conf
     fi
+
+    # Cleanup SELinux state
+    rm -Rf /var/lib/selinux/*
 
 - trigger: post-files
   action: |-
