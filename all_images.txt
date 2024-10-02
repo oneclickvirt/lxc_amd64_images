@@ -79,3 +79,5 @@ openwrt_21.02_21.02_x86_64_default.tar.xz
 openwrt_21.02_21.02_x86_64_cloud.tar.xz
 openwrt_22.03_22.03_x86_64_default.tar.xz
 openwrt_22.03_22.03_x86_64_cloud.tar.xz
+openeuler_24.03_24.03_x86_64_default.tar.xz
+openeuler_24.03_24.03_x86_64_cloud.tar.xz
