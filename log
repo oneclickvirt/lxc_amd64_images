@@ -1,4 +1,4 @@
-Fr 11. Okt 04:05:40 CEST 2024
+Sa 12. Okt 04:03:34 CEST 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -58,10 +58,12 @@ reboot failed
 centos_8_8-Stream_x86_64_default.tar.xz
 ------------------------------------------
 centos_8_8-Stream_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 centos_9_9-Stream_x86_64_default.tar.xz
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 almalinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
@@ -69,7 +71,6 @@ almalinux_8_8_x86_64_cloud.tar.xz
 no public network
 ------------------------------------------
 almalinux_9_9_x86_64_default.tar.xz
-no public network
 ------------------------------------------
 almalinux_9_9_x86_64_cloud.tar.xz
 no public network
@@ -115,6 +116,7 @@ opensuse_15.6_15.6_x86_64_default.tar.xz
 opensuse_15.6_15.6_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.17_3.17_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 alpine_3.18_3.18_x86_64_cloud.tar.xz
