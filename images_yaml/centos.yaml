@@ -585,7 +585,6 @@ packages:
 
   - packages:
     - cloud-init
-    - openssh-server
     - NetworkManager
     action: install
     variants:
