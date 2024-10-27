@@ -1,4 +1,4 @@
-Sa 26. Okt 04:03:48 CEST 2024
+So 27. Okt 03:13:07 CET 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -29,6 +29,7 @@ debian_10_buster_x86_64_default.tar.xz
 debian_10_buster_x86_64_cloud.tar.xz
 ------------------------------------------
 debian_11_bullseye_x86_64_default.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 debian_11_bullseye_x86_64_cloud.tar.xz
@@ -60,8 +61,10 @@ centos_8_8-Stream_x86_64_default.tar.xz
 centos_8_8-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
 centos_9_9-Stream_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 almalinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
