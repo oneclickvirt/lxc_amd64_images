@@ -1,4 +1,4 @@
-So 3. Nov 03:12:33 CET 2024
+Mo 4. Nov 03:09:25 CET 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -78,20 +78,14 @@ rockylinux_8_8_x86_64_cloud.tar.xz
 rockylinux_9_9_x86_64_default.tar.xz
 ------------------------------------------
 rockylinux_9_9_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 fedora_37_37_x86_64_default.tar.xz
 ------------------------------------------
 fedora_37_37_x86_64_cloud.tar.xz
 ------------------------------------------
 fedora_38_38_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 fedora_38_38_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 fedora_39_39_x86_64_default.tar.xz
 ------------------------------------------
@@ -135,20 +129,14 @@ alpine_3.20_3.20_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_cloud.tar.xz
 ------------------------------------------
 archlinux_current_current_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
 reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
@@ -183,11 +171,8 @@ no public network
 reboot failed
 ------------------------------------------
 oracle_8_8_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 openeuler_22.03_22.03_x86_64_default.tar.xz
