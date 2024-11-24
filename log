@@ -1,4 +1,4 @@
-Sa 23. Nov 03:08:13 CET 2024
+So 24. Nov 03:17:26 CET 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -59,9 +59,9 @@ reboot failed
 centos_8_8-Stream_x86_64_default.tar.xz
 ------------------------------------------
 centos_8_8-Stream_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 centos_9_9-Stream_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
 no public network
@@ -72,18 +72,18 @@ almalinux_8_8_x86_64_cloud.tar.xz
 no public network
 ------------------------------------------
 almalinux_9_9_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 almalinux_9_9_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 rockylinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
 rockylinux_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 rockylinux_9_9_x86_64_default.tar.xz
-no public network
 ------------------------------------------
 rockylinux_9_9_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 fedora_37_37_x86_64_default.tar.xz
 ------------------------------------------
@@ -177,9 +177,9 @@ no public network
 reboot failed
 ------------------------------------------
 oracle_8_8_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 openeuler_22.03_22.03_x86_64_default.tar.xz
