@@ -1,4 +1,4 @@
-Mo 2. Dez 03:18:25 CET 2024
+Di 3. Dez 03:16:39 CET 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -72,17 +72,15 @@ no public network
 almalinux_9_9_x86_64_default.tar.xz
 ------------------------------------------
 almalinux_9_9_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 rockylinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
 rockylinux_8_8_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 rockylinux_9_9_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 rockylinux_9_9_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 fedora_37_37_x86_64_default.tar.xz
 ------------------------------------------
@@ -179,7 +177,6 @@ oracle_8_8_x86_64_cloud.tar.xz
 no public network
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 openeuler_22.03_22.03_x86_64_default.tar.xz
