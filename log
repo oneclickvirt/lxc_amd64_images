@@ -1,4 +1,4 @@
-Do 5. Dez 03:17:19 CET 2024
+Fr 6. Dez 03:16:03 CET 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -63,7 +63,6 @@ centos_8_8-Stream_x86_64_cloud.tar.xz
 centos_9_9-Stream_x86_64_default.tar.xz
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 almalinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
@@ -71,6 +70,7 @@ almalinux_8_8_x86_64_cloud.tar.xz
 no public network
 ------------------------------------------
 almalinux_9_9_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 almalinux_9_9_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -177,9 +177,9 @@ no public network
 reboot failed
 ------------------------------------------
 oracle_8_8_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 openeuler_22.03_22.03_x86_64_default.tar.xz
