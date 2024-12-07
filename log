@@ -1,4 +1,4 @@
-Fr 6. Dez 03:16:03 CET 2024
+Sa 7. Dez 03:14:36 CET 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -61,8 +61,10 @@ centos_8_8-Stream_x86_64_default.tar.xz
 centos_8_8-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
 centos_9_9-Stream_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 almalinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
@@ -80,7 +82,6 @@ rockylinux_8_8_x86_64_cloud.tar.xz
 no public network
 ------------------------------------------
 rockylinux_9_9_x86_64_default.tar.xz
-no public network
 ------------------------------------------
 rockylinux_9_9_x86_64_cloud.tar.xz
 no public network
