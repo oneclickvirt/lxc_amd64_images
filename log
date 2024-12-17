@@ -1,4 +1,4 @@
-Mo 16. Dez 03:19:43 CET 2024
+Di 17. Dez 03:15:59 CET 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -139,7 +139,6 @@ no public network
 reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
-no public network
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
