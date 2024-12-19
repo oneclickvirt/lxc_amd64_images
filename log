@@ -1,4 +1,4 @@
-Mi 18. Dez 03:17:02 CET 2024
+Do 19. Dez 03:12:42 CET 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -9,8 +9,6 @@ ubuntu_20.04_focal_x86_64_default.tar.xz
 ubuntu_20.04_focal_x86_64_cloud.tar.xz
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -23,15 +21,10 @@ ubuntu_23.10_mantic_x86_64_default.tar.xz
 ubuntu_23.10_mantic_x86_64_cloud.tar.xz
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 debian_10_buster_x86_64_default.tar.xz
-no public network
 ------------------------------------------
 debian_10_buster_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -39,8 +32,6 @@ debian_11_bullseye_x86_64_default.tar.xz
 reboot failed
 ------------------------------------------
 debian_11_bullseye_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 debian_12_bookworm_x86_64_default.tar.xz
 reboot failed
@@ -75,26 +66,20 @@ centos_9_9-Stream_x86_64_cloud.tar.xz
 almalinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
 almalinux_8_8_x86_64_cloud.tar.xz
-reboot failed
 ------------------------------------------
 almalinux_9_9_x86_64_default.tar.xz
 ------------------------------------------
 almalinux_9_9_x86_64_cloud.tar.xz
 ------------------------------------------
 rockylinux_8_8_x86_64_default.tar.xz
-no public network
 ------------------------------------------
 rockylinux_8_8_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 rockylinux_9_9_x86_64_default.tar.xz
 ------------------------------------------
 rockylinux_9_9_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 fedora_37_37_x86_64_default.tar.xz
-no public network
 ------------------------------------------
 fedora_37_37_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -113,20 +98,16 @@ fedora_40_40_x86_64_cloud.tar.xz
 opensuse_15.4_15.4_x86_64_default.tar.xz
 ------------------------------------------
 opensuse_15.4_15.4_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 opensuse_15.5_15.5_x86_64_default.tar.xz
 ------------------------------------------
 opensuse_15.5_15.5_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
 ------------------------------------------
 opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
 ------------------------------------------
 opensuse_15.6_15.6_x86_64_default.tar.xz
-reboot failed
 ------------------------------------------
 opensuse_15.6_15.6_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -137,8 +118,6 @@ alpine_3.18_3.18_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 alpine_3.19_3.19_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 alpine_edge_edge_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -154,8 +133,6 @@ archlinux_current_current_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
