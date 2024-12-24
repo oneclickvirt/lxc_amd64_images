@@ -1,4 +1,4 @@
-Mo 23. Dez 03:07:46 CET 2024
+Di 24. Dez 03:06:05 CET 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -173,8 +173,6 @@ no public network
 reboot failed
 ------------------------------------------
 oracle_8_8_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
 reboot failed
