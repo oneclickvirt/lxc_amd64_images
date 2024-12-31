@@ -1,4 +1,4 @@
-Mo 30. Dez 03:08:30 CET 2024
+Di 31. Dez 03:05:05 CET 2024
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -50,6 +50,7 @@ kali_latest_kali-rolling_x86_64_default.tar.xz
 kali_latest_kali-rolling_x86_64_cloud.tar.xz
 ------------------------------------------
 centos_7_7_x86_64_default.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 centos_7_7_x86_64_cloud.tar.xz
