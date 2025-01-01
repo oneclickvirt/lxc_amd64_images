@@ -1,4 +1,4 @@
-Di 31. Dez 03:05:05 CET 2024
+Mi 1. Jan 03:13:09 CET 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -50,7 +50,6 @@ kali_latest_kali-rolling_x86_64_default.tar.xz
 kali_latest_kali-rolling_x86_64_cloud.tar.xz
 ------------------------------------------
 centos_7_7_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 centos_7_7_x86_64_cloud.tar.xz
@@ -215,6 +214,14 @@ no public network
 reboot failed
 ------------------------------------------
 openeuler_24.03_24.03_x86_64_cloud.tar.xz
+no public network
+reboot failed
+------------------------------------------
+openeuler_24.09_24.09_x86_64_default.tar.xz
+no public network
+reboot failed
+------------------------------------------
+openeuler_24.09_24.09_x86_64_cloud.tar.xz
 no public network
 reboot failed
 ------------------------------------------
