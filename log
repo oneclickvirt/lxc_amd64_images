@@ -1,4 +1,4 @@
-Sa 11. Jan 03:06:19 CET 2025
+So 12. Jan 03:14:17 CET 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -46,8 +46,6 @@ debian_13_trixie_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 kali_latest_kali-rolling_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 kali_latest_kali-rolling_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -76,6 +74,8 @@ almalinux_9_9_x86_64_cloud.tar.xz
 rockylinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
 rockylinux_8_8_x86_64_cloud.tar.xz
+no public network
+reboot failed
 ------------------------------------------
 rockylinux_9_9_x86_64_default.tar.xz
 ------------------------------------------
@@ -177,7 +177,6 @@ reboot failed
 oracle_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 openeuler_22.03_22.03_x86_64_default.tar.xz
