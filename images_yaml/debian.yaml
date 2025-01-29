@@ -1226,11 +1226,19 @@ packages:
     architectures:
     - amd64
     - arm64
-    types:
-    - vm
     releases:
     - buster
     - bullseye
+
+  - packages:
+    - polkit
+    action: install
+    architectures:
+    - amd64
+    - arm64
+    releases:
+    - trixie
+    - sid
 
   - packages:
     - pkexec
@@ -1238,8 +1246,6 @@ packages:
     architectures:
     - amd64
     - arm64
-    types:
-    - vm
     releases:
     - bookworm
     - trixie
