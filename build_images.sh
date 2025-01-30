@@ -100,6 +100,7 @@ build_or_list_images() {
                     manager="apk"
                 elif [[ "$run_funct" == "openwrt" ]]; then
                     manager="opkg"
+                    [ "${version}" = "snapshot" ] && manager="apk"
                 elif [[ "$run_funct" == "gentoo" ]]; then
                     manager="portage"
                 elif [[ "$run_funct" == "opensuse" ]]; then
@@ -144,7 +145,7 @@ build_or_list_images() {
                 elif [[ "$run_funct" == "alpine" ]]; then
                     [ "${arch}" = "amd64" ] && arch="x86_64"
                     [ "${arch}" = "arm64" ] && arch="aarch64"
-                    if [ "${release}" = "edge" ]; then
+                    if [ "${version}" = "edge" ]; then
                         EXTRA_ARGS="-o source.same_as=3.19"
                     fi
                 elif [[ "$run_funct" == "fedora" || "$run_funct" == "openeuler" || "$run_funct" == "opensuse" ]]; then
