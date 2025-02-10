@@ -372,6 +372,7 @@ actions:
   - snapshot
   - 22.03
   - 23.05
+  - 24.10
 - trigger: post-files
   action: |-
     #!/bin/sh
