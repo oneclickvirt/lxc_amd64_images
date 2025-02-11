@@ -1,4 +1,4 @@
-Mo 10. Feb 03:05:54 CET 2025
+Di 11. Feb 03:04:46 CET 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -122,6 +122,7 @@ alpine_3.19_3.19_x86_64_cloud.tar.xz
 alpine_edge_edge_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.16_3.16_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 alpine_3.20_3.20_x86_64_cloud.tar.xz
@@ -169,6 +170,14 @@ no public network
 reboot failed
 ------------------------------------------
 openwrt_22.03_22.03_x86_64_cloud.tar.xz
+no public network
+reboot failed
+------------------------------------------
+openwrt_24.10_24.10_x86_64_default.tar.xz
+no public network
+reboot failed
+------------------------------------------
+openwrt_24.10_24.10_x86_64_cloud.tar.xz
 no public network
 reboot failed
 ------------------------------------------
