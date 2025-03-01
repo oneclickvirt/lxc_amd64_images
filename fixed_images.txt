@@ -41,7 +41,6 @@ alpine_3.20_3.20_x86_64_cloud.tar.xz
 alpine_3.21_3.21_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_default.tar.xz
-openeuler_24.03_24.03_x86_64_default.tar.xz
 openeuler_24.03_24.03_x86_64_cloud.tar.xz
 openeuler_24.09_24.09_x86_64_default.tar.xz
 openeuler_24.09_24.09_x86_64_cloud.tar.xz
