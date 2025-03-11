@@ -1,4 +1,4 @@
-Mo 10. Mär 02:48:08 CET 2025
+Di 11. Mär 03:11:36 CET 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -134,6 +134,7 @@ archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
 no public network
+reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
@@ -141,6 +142,7 @@ reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
 no public network
+reboot failed
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
