@@ -1,4 +1,4 @@
-Mi 9. Apr 04:15:18 CEST 2025
+Do 10. Apr 04:15:28 CEST 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -60,6 +60,7 @@ centos_8_8-Stream_x86_64_default.tar.xz
 centos_8_8-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
 centos_9_9-Stream_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -187,7 +188,6 @@ reboot failed
 oracle_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 openeuler_22.03_22.03_x86_64_default.tar.xz
@@ -233,4 +233,5 @@ openeuler_24.09_24.09_x86_64_cloud.tar.xz
 openeuler_25.03_25.03_x86_64_default.tar.xz
 ------------------------------------------
 openeuler_25.03_25.03_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
