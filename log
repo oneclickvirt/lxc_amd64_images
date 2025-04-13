@@ -1,4 +1,4 @@
-Sa 12. Apr 04:12:50 CEST 2025
+So 13. Apr 05:37:04 CEST 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -49,6 +49,7 @@ reboot failed
 kali_latest_kali-rolling_x86_64_default.tar.xz
 ------------------------------------------
 kali_latest_kali-rolling_x86_64_cloud.tar.xz
+reboot failed
 ------------------------------------------
 centos_7_7_x86_64_default.tar.xz
 reboot failed
@@ -71,6 +72,7 @@ almalinux_8_8_x86_64_cloud.tar.xz
 almalinux_9_9_x86_64_default.tar.xz
 ------------------------------------------
 almalinux_9_9_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 rockylinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
@@ -79,6 +81,7 @@ rockylinux_8_8_x86_64_cloud.tar.xz
 rockylinux_9_9_x86_64_default.tar.xz
 ------------------------------------------
 rockylinux_9_9_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 fedora_37_37_x86_64_default.tar.xz
 ------------------------------------------
@@ -123,6 +126,7 @@ alpine_3.19_3.19_x86_64_cloud.tar.xz
 alpine_edge_edge_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.16_3.16_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 alpine_3.20_3.20_x86_64_cloud.tar.xz
