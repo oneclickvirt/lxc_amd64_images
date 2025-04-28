@@ -1,10 +1,11 @@
-So 27. Apr 04:23:46 CEST 2025
+Mo 28. Apr 04:22:34 CEST 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_cloud.tar.xz
 ------------------------------------------
 ubuntu_20.04_focal_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 ubuntu_20.04_focal_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -71,6 +72,7 @@ almalinux_8_8_x86_64_cloud.tar.xz
 almalinux_9_9_x86_64_default.tar.xz
 ------------------------------------------
 almalinux_9_9_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 rockylinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
@@ -225,7 +227,6 @@ reboot failed
 openeuler_24.03_24.03_x86_64_default.tar.xz
 ------------------------------------------
 openeuler_24.03_24.03_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 openeuler_24.09_24.09_x86_64_default.tar.xz
 ------------------------------------------
