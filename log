@@ -1,11 +1,10 @@
-Mo 28. Apr 04:22:34 CEST 2025
+Di 29. Apr 04:19:39 CEST 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_cloud.tar.xz
 ------------------------------------------
 ubuntu_20.04_focal_x86_64_default.tar.xz
-no public network
 ------------------------------------------
 ubuntu_20.04_focal_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -20,6 +19,8 @@ ubuntu_23.04_lunar_x86_64_cloud.tar.xz
 ubuntu_23.10_mantic_x86_64_default.tar.xz
 ------------------------------------------
 ubuntu_23.10_mantic_x86_64_cloud.tar.xz
+no public network
+reboot failed
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_default.tar.xz
 ------------------------------------------
@@ -68,11 +69,12 @@ centos_9_9-Stream_x86_64_cloud.tar.xz
 almalinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
 almalinux_8_8_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 almalinux_9_9_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 almalinux_9_9_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 rockylinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
