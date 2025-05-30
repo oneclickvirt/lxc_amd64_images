@@ -16,10 +16,10 @@ debian_11_bullseye_x86_64_cloud.tar.xz
 kali_latest_kali-rolling_x86_64_default.tar.xz
 centos_8_8-Stream_x86_64_default.tar.xz
 centos_8_8-Stream_x86_64_cloud.tar.xz
+centos_9_9-Stream_x86_64_default.tar.xz
 centos_9_9-Stream_x86_64_cloud.tar.xz
 almalinux_8_8_x86_64_default.tar.xz
 almalinux_8_8_x86_64_cloud.tar.xz
-almalinux_9_9_x86_64_default.tar.xz
 rockylinux_8_8_x86_64_default.tar.xz
 rockylinux_8_8_x86_64_cloud.tar.xz
 rockylinux_9_9_x86_64_default.tar.xz
@@ -30,7 +30,6 @@ fedora_38_38_x86_64_default.tar.xz
 fedora_38_38_x86_64_cloud.tar.xz
 fedora_39_39_x86_64_default.tar.xz
 fedora_39_39_x86_64_cloud.tar.xz
-fedora_40_40_x86_64_default.tar.xz
 fedora_40_40_x86_64_cloud.tar.xz
 alpine_3.19_3.19_x86_64_cloud.tar.xz
 alpine_edge_edge_x86_64_cloud.tar.xz
@@ -39,6 +38,7 @@ alpine_3.21_3.21_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_default.tar.xz
 openeuler_24.03_24.03_x86_64_default.tar.xz
+openeuler_24.03_24.03_x86_64_cloud.tar.xz
 openeuler_24.09_24.09_x86_64_default.tar.xz
 openeuler_24.09_24.09_x86_64_cloud.tar.xz
 openeuler_25.03_25.03_x86_64_default.tar.xz
