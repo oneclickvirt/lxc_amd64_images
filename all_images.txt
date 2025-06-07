@@ -88,3 +88,4 @@ openwrt_24.10_24.10_x86_64_default.tar.xz
 openwrt_24.10_24.10_x86_64_cloud.tar.xz
 openeuler_25.03_25.03_x86_64_default.tar.xz
 openeuler_25.03_25.03_x86_64_cloud.tar.xz
+alpine_3.22_3.22_x86_64_cloud.tar.xz
