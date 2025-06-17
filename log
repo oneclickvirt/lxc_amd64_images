@@ -1,4 +1,4 @@
-Mo 16. Jun 04:31:16 CEST 2025
+Di 17. Jun 04:28:12 CEST 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -113,7 +113,6 @@ opensuse_15.6_15.6_x86_64_default.tar.xz
 opensuse_15.6_15.6_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.17_3.17_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 alpine_3.18_3.18_x86_64_cloud.tar.xz
