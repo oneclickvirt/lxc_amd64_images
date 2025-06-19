@@ -1,4 +1,4 @@
-Mi 18. Jun 04:27:15 CEST 2025
+Do 19. Jun 04:28:06 CEST 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -63,6 +63,7 @@ centos_8_8-Stream_x86_64_cloud.tar.xz
 centos_9_9-Stream_x86_64_default.tar.xz
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 almalinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
@@ -232,7 +233,6 @@ openeuler_24.03_24.03_x86_64_cloud.tar.xz
 openeuler_24.09_24.09_x86_64_default.tar.xz
 ------------------------------------------
 openeuler_24.09_24.09_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 openeuler_25.03_25.03_x86_64_default.tar.xz
 ------------------------------------------
