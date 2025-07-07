@@ -1208,6 +1208,7 @@ packages:
   - packages:
     - cloud-init
     - gpg
+    - python3-debian
     action: install
     variants:
     - cloud
