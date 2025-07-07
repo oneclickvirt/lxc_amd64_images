@@ -1,4 +1,4 @@
-So 6. Jul 04:46:34 CEST 2025
+Mo 7. Jul 04:34:30 CEST 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -59,10 +59,8 @@ reboot failed
 centos_8_8-Stream_x86_64_default.tar.xz
 ------------------------------------------
 centos_8_8-Stream_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 centos_9_9-Stream_x86_64_default.tar.xz
-no public network
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -79,8 +77,10 @@ rockylinux_8_8_x86_64_default.tar.xz
 rockylinux_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 rockylinux_9_9_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 rockylinux_9_9_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 fedora_37_37_x86_64_default.tar.xz
 ------------------------------------------
@@ -115,6 +115,7 @@ opensuse_15.6_15.6_x86_64_default.tar.xz
 opensuse_15.6_15.6_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.17_3.17_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 alpine_3.18_3.18_x86_64_cloud.tar.xz
@@ -234,7 +235,6 @@ openeuler_24.03_24.03_x86_64_cloud.tar.xz
 openeuler_24.09_24.09_x86_64_default.tar.xz
 ------------------------------------------
 openeuler_24.09_24.09_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 openeuler_25.03_25.03_x86_64_default.tar.xz
 ------------------------------------------
