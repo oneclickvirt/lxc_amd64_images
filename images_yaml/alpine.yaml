@@ -217,7 +217,7 @@ files:
     GRUB_TIMEOUT=0
 
     # Set the default commandline
-    GRUB_CMDLINE_LINUX_DEFAULT="console=tty1 console=ttyS0 modules=sd-mod,usb-storage,{{ targets.incus.vm.filesystem }} rootfstype={{ targets.incus.vm.filesystem }}"
+    GRUB_CMDLINE_LINUX_DEFAULT="console=tty1 console=ttyS0 modules={{ targets.incus.vm.filesystem }} rootfstype={{ targets.incus.vm.filesystem }}"
 
     # Set the grub console type
     GRUB_TERMINAL=console
@@ -350,7 +350,22 @@ packages:
     types:
     - vm
 
+  - packages:
+    - tiny-cloud-incus
+    action: install
+    variants:
+    - tinycloud
+
 actions:
+- trigger: post-unpack
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    printf "disable_trigger=1\n" > /etc/update-grub.conf
+  types:
+  - vm
+
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -393,6 +408,7 @@ actions:
         ln -fs /etc/init.d/${svc_name} /etc/runlevels/sysinit/${svc_name}
     done
 
+    mkdir -p /boot/grub
     target=/boot/grub/grub.cfg
     grub-mkconfig -o "${target}"
     sed -i "s#root=[^ ]*#root=${DISTROBUILDER_ROOT_UUID}#g" "${target}"
@@ -402,8 +418,10 @@ actions:
     grub-install --target=${TARGET}-efi --no-nvram --removable
     grub-install --target=${TARGET}-efi --no-nvram
 
-    # Attempt to correct errors in the installation of all packages.
-    apk fix
+    tiny-cloud --enable
+
+    # re-enable grub trigger for future grub updates
+    rm /etc/update-grub.conf
   types:
   - vm
 
@@ -427,6 +445,15 @@ actions:
     setup-cloud-init
   variants:
   - cloud
+
+- trigger: post-files
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    tiny-cloud --enable
+  variants:
+  - tinycloud
 
 - trigger: post-files
   action: |-
