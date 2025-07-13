@@ -1,4 +1,4 @@
-Sa 12. Jul 04:34:04 CEST 2025
+So 13. Jul 04:52:01 CEST 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -65,6 +65,7 @@ centos_9_9-Stream_x86_64_default.tar.xz
 centos_9_9-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
 almalinux_8_8_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 almalinux_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -109,6 +110,7 @@ opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
 opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
 ------------------------------------------
 opensuse_15.6_15.6_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 opensuse_15.6_15.6_x86_64_cloud.tar.xz
 ------------------------------------------
