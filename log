@@ -1,4 +1,4 @@
-Mo 14. Jul 04:49:38 CEST 2025
+Di 15. Jul 04:48:02 CEST 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -25,7 +25,6 @@ ubuntu_24.04_noble_x86_64_default.tar.xz
 ubuntu_24.04_noble_x86_64_cloud.tar.xz
 ------------------------------------------
 debian_10_buster_x86_64_default.tar.xz
-no public network
 ------------------------------------------
 debian_10_buster_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -78,7 +77,6 @@ rockylinux_8_8_x86_64_default.tar.xz
 rockylinux_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 rockylinux_9_9_x86_64_default.tar.xz
-no public network
 ------------------------------------------
 rockylinux_9_9_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -190,7 +188,6 @@ no public network
 reboot failed
 ------------------------------------------
 oracle_8_8_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
 no public network
