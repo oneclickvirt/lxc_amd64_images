@@ -1,4 +1,4 @@
-So 3. Aug 05:00:06 CEST 2025
+Mo 4. Aug 05:01:27 CEST 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -132,6 +132,7 @@ alpine_3.21_3.21_x86_64_cloud.tar.xz
 alpine_3.22_3.22_x86_64_cloud.tar.xz
 ------------------------------------------
 archlinux_current_current_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
