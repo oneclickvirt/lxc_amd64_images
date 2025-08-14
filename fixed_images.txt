@@ -14,8 +14,11 @@ debian_10_buster_x86_64_default.tar.xz
 debian_10_buster_x86_64_cloud.tar.xz
 debian_11_bullseye_x86_64_cloud.tar.xz
 kali_latest_kali-rolling_x86_64_default.tar.xz
+centos_8_8-Stream_x86_64_default.tar.xz
 centos_8_8-Stream_x86_64_cloud.tar.xz
+centos_9_9-Stream_x86_64_default.tar.xz
 centos_9_9-Stream_x86_64_cloud.tar.xz
+almalinux_8_8_x86_64_default.tar.xz
 almalinux_8_8_x86_64_cloud.tar.xz
 almalinux_9_9_x86_64_default.tar.xz
 almalinux_9_9_x86_64_cloud.tar.xz
@@ -37,7 +40,6 @@ alpine_3.21_3.21_x86_64_cloud.tar.xz
 alpine_3.22_3.22_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_default.tar.xz
-openeuler_24.03_24.03_x86_64_default.tar.xz
 openeuler_24.03_24.03_x86_64_cloud.tar.xz
 openeuler_24.09_24.09_x86_64_default.tar.xz
 openeuler_24.09_24.09_x86_64_cloud.tar.xz
