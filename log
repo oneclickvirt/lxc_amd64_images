@@ -1,4 +1,4 @@
-Di 19. Aug 04:21:45 CEST 2025
+Mi 20. Aug 04:19:47 CEST 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -67,9 +67,9 @@ centos_9_9-Stream_x86_64_cloud.tar.xz
 almalinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
 almalinux_8_8_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 almalinux_9_9_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 almalinux_9_9_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -78,7 +78,6 @@ rockylinux_8_8_x86_64_default.tar.xz
 rockylinux_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 rockylinux_9_9_x86_64_default.tar.xz
-no public network
 ------------------------------------------
 rockylinux_9_9_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -118,6 +117,7 @@ alpine_3.17_3.17_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 alpine_3.18_3.18_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 alpine_3.19_3.19_x86_64_cloud.tar.xz
@@ -125,6 +125,7 @@ alpine_3.19_3.19_x86_64_cloud.tar.xz
 alpine_edge_edge_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.16_3.16_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 alpine_3.20_3.20_x86_64_cloud.tar.xz
@@ -230,7 +231,6 @@ reboot failed
 openeuler_24.03_24.03_x86_64_default.tar.xz
 ------------------------------------------
 openeuler_24.03_24.03_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 openeuler_24.09_24.09_x86_64_default.tar.xz
 ------------------------------------------
