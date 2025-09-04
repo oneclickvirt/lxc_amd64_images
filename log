@@ -1,4 +1,4 @@
-Mi 3. Sep 04:08:34 CEST 2025
+Do 4. Sep 04:08:47 CEST 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -61,13 +61,13 @@ centos_8_8-Stream_x86_64_default.tar.xz
 centos_8_8-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
 centos_9_9-Stream_x86_64_default.tar.xz
-no public network
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
 almalinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
 almalinux_8_8_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 almalinux_9_9_x86_64_default.tar.xz
 no public network
@@ -81,7 +81,6 @@ rockylinux_8_8_x86_64_cloud.tar.xz
 rockylinux_9_9_x86_64_default.tar.xz
 ------------------------------------------
 rockylinux_9_9_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 fedora_37_37_x86_64_default.tar.xz
 ------------------------------------------
@@ -119,6 +118,7 @@ alpine_3.17_3.17_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 alpine_3.18_3.18_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 alpine_3.19_3.19_x86_64_cloud.tar.xz
@@ -135,7 +135,6 @@ alpine_3.21_3.21_x86_64_cloud.tar.xz
 alpine_3.22_3.22_x86_64_cloud.tar.xz
 ------------------------------------------
 archlinux_current_current_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
@@ -232,7 +231,6 @@ reboot failed
 openeuler_24.03_24.03_x86_64_default.tar.xz
 ------------------------------------------
 openeuler_24.03_24.03_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 openeuler_24.09_24.09_x86_64_default.tar.xz
 ------------------------------------------
@@ -241,4 +239,5 @@ openeuler_24.09_24.09_x86_64_cloud.tar.xz
 openeuler_25.03_25.03_x86_64_default.tar.xz
 ------------------------------------------
 openeuler_25.03_25.03_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
