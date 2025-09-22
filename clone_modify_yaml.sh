@@ -8,7 +8,16 @@ cd /home/runner/work/lxc_amd64_images/lxc_amd64_images/images_yaml/
 rm -rf debian.yaml
 wget https://raw.githubusercontent.com/lxc/lxc-ci/main/images/debian.yaml
 chmod 777 debian.yaml
-sed -i '/^files:/a\  - path: /dev\n    exclude: true\n  - path: /proc\n    exclude: true\n  - path: /sys\n    exclude: true\n  - path: /run\n    exclude: true' debian.yaml
+sed -i '/^files:/a\
+- path: /dev\
+  exclude: true\
+- path: /proc\
+  exclude: true\
+- path: /sys\
+  exclude: true\
+- path: /run\
+  exclude: true
+' debian.yaml
 insert_content_1="    - curl\n    - wget\n    - bash\n    - lsof\n    - sshpass\n    - openssh-server\n    - iptables\n    - dos2unix\n    - cron"
 sed -i "/- vim/ a\\$insert_content_1" debian.yaml
 insert_content_2=$(cat /home/runner/work/lxc_amd64_images/lxc_amd64_images/bash_insert_content.text)
