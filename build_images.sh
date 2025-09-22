@@ -215,16 +215,8 @@ build_or_list_images() {
                     fi
                     ls
                     if [ -f rootfs.tar.xz ]; then
-                        # mv rootfs.tar.xz "${run_funct}_${ver_num}_${version}_${arch}_${variant}.tar.xz"
-                        # rm -rf rootfs.tar.xz
-                        tmp_tar="${run_funct}_${ver_num}_${version}_${arch}_${variant}.tar"
-                        final_tar_xz="${run_funct}_${ver_num}_${version}_${arch}_${variant}.tar.xz"
-                        mv rootfs.tar.xz "$final_tar_xz"
-                        unxz "$final_tar_xz"  # 解压为 .tar
-                        tar --delete --wildcards -f "$tmp_tar" '*/dev/*' '*/proc/*' '*/sys/*' '*/run/*' 2>/dev/null || true
-                        xz -z -T0 "$tmp_tar"  # 多线程压缩
-                        mv "$tmp_tar.xz" "$final_tar_xz"
-                        echo "Processed $final_tar_xz"
+                        mv rootfs.tar.xz "${run_funct}_${ver_num}_${version}_${arch}_${variant}.tar.xz"
+                        rm -rf rootfs.tar.xz
                     fi
                     ls
                 else
