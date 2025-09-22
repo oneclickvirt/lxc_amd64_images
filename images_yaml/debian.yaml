@@ -979,6 +979,14 @@ targets:
         lxc.arch = {{ image.architecture_personality }}
 
 files:
+  - path: /dev
+    exclude: true
+  - path: /proc
+    exclude: true
+  - path: /sys
+    exclude: true
+  - path: /run
+    exclude: true
 - path: /etc/hostname
   generator: hostname
 
