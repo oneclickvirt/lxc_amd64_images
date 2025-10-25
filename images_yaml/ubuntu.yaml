@@ -432,6 +432,7 @@ packages:
     - jammy
     - noble
     - plucky
+    - questing
     action: install
 
   - packages:
@@ -478,6 +479,7 @@ packages:
     releases:
     - noble
     - plucky
+    - questing
 
   - packages:
     - grub-efi-amd64-signed
@@ -605,6 +607,7 @@ actions:
   releases:
   - noble
   - plucky
+  - questing
 
 - trigger: post-packages
   action: |-
