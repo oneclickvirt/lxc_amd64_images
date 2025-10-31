@@ -390,6 +390,9 @@ actions:
       mv "${repo}" ${repo%.*}
     done
 
+    # Disable first boot wizard
+    systemctl mask systemd-firstboot.service
+
 - trigger: post-files
   action: |-
     #!/bin/sh
