@@ -1,268 +1,149 @@
-Thu Dec 11 03:30:11 CET 2025
+Fri Dec 12 03:29:41 CET 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_20.04_focal_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_20.04_focal_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_23.04_lunar_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_23.04_lunar_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_23.10_mantic_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_23.10_mantic_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 debian_10_buster_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 debian_10_buster_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 debian_11_bullseye_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 debian_11_bullseye_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 debian_12_bookworm_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 debian_12_bookworm_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 debian_13_trixie_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 debian_13_trixie_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 kali_latest_kali-rolling_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 kali_latest_kali-rolling_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 centos_7_7_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 centos_7_7_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 centos_8_8-Stream_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 centos_8_8-Stream_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 centos_9_9-Stream_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 almalinux_8_8_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 almalinux_8_8_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 almalinux_9_9_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 almalinux_9_9_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 rockylinux_8_8_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 rockylinux_8_8_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 rockylinux_9_9_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 rockylinux_9_9_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 fedora_37_37_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 fedora_37_37_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 fedora_38_38_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 fedora_38_38_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 fedora_39_39_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 fedora_39_39_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 fedora_40_40_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 fedora_40_40_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 opensuse_15.4_15.4_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 opensuse_15.4_15.4_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 opensuse_15.5_15.5_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 opensuse_15.5_15.5_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 opensuse_15.6_15.6_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 opensuse_15.6_15.6_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 alpine_3.17_3.17_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 alpine_3.18_3.18_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 alpine_3.19_3.19_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 alpine_edge_edge_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 alpine_3.16_3.16_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 alpine_3.20_3.20_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 alpine_3.21_3.21_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 alpine_3.22_3.22_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 alpine_3.23_3.23_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 archlinux_current_current_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 archlinux_current_current_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
@@ -313,8 +194,6 @@ no public network
 reboot failed
 ------------------------------------------
 oracle_8_8_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
 no public network
