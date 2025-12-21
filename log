@@ -1,4 +1,4 @@
-Sat Dec 20 03:22:21 CET 2025
+Sun Dec 21 03:35:59 CET 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -105,8 +105,10 @@ opensuse_15.5_15.5_x86_64_default.tar.xz
 opensuse_15.5_15.5_x86_64_cloud.tar.xz
 ------------------------------------------
 opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
+reboot failed
 ------------------------------------------
 opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
+reboot failed
 ------------------------------------------
 opensuse_15.6_15.6_x86_64_default.tar.xz
 ------------------------------------------
@@ -145,7 +147,6 @@ archlinux_current_current_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
