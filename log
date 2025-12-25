@@ -1,4 +1,4 @@
-Wed Dec 24 03:28:45 CET 2025
+Thu Dec 25 03:31:38 CET 2025
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -57,7 +57,6 @@ centos_7_7_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 centos_8_8-Stream_x86_64_default.tar.xz
-no public network
 ------------------------------------------
 centos_8_8-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -114,6 +113,7 @@ opensuse_15.6_15.6_x86_64_default.tar.xz
 opensuse_15.6_15.6_x86_64_cloud.tar.xz
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_default.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_cloud.tar.xz
@@ -145,6 +145,7 @@ archlinux_current_current_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
