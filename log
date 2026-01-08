@@ -1,4 +1,4 @@
-Wed Jan  7 03:33:49 CET 2026
+Thu Jan  8 03:34:17 CET 2026
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -113,6 +113,7 @@ opensuse_15.6_15.6_x86_64_default.tar.xz
 opensuse_15.6_15.6_x86_64_cloud.tar.xz
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_default.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_cloud.tar.xz
