@@ -92,3 +92,5 @@ alpine_3.22_3.22_x86_64_cloud.tar.xz
 opensuse_16.0_16.0_x86_64_default.tar.xz
 opensuse_16.0_16.0_x86_64_cloud.tar.xz
 alpine_3.23_3.23_x86_64_cloud.tar.xz
+openeuler_25.09_25.09_x86_64_default.tar.xz
+openeuler_25.09_25.09_x86_64_cloud.tar.xz
