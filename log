@@ -1,4 +1,4 @@
-Sun Jan 11 03:58:31 CET 2026
+Sun Feb 22 15:52:32 CET 2026
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -113,7 +113,6 @@ opensuse_15.6_15.6_x86_64_default.tar.xz
 opensuse_15.6_15.6_x86_64_cloud.tar.xz
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_cloud.tar.xz
@@ -255,6 +254,14 @@ no public network
 reboot failed
 ------------------------------------------
 openeuler_25.03_25.03_x86_64_cloud.tar.xz
+no public network
+reboot failed
+------------------------------------------
+openeuler_25.09_25.09_x86_64_default.tar.xz
+no public network
+reboot failed
+------------------------------------------
+openeuler_25.09_25.09_x86_64_cloud.tar.xz
 no public network
 reboot failed
 ------------------------------------------
