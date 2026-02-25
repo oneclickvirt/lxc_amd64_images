@@ -1,4 +1,4 @@
-Tue Feb 24 04:23:06 CET 2026
+Wed Feb 25 04:25:49 CET 2026
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -9,6 +9,8 @@ ubuntu_20.04_focal_x86_64_default.tar.xz
 ubuntu_20.04_focal_x86_64_cloud.tar.xz
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
+no public network
+reboot failed
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_cloud.tar.xz
 ------------------------------------------
