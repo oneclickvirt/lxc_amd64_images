@@ -5,6 +5,8 @@
 
 rm -rf log
 rm -rf fixed_images.txt
+pct stop 102 2>/dev/null || true
+pct destroy 102 2>/dev/null || true
 date=$(date)
 system_names=()
 echo "$date" >>log

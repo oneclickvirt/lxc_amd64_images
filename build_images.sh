@@ -37,10 +37,7 @@ if command -v apt-get >/dev/null 2>&1; then
         # if ! command -v distrobuilder >/dev/null 2>&1; then
         #     sudo snap install distrobuilder --classic
         # fi
-        if ! command -v distrobuilder >/dev/null 2>&1; then
-            $HOME/goprojects/bin/distrobuilder --version
-        fi
-        if [ $? -ne 0 ]; then
+        if ! command -v distrobuilder >/dev/null 2>&1 && ! $HOME/goprojects/bin/distrobuilder --version >/dev/null 2>&1; then
             sudo apt-get install build-essential -y
             export CGO_ENABLED=1
             export CC=gcc
@@ -63,6 +60,7 @@ if command -v apt-get >/dev/null 2>&1; then
             echo $PATH
             find $HOME -name distrobuilder -type f 2>/dev/null
             $HOME/goprojects/bin/distrobuilder --version
+            cd "$opath"
         fi
         # wget https://api.ilolicon.com/distrobuilder.deb
         # dpkg -i distrobuilder.deb
@@ -100,7 +98,6 @@ build_or_list_images() {
                     manager="apk"
                 elif [[ "$run_funct" == "openwrt" ]]; then
                     manager="opkg"
-                    [ "${version}" = "snapshot" ] && manager="apk"
                 elif [[ "$run_funct" == "gentoo" ]]; then
                     manager="portage"
                 elif [[ "$run_funct" == "opensuse" ]]; then
@@ -159,7 +156,7 @@ build_or_list_images() {
                     else
                         EXTRA_ARGS="-o source.variant=${variant}"
                     fi
-                elif [[ "$run_funct" == "debian" ]]; then
+                elif [[ "$run_funct" == "debian" || "$run_funct" == "kali" ]]; then
                     [ "${arch}" = "x86_64" ] && arch="amd64"
                     [ "${arch}" = "aarch64" ] && arch="arm64"
                 elif [[ "$run_funct" == "ubuntu" ]]; then
@@ -206,7 +203,7 @@ build_or_list_images() {
                         fi
                     fi
                     # 强制设置架构名字
-                    if [[ "$run_funct" == "gentoo" || "$run_funct" == "debian" || "$run_funct" == "ubuntu" ]]; then
+                    if [[ "$run_funct" == "gentoo" || "$run_funct" == "debian" || "$run_funct" == "ubuntu" || "$run_funct" == "kali" ]]; then
                         [ "${arch}" = "amd64" ] && arch="x86_64"
                     elif [[ "$run_funct" == "fedora" || "$run_funct" == "openeuler" || "$run_funct" == "opensuse" || "$run_funct" == "alpine" || "$run_funct" == "oracle" || "$run_funct" == "archlinux" ]]; then
                         [ "${arch}" = "aarch64" ] && arch="arm64"
@@ -221,7 +218,7 @@ build_or_list_images() {
                     ls
                 else
                     # 强制设置架构名字
-                    if [[ "$run_funct" == "gentoo" || "$run_funct" == "debian" || "$run_funct" == "ubuntu" ]]; then
+                    if [[ "$run_funct" == "gentoo" || "$run_funct" == "debian" || "$run_funct" == "ubuntu" || "$run_funct" == "kali" ]]; then
                         [ "${arch}" = "amd64" ] && arch="x86_64"
                     elif [[ "$run_funct" == "fedora" || "$run_funct" == "openeuler" || "$run_funct" == "opensuse" || "$run_funct" == "alpine" || "$run_funct" == "oracle" || "$run_funct" == "archlinux" ]]; then
                         [ "${arch}" = "aarch64" ] && arch="arm64"
