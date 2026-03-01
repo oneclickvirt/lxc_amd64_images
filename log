@@ -1,4 +1,4 @@
-Sat Feb 28 04:00:10 CET 2026
+Sun Mar  1 04:33:04 CET 2026
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -80,56 +80,20 @@ rockylinux_9_9_x86_64_default.tar.xz
 ------------------------------------------
 rockylinux_9_9_x86_64_cloud.tar.xz
 ------------------------------------------
-fedora_37_37_x86_64_default.tar.xz
-------------------------------------------
-fedora_37_37_x86_64_cloud.tar.xz
-------------------------------------------
-fedora_38_38_x86_64_default.tar.xz
-------------------------------------------
-fedora_38_38_x86_64_cloud.tar.xz
-------------------------------------------
-fedora_39_39_x86_64_default.tar.xz
-------------------------------------------
-fedora_39_39_x86_64_cloud.tar.xz
-------------------------------------------
-fedora_40_40_x86_64_default.tar.xz
-------------------------------------------
-fedora_40_40_x86_64_cloud.tar.xz
-------------------------------------------
-opensuse_15.4_15.4_x86_64_default.tar.xz
-------------------------------------------
-opensuse_15.4_15.4_x86_64_cloud.tar.xz
-------------------------------------------
-opensuse_15.5_15.5_x86_64_default.tar.xz
-------------------------------------------
-opensuse_15.5_15.5_x86_64_cloud.tar.xz
-------------------------------------------
-opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
-------------------------------------------
-opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
-------------------------------------------
 opensuse_15.6_15.6_x86_64_default.tar.xz
 ------------------------------------------
 opensuse_15.6_15.6_x86_64_cloud.tar.xz
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_default.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
-alpine_3.17_3.17_x86_64_cloud.tar.xz
-reboot failed
+opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
 ------------------------------------------
-alpine_3.18_3.18_x86_64_cloud.tar.xz
-reboot failed
-------------------------------------------
-alpine_3.19_3.19_x86_64_cloud.tar.xz
-------------------------------------------
-alpine_edge_edge_x86_64_cloud.tar.xz
-------------------------------------------
-alpine_3.16_3.16_x86_64_cloud.tar.xz
-reboot failed
+opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.20_3.20_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -139,9 +103,11 @@ alpine_3.22_3.22_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.23_3.23_x86_64_cloud.tar.xz
 ------------------------------------------
-archlinux_current_current_x86_64_cloud.tar.xz
+alpine_edge_edge_x86_64_cloud.tar.xz
 ------------------------------------------
 archlinux_current_current_x86_64_default.tar.xz
+------------------------------------------
+archlinux_current_current_x86_64_cloud.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -150,6 +116,7 @@ no public network
 reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
+no public network
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
@@ -167,22 +134,6 @@ openwrt_23.05_23.05_x86_64_cloud.tar.xz
 no public network
 reboot failed
 ------------------------------------------
-openwrt_21.02_21.02_x86_64_default.tar.xz
-no public network
-reboot failed
-------------------------------------------
-openwrt_21.02_21.02_x86_64_cloud.tar.xz
-no public network
-reboot failed
-------------------------------------------
-openwrt_22.03_22.03_x86_64_default.tar.xz
-no public network
-reboot failed
-------------------------------------------
-openwrt_22.03_22.03_x86_64_cloud.tar.xz
-no public network
-reboot failed
-------------------------------------------
 openwrt_24.10_24.10_x86_64_default.tar.xz
 no public network
 reboot failed
@@ -192,10 +143,6 @@ no public network
 reboot failed
 ------------------------------------------
 oracle_8_8_x86_64_cloud.tar.xz
-------------------------------------------
-oracle_9_9_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 openeuler_22.03_22.03_x86_64_default.tar.xz
 no public network
@@ -213,35 +160,11 @@ openeuler_20.03_20.03_x86_64_cloud.tar.xz
 no public network
 reboot failed
 ------------------------------------------
-openeuler_23.03_23.03_x86_64_default.tar.xz
-no public network
-reboot failed
-------------------------------------------
-openeuler_23.03_23.03_x86_64_cloud.tar.xz
-no public network
-reboot failed
-------------------------------------------
-openeuler_23.09_23.09_x86_64_default.tar.xz
-no public network
-reboot failed
-------------------------------------------
-openeuler_23.09_23.09_x86_64_cloud.tar.xz
-no public network
-reboot failed
-------------------------------------------
 openeuler_24.03_24.03_x86_64_default.tar.xz
 no public network
 reboot failed
 ------------------------------------------
 openeuler_24.03_24.03_x86_64_cloud.tar.xz
-no public network
-reboot failed
-------------------------------------------
-openeuler_24.09_24.09_x86_64_default.tar.xz
-no public network
-reboot failed
-------------------------------------------
-openeuler_24.09_24.09_x86_64_cloud.tar.xz
 no public network
 reboot failed
 ------------------------------------------
