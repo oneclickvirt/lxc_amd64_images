@@ -9,7 +9,7 @@ jobs:
   opensuse_x86_64_images:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: check path
       run: |
@@ -49,9 +49,11 @@ jobs:
                         echo "No $file file."
                     fi
                     echo "Uploading $file to release..."
-                    curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                      -H "Content-Type: application/zip" \
-                      --data-binary @"$file" \
+                    curl -f -s -X POST \
+                      -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                      -H "Content-Type: application/octet-stream" \
+                      --max-time 3600 \
+                      -T "$file" \
                       "https://uploads.github.com/repos/oneclickvirt/lxc_amd64_images/releases/$release_id/assets?name=$(basename "$file")"
                     rm -rf $file
                 else

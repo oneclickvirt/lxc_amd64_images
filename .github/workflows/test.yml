@@ -10,7 +10,7 @@ jobs:
     runs-on: pve-1
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: check path
       run: |
