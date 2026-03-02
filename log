@@ -1,4 +1,4 @@
-Sun Mar  1 04:33:04 CET 2026
+Mon Mar  2 04:17:57 CET 2026
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -116,7 +116,6 @@ no public network
 reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
-no public network
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
