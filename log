@@ -1,4 +1,4 @@
-Mon Mar  2 04:17:57 CET 2026
+Tue Mar  3 04:21:29 CET 2026
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -142,6 +142,9 @@ no public network
 reboot failed
 ------------------------------------------
 oracle_8_8_x86_64_cloud.tar.xz
+------------------------------------------
+oracle_9_9_x86_64_cloud.tar.xz
+reboot failed
 ------------------------------------------
 openeuler_22.03_22.03_x86_64_default.tar.xz
 no public network
