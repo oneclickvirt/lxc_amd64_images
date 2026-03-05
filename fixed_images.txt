@@ -11,7 +11,9 @@ ubuntu_23.10_mantic_x86_64_cloud.tar.xz
 ubuntu_24.04_noble_x86_64_default.tar.xz
 ubuntu_24.04_noble_x86_64_cloud.tar.xz
 debian_10_buster_x86_64_default.tar.xz
+debian_10_buster_x86_64_cloud.tar.xz
 debian_11_bullseye_x86_64_cloud.tar.xz
+kali_latest_kali-rolling_x86_64_default.tar.xz
 centos_8_8-Stream_x86_64_default.tar.xz
 centos_8_8-Stream_x86_64_cloud.tar.xz
 centos_9_9-Stream_x86_64_default.tar.xz
@@ -20,7 +22,6 @@ almalinux_8_8_x86_64_default.tar.xz
 almalinux_8_8_x86_64_cloud.tar.xz
 almalinux_9_9_x86_64_default.tar.xz
 almalinux_9_9_x86_64_cloud.tar.xz
-rockylinux_8_8_x86_64_default.tar.xz
 rockylinux_8_8_x86_64_cloud.tar.xz
 rockylinux_9_9_x86_64_default.tar.xz
 rockylinux_9_9_x86_64_cloud.tar.xz

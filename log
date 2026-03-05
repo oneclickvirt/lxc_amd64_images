@@ -1,4 +1,4 @@
-Wed Mar  4 04:13:25 CET 2026
+Thu Mar  5 04:16:31 CET 2026
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -26,6 +26,8 @@ ubuntu_24.04_noble_x86_64_cloud.tar.xz
 ------------------------------------------
 debian_10_buster_x86_64_default.tar.xz
 ------------------------------------------
+debian_10_buster_x86_64_cloud.tar.xz
+------------------------------------------
 debian_11_bullseye_x86_64_default.tar.xz
 reboot failed
 ------------------------------------------
@@ -34,16 +36,24 @@ debian_11_bullseye_x86_64_cloud.tar.xz
 debian_12_bookworm_x86_64_default.tar.xz
 reboot failed
 ------------------------------------------
+debian_12_bookworm_x86_64_cloud.tar.xz
+reboot failed
+------------------------------------------
 debian_13_trixie_x86_64_default.tar.xz
 reboot failed
 ------------------------------------------
 debian_13_trixie_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
+kali_latest_kali-rolling_x86_64_default.tar.xz
+------------------------------------------
 kali_latest_kali-rolling_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 centos_7_7_x86_64_default.tar.xz
+reboot failed
+------------------------------------------
+centos_7_7_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 centos_8_8-Stream_x86_64_default.tar.xz
@@ -63,6 +73,8 @@ almalinux_9_9_x86_64_default.tar.xz
 almalinux_9_9_x86_64_cloud.tar.xz
 ------------------------------------------
 rockylinux_8_8_x86_64_default.tar.xz
+no public network
+reboot failed
 ------------------------------------------
 rockylinux_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -106,12 +118,17 @@ no public network
 reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
+no public network
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
 reboot failed
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_cloud.tar.xz
+no public network
+reboot failed
+------------------------------------------
+openwrt_23.05_23.05_x86_64_default.tar.xz
 no public network
 reboot failed
 ------------------------------------------
@@ -127,7 +144,10 @@ openwrt_24.10_24.10_x86_64_cloud.tar.xz
 no public network
 reboot failed
 ------------------------------------------
+oracle_8_8_x86_64_cloud.tar.xz
+------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 openeuler_22.03_22.03_x86_64_default.tar.xz
