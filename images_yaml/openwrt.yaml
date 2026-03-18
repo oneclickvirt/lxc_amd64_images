@@ -233,6 +233,10 @@ files:
 - path: /etc/hosts
   generator: hosts
 
+- generator: incus-agent
+  types:
+    - vm
+
 - path: /etc/config/network
   generator: dump
   content: |-
@@ -254,35 +258,42 @@ files:
         option ula_prefix 'auto'
 
 packages:
-  manager: opkg
+  manager: apk
   update: false
   cleanup: true
   sets:
   - packages:
-    - sudo
-    - curl
-    - wget
-    - bash
-    - lsof
-    - sshpass
-    - openssh-server
-    - openssh-keygen
-    - iptables
+    - kmod-9pvirtio
+    - kmod-fs-9p
+    - kmod-vsock-virtio
+    - virtio-console-helper
     action: install
+    types:
+      - vm
 
 actions:
 - trigger: post-unpack
   action: |
     #!/bin/sh
-    mkdir -p /var/log
+    echo "console::askfirst:/usr/libexec/login.sh" >> /etc/inittab
+  types:
+    - container
 
-- trigger: post-unpack
+- trigger: post-files
   action: |
     #!/bin/sh
-    mkdir -p /var/lock
-    echo "console::askfirst:/usr/libexec/login.sh" >> /etc/inittab
-  architectures:
-  - x86_64
+    # we don't need grub in a container
+    rm -rf /boot/efi
+  types:
+    - container
+
+- trigger: post-files
+  action: |
+    #!/bin/sh
+    target=/boot/efi/boot/grub/grub.cfg
+    sed -i "s#root=[^ ]*#root=${DISTROBUILDER_ROOT_PARTUUID}#g" "${target}"
+  types:
+    - vm
 
 - trigger: post-files
   action: |
@@ -297,6 +308,11 @@ actions:
   - 23.05
   - 24.10
   - 25.12
+  types:
+    - container
+
+mappings:
+  architecture_map: openwrt
 - trigger: post-files
   action: |-
     #!/bin/sh
