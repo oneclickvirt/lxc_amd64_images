@@ -1,4 +1,4 @@
-Sun Mar 29 05:46:18 CEST 2026
+Mon Mar 30 05:50:21 CEST 2026
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -110,7 +110,6 @@ archlinux_current_current_x86_64_default.tar.xz
 archlinux_current_current_x86_64_cloud.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
