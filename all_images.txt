@@ -46,8 +46,6 @@ alpine_3.23_3.23_x86_64_cloud.tar.xz
 alpine_edge_edge_x86_64_cloud.tar.xz
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 openwrt_snapshot_snapshot_x86_64_cloud.tar.xz
-openwrt_23.05_23.05_x86_64_default.tar.xz
-openwrt_23.05_23.05_x86_64_cloud.tar.xz
 openwrt_24.10_24.10_x86_64_default.tar.xz
 openwrt_24.10_24.10_x86_64_cloud.tar.xz
 oracle_8_8_x86_64_cloud.tar.xz
