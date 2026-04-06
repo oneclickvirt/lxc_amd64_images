@@ -431,7 +431,6 @@ packages:
     releases:
     - jammy
     - noble
-    - plucky
     - questing
     action: install
 
@@ -478,7 +477,6 @@ packages:
     action: install
     releases:
     - noble
-    - plucky
     - questing
 
   - packages:
@@ -612,7 +610,6 @@ actions:
     ln -sf ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
   releases:
   - noble
-  - plucky
   - questing
 
 - trigger: post-packages
