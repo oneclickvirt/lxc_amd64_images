@@ -1,4 +1,4 @@
-Fri Apr 24 06:00:24 CEST 2026
+Sat Apr 25 05:43:18 CEST 2026
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -97,6 +97,8 @@ opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.21_3.21_x86_64_cloud.tar.xz
 ------------------------------------------
+alpine_3.22_3.22_x86_64_cloud.tar.xz
+------------------------------------------
 alpine_3.23_3.23_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_edge_edge_x86_64_cloud.tar.xz
@@ -106,13 +108,13 @@ archlinux_current_current_x86_64_default.tar.xz
 archlinux_current_current_x86_64_cloud.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
 reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
+no public network
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
