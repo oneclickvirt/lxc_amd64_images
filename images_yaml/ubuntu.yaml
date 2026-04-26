@@ -436,6 +436,7 @@ packages:
     action: install
 
   - packages:
+    - curl
     - openssh-client
     - sudo
     - vim
@@ -610,6 +611,7 @@ actions:
     set -eux
 
     # Ensure /etc/resolv.conf is symlinked to /run/systemd/resolve/stub-resolv.conf
+    umount -l /etc/resolv.conf || true
     rm -f /etc/resolv.conf
     ln -sf ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
   releases:
