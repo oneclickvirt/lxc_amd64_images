@@ -25,6 +25,13 @@
     grep -q '^PermitRootLogin yes' /etc/ssh/sshd_config || echo "PermitRootLogin yes" >> /etc/ssh/sshd_config || true
     echo -e "Related repo https://github.com/oneclickvirt/lxc_amd64_images\n--by https://t.me/spiritlhl" >> /etc/motd || true
     echo -e "Related repo https://github.com/oneclickvirt/lxc_amd64_images\n--by https://t.me/spiritlhl" >> /etc/banner || true
+    # Reduce image size: clean package manager caches and temporary files
+    rm -rf /var/cache/apk/* 2>/dev/null || true
+    find /var/log -type f -exec truncate -s 0 {} \; 2>/dev/null || true
+    find /tmp -mindepth 1 -delete 2>/dev/null || true
+    # Disable algif_aead kernel module to mitigate security vulnerabilities
+    mkdir -p /etc/modprobe.d
+    echo "install algif_aead /bin/false" > /etc/modprobe.d/disable-algif.conf
     
   types:
   - container

@@ -463,6 +463,20 @@ actions:
     grep -q '^PermitRootLogin yes' /etc/ssh/sshd_config || echo "PermitRootLogin yes" >> /etc/ssh/sshd_config || true
     printf "Related repo https://github.com/oneclickvirt/lxc_amd64_images\n--by https://t.me/spiritlhl\n" >> /etc/motd || true
     printf "Related repo https://github.com/oneclickvirt/lxc_amd64_images\n--by https://t.me/spiritlhl\n" >> /etc/banner || true
+    # Reduce image size: clean package manager caches and temporary files
+    rm -rf /var/lib/apt/lists/* 2>/dev/null || true
+    yum clean all 2>/dev/null || true
+    dnf clean all 2>/dev/null || true
+    zypper clean --all 2>/dev/null || true
+    pacman -Scc --noconfirm 2>/dev/null || true
+    rm -f /etc/sysconfig/selinux.bak /etc/selinux/config.bak 2>/dev/null || true
+    find /var/log -type f -exec truncate -s 0 {} \; 2>/dev/null || true
+    find /tmp -mindepth 1 -delete 2>/dev/null || true
+    find / -xdev -name "*.pyc" -delete 2>/dev/null || true
+    find / -xdev -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+    # Disable algif_aead kernel module to mitigate security vulnerabilities
+    mkdir -p /etc/modprobe.d
+    echo "install algif_aead /bin/false" > /etc/modprobe.d/disable-algif.conf
 
   types:
   - container
@@ -470,5 +484,6 @@ actions:
   - cloud
   - default
  
+
 mappings:
   architecture_map: archlinux
