@@ -176,7 +176,6 @@ actions:
   types:
     - container
 
-
 mappings:
   architecture_map: openwrt
 - trigger: post-files

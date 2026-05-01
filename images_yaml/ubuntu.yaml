@@ -813,6 +813,5 @@ actions:
   - cloud
   - default
  
-
 mappings:
   architecture_map: debian
