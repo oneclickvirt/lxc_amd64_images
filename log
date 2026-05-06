@@ -1,4 +1,4 @@
-Tue May  5 05:58:44 CEST 2026
+Wed May  6 06:24:02 CEST 2026
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -85,6 +85,7 @@ opensuse_15.6_15.6_x86_64_default.tar.xz
 opensuse_15.6_15.6_x86_64_cloud.tar.xz
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_default.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_cloud.tar.xz
@@ -107,6 +108,7 @@ archlinux_current_current_x86_64_default.tar.xz
 archlinux_current_current_x86_64_cloud.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
