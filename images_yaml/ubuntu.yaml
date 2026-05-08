@@ -806,6 +806,24 @@ actions:
     # Disable algif_aead kernel module to mitigate security vulnerabilities
     mkdir -p /etc/modprobe.d
     echo "install algif_aead /bin/false" > /etc/modprobe.d/disable-algif.conf
+    # Install ifupdown2 for PVE LXC network management (fall back to ifupdown if unavailable)
+    if [ -f /etc/debian_version ] && ! command -v ifup >/dev/null 2>&1; then
+        apt-get update -qq 2>/dev/null || true
+        apt-get install -y ifupdown2 2>/dev/null || apt-get install -y ifupdown 2>/dev/null || true
+    fi
+    # PVE LXC network compatibility: on Debian/Ubuntu default containers (no cloud-init),
+    # disable systemd-networkd/netplan and use ifupdown so PVE can manage /etc/network/interfaces
+    if [ -f /etc/debian_version ] && command -v ifup >/dev/null 2>&1 && ! command -v cloud-init >/dev/null 2>&1; then
+        systemctl disable systemd-networkd.service 2>/dev/null || true
+        systemctl disable systemd-networkd.socket 2>/dev/null || true
+        systemctl enable networking 2>/dev/null || true
+        rm -rf /etc/netplan 2>/dev/null || true
+        rm -f /etc/systemd/network/*.network 2>/dev/null || true
+        mkdir -p /etc/network
+        if [ ! -f /etc/network/interfaces ] || ! grep -q "^auto eth0\|^iface eth0" /etc/network/interfaces 2>/dev/null; then
+            printf 'auto lo\niface lo inet loopback\n\nauto eth0\niface eth0 inet dhcp\n' > /etc/network/interfaces
+        fi
+    fi
 
   types:
   - container
