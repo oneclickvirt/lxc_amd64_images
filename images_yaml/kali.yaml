@@ -221,6 +221,7 @@ packages:
     - cloud
 
   - packages:
+    - ifupdown
     - isc-dhcp-client
     action: install
     variants:
