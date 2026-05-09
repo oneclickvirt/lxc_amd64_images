@@ -1,4 +1,4 @@
-Fri May  8 06:00:24 CEST 2026
+Sat May  9 06:05:36 CEST 2026
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -48,7 +48,6 @@ reboot failed
 kali_latest_kali-rolling_x86_64_default.tar.xz
 ------------------------------------------
 kali_latest_kali-rolling_x86_64_cloud.tar.xz
-reboot failed
 ------------------------------------------
 centos_7_7_x86_64_default.tar.xz
 reboot failed
