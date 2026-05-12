@@ -1,4 +1,4 @@
-Mon May 11 06:46:11 CEST 2026
+Tue May 12 06:25:46 CEST 2026
 ------------------------------------------
 ubuntu_18.04_bionic_x86_64_default.tar.xz
 ------------------------------------------
@@ -21,6 +21,7 @@ ubuntu_23.10_mantic_x86_64_default.tar.xz
 ubuntu_23.10_mantic_x86_64_cloud.tar.xz
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -29,6 +30,7 @@ debian_10_buster_x86_64_default.tar.xz
 debian_10_buster_x86_64_cloud.tar.xz
 ------------------------------------------
 debian_11_bullseye_x86_64_default.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 debian_11_bullseye_x86_64_cloud.tar.xz
@@ -110,6 +112,7 @@ no public network
 reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
+no public network
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
