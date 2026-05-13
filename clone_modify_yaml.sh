@@ -228,9 +228,44 @@ build_or_list_images() {
 # build_or_list_images 镜像名字 镜像版本号 variants的值
 build_arch="x86_64"
 run_funct="debian"
-build_or_list_images "buster bullseye bookworm trixie" "10 11 12 13" "default cloud"
+URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-debian.yaml"
+curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+if [ -z "$curl_output" ]; then
+    curl_output="bullseye bookworm trixie forky"
+fi
+ver_num_output=$(for rel in $curl_output; do
+    case "$rel" in
+        bullseye) printf "11 " ;;
+        bookworm) printf "12 " ;;
+        trixie) printf "13 " ;;
+        forky) printf "14 " ;;
+        *) printf "%s " "$rel" ;;
+    esac
+done | sed 's/[[:space:]]*$//')
+build_or_list_images "$curl_output" "$ver_num_output" "default cloud"
 run_funct="ubuntu"
-build_or_list_images "bionic focal jammy lunar mantic noble" "18.04 20.04 22.04 23.04 23.10 24.04" "default cloud"
+URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-ubuntu.yaml"
+curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g')
+if [ -z "$curl_output" ]; then
+    curl_output="jammy noble questing resolute"
+fi
+ver_num_output=$(for rel in $curl_output; do
+    case "$rel" in
+        bionic) printf "18.04 " ;;
+        focal) printf "20.04 " ;;
+        jammy) printf "22.04 " ;;
+        kinetic) printf "22.10 " ;;
+        lunar) printf "23.04 " ;;
+        mantic) printf "23.10 " ;;
+        noble) printf "24.04 " ;;
+        oracular) printf "24.10 " ;;
+        plucky) printf "25.04 " ;;
+        questing) printf "25.10 " ;;
+        resolute) printf "26.04 " ;;
+        *) printf "%s " "$rel" ;;
+    esac
+done | sed 's/[[:space:]]*$//')
+build_or_list_images "$curl_output" "$ver_num_output" "default cloud"
 run_funct="kali"
 build_or_list_images "kali-rolling" "latest" "default cloud"
 run_funct="archlinux"

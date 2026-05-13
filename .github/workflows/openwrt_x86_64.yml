@@ -25,15 +25,21 @@ jobs:
         distros=("openwrt")
         for distro in "${distros[@]}"; do
             zip_name_list=($(bash build_images.sh $distro false x86_64 | tail -n 1))
-            release_id=$(curl -s -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/oneclickvirt/lxc_amd64_images/releases/tags/$distro" | jq -r '.id')
+            release_json=$(curl -s -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/oneclickvirt/lxc_amd64_images/releases/tags/$distro")
+            release_id=$(echo "$release_json" | jq -r '.id // empty')
+            if ! [[ "$release_id" =~ ^[0-9]+$ ]]; then
+                echo "Skip $distro: release tag missing or API error"
+                echo "$release_json" | jq -r '.message // empty'
+                continue
+            fi
             echo "Building $distro and packge zips"
             bash build_images.sh $distro true x86_64
             for file in "${zip_name_list[@]}"; do
                 if [ -f "$file" ] && [ $(stat -c %s "$file") -gt 104857 ]; then
                     echo "Checking if $file already exists in release..."
-                    existing_asset_id=$(curl -s -H "Accept: application/vnd.github.v3+json" \
-                      "https://api.github.com/repos/oneclickvirt/lxc_amd64_images/releases/$release_id/assets" \
-                      | jq -r --arg name "$(basename "$file")" '.[] | select(.name == $name) | .id')
+                    assets_json=$(curl -s -H "Accept: application/vnd.github.v3+json" \
+                      "https://api.github.com/repos/oneclickvirt/lxc_amd64_images/releases/$release_id/assets")
+                    existing_asset_id=$(echo "$assets_json" | jq -r --arg name "$(basename "$file")" 'if type == "array" then (map(select(.name == $name))[0].id // empty) else empty end')
                     if [ -n "$existing_asset_id" ]; then
                         echo "Asset $file already exists in release, deleting existing asset..."
                         delete_response=$(curl -s -X DELETE -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/oneclickvirt/lxc_amd64_images/releases/assets/$existing_asset_id")
