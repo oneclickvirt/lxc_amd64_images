@@ -1,7 +1,10 @@
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ubuntu_22.04_jammy_x86_64_cloud.tar.xz
-ubuntu_24.04_noble_x86_64_default.tar.xz
 ubuntu_24.04_noble_x86_64_cloud.tar.xz
+ubuntu_25.10_questing_x86_64_default.tar.xz
+ubuntu_25.10_questing_x86_64_cloud.tar.xz
+ubuntu_26.04_resolute_x86_64_default.tar.xz
+ubuntu_26.04_resolute_x86_64_cloud.tar.xz
 debian_11_bullseye_x86_64_cloud.tar.xz
 kali_latest_kali-rolling_x86_64_default.tar.xz
 kali_latest_kali-rolling_x86_64_cloud.tar.xz
