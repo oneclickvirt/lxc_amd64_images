@@ -3,7 +3,7 @@ image:
 
 source:
   downloader: oraclelinux-http
-  url: https://mirrors.kernel.org/oracle/
+  url: https://ftp.icm.edu.pl/pub/Linux/dist/oracle-linux/
 
 targets:
   lxc:
@@ -137,7 +137,6 @@ packages:
   - packages:
     - attr
     - curl
-    - dhclient
     - initscripts
     - openssh-clients
     - passwd
@@ -156,6 +155,13 @@ packages:
     - dos2unix
     - cronie
     action: install
+
+  - packages:
+    - dhclient
+    action: install
+    releases: # dhclient is deprecated. Use NetworkManager instead.
+    - 8
+    - 9
 
   - packages:
     - NetworkManager
