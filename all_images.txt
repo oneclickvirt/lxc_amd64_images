@@ -31,6 +31,8 @@ almalinux_8_8_x86_64_default.tar.xz
 almalinux_8_8_x86_64_cloud.tar.xz
 almalinux_9_9_x86_64_default.tar.xz
 almalinux_9_9_x86_64_cloud.tar.xz
+almalinux_10_10_x86_64_default.tar.xz
+almalinux_10_10_x86_64_cloud.tar.xz
 rockylinux_8_8_x86_64_default.tar.xz
 rockylinux_8_8_x86_64_cloud.tar.xz
 rockylinux_9_9_x86_64_default.tar.xz
