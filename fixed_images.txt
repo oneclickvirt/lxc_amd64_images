@@ -1,5 +1,6 @@
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ubuntu_22.04_jammy_x86_64_cloud.tar.xz
+ubuntu_24.04_noble_x86_64_default.tar.xz
 ubuntu_24.04_noble_x86_64_cloud.tar.xz
 ubuntu_25.10_questing_x86_64_default.tar.xz
 ubuntu_25.10_questing_x86_64_cloud.tar.xz
@@ -26,4 +27,5 @@ alpine_3.21_3.21_x86_64_cloud.tar.xz
 alpine_3.22_3.22_x86_64_cloud.tar.xz
 alpine_3.23_3.23_x86_64_cloud.tar.xz
 alpine_edge_edge_x86_64_cloud.tar.xz
+archlinux_current_current_x86_64_default.tar.xz
 archlinux_current_current_x86_64_cloud.tar.xz
