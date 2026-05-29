@@ -1,4 +1,4 @@
-Thu May 28 06:58:02 CEST 2026
+Fri May 29 06:59:03 CEST 2026
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ------------------------------------------
@@ -34,6 +34,7 @@ debian_13_trixie_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 debian_14_forky_x86_64_default.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 debian_14_forky_x86_64_cloud.tar.xz
