@@ -1,4 +1,4 @@
-Wed Jun  3 07:30:31 CEST 2026
+Thu Jun  4 07:26:00 CEST 2026
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ------------------------------------------
@@ -102,6 +102,7 @@ archlinux_current_current_x86_64_default.tar.xz
 archlinux_current_current_x86_64_cloud.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
