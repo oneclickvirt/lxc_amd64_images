@@ -51,9 +51,5 @@ opensuse_16.0_16.0_x86_64_default.tar.xz
 opensuse_16.0_16.0_x86_64_cloud.tar.xz
 opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
 opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
-openeuler_22.03_22.03_x86_64_default.tar.xz
-openeuler_22.03_22.03_x86_64_cloud.tar.xz
 openeuler_24.03_24.03_x86_64_default.tar.xz
 openeuler_24.03_24.03_x86_64_cloud.tar.xz
-openeuler_25.09_25.09_x86_64_default.tar.xz
-openeuler_25.09_25.09_x86_64_cloud.tar.xz
