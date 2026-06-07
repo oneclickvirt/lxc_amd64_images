@@ -1,34 +1,20 @@
-Sat Jun  6 06:40:16 CEST 2026
+Sun Jun  7 07:11:06 CEST 2026
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_25.10_questing_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_25.10_questing_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_26.04_resolute_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_26.04_resolute_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 debian_11_bullseye_x86_64_default.tar.xz
 no public network
@@ -40,18 +26,15 @@ debian_12_bookworm_x86_64_default.tar.xz
 reboot failed
 ------------------------------------------
 debian_12_bookworm_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 debian_13_trixie_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 debian_13_trixie_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 debian_14_forky_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 debian_14_forky_x86_64_cloud.tar.xz
@@ -60,8 +43,6 @@ reboot failed
 kali_latest_kali-rolling_x86_64_default.tar.xz
 ------------------------------------------
 kali_latest_kali-rolling_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 centos_7_7_x86_64_default.tar.xz
 reboot failed
@@ -119,8 +100,6 @@ alpine_edge_edge_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
 archlinux_current_current_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -147,19 +126,8 @@ no public network
 reboot failed
 ------------------------------------------
 oracle_8_8_x86_64_cloud.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
-no public network
-reboot failed
-------------------------------------------
-openeuler_22.03_22.03_x86_64_default.tar.xz
-no public network
-reboot failed
-------------------------------------------
-openeuler_22.03_22.03_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 openeuler_24.03_24.03_x86_64_default.tar.xz
@@ -167,14 +135,6 @@ no public network
 reboot failed
 ------------------------------------------
 openeuler_24.03_24.03_x86_64_cloud.tar.xz
-no public network
-reboot failed
-------------------------------------------
-openeuler_25.09_25.09_x86_64_default.tar.xz
-no public network
-reboot failed
-------------------------------------------
-openeuler_25.09_25.09_x86_64_cloud.tar.xz
 no public network
 reboot failed
 ------------------------------------------
