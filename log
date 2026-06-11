@@ -1,11 +1,10 @@
-Wed Jun 10 07:04:57 CEST 2026
+Thu Jun 11 07:13:25 CEST 2026
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_cloud.tar.xz
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_default.tar.xz
-reboot failed
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -35,6 +34,7 @@ debian_13_trixie_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 debian_14_forky_x86_64_default.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 debian_14_forky_x86_64_cloud.tar.xz
@@ -102,13 +102,13 @@ archlinux_current_current_x86_64_default.tar.xz
 archlinux_current_current_x86_64_cloud.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
 reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
+no public network
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
