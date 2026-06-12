@@ -1,4 +1,4 @@
-Thu Jun 11 07:13:25 CEST 2026
+Fri Jun 12 07:19:17 CEST 2026
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ------------------------------------------
@@ -108,7 +108,6 @@ no public network
 reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
-no public network
 ------------------------------------------
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 no public network
