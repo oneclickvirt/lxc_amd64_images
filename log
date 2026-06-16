@@ -1,10 +1,11 @@
-Mon Jun 15 08:06:23 CEST 2026
+Tue Jun 16 08:14:49 CEST 2026
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_cloud.tar.xz
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_default.tar.xz
+reboot failed
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -17,6 +18,7 @@ ubuntu_26.04_resolute_x86_64_default.tar.xz
 ubuntu_26.04_resolute_x86_64_cloud.tar.xz
 ------------------------------------------
 debian_11_bullseye_x86_64_default.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 debian_11_bullseye_x86_64_cloud.tar.xz
@@ -34,7 +36,6 @@ debian_13_trixie_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 debian_14_forky_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 debian_14_forky_x86_64_cloud.tar.xz
@@ -95,6 +96,8 @@ alpine_3.22_3.22_x86_64_cloud.tar.xz
 ------------------------------------------
 alpine_3.23_3.23_x86_64_cloud.tar.xz
 ------------------------------------------
+alpine_3.24_3.24_x86_64_cloud.tar.xz
+------------------------------------------
 alpine_edge_edge_x86_64_cloud.tar.xz
 ------------------------------------------
 archlinux_current_current_x86_64_default.tar.xz
@@ -102,6 +105,7 @@ archlinux_current_current_x86_64_default.tar.xz
 archlinux_current_current_x86_64_cloud.tar.xz
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 gentoo_current_current_x86_64_systemd.tar.xz
 no public network
