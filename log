@@ -1,10 +1,11 @@
-Sun Jun 21 07:28:38 CEST 2026
+Wed Jun 24 07:27:57 CEST 2026
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_cloud.tar.xz
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_default.tar.xz
+reboot failed
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -34,7 +35,6 @@ debian_13_trixie_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 debian_14_forky_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 debian_14_forky_x86_64_cloud.tar.xz
@@ -69,6 +69,7 @@ almalinux_9_9_x86_64_cloud.tar.xz
 almalinux_10_10_x86_64_default.tar.xz
 ------------------------------------------
 almalinux_10_10_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 rockylinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
