@@ -1,4 +1,4 @@
-Wed Jun 24 07:27:57 CEST 2026
+Thu Jun 25 06:49:29 CEST 2026
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ------------------------------------------
@@ -69,7 +69,6 @@ almalinux_9_9_x86_64_cloud.tar.xz
 almalinux_10_10_x86_64_default.tar.xz
 ------------------------------------------
 almalinux_10_10_x86_64_cloud.tar.xz
-no public network
 ------------------------------------------
 rockylinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
@@ -80,7 +79,6 @@ rockylinux_9_9_x86_64_default.tar.xz
 rockylinux_9_9_x86_64_cloud.tar.xz
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_cloud.tar.xz
@@ -103,6 +101,7 @@ alpine_edge_edge_x86_64_cloud.tar.xz
 archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
 archlinux_current_current_x86_64_cloud.tar.xz
+no public network
 ------------------------------------------
 gentoo_current_current_x86_64_cloud.tar.xz
 ------------------------------------------
