@@ -1,11 +1,10 @@
-Wed Jul  1 07:09:53 CEST 2026
+Thu Jul  2 06:45:04 CEST 2026
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_cloud.tar.xz
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_default.tar.xz
-reboot failed
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -129,6 +128,7 @@ reboot failed
 oracle_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 openeuler_24.03_24.03_x86_64_default.tar.xz
