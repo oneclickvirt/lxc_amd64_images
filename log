@@ -1,4 +1,4 @@
-Wed Jul  8 05:57:32 CEST 2026
+Thu Jul  9 06:36:08 CEST 2026
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ------------------------------------------
@@ -59,46 +59,6 @@ centos_9_9-Stream_x86_64_default.tar.xz
 ------------------------------------------
 centos_9_9-Stream_x86_64_cloud.tar.xz
 ------------------------------------------
-almalinux_8_8_x86_64_default.tar.xz
-------------------------------------------
-almalinux_8_8_x86_64_cloud.tar.xz
-------------------------------------------
-almalinux_9_9_x86_64_default.tar.xz
-------------------------------------------
-almalinux_9_9_x86_64_cloud.tar.xz
-------------------------------------------
-almalinux_10_10_x86_64_default.tar.xz
-------------------------------------------
-almalinux_10_10_x86_64_cloud.tar.xz
-------------------------------------------
-rockylinux_8_8_x86_64_default.tar.xz
-------------------------------------------
-rockylinux_8_8_x86_64_cloud.tar.xz
-------------------------------------------
-rockylinux_9_9_x86_64_default.tar.xz
-------------------------------------------
-rockylinux_9_9_x86_64_cloud.tar.xz
-------------------------------------------
-opensuse_16.0_16.0_x86_64_default.tar.xz
-reboot failed
-------------------------------------------
-opensuse_16.0_16.0_x86_64_cloud.tar.xz
-reboot failed
-------------------------------------------
-opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
-------------------------------------------
-opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
-------------------------------------------
-alpine_3.21_3.21_x86_64_cloud.tar.xz
-------------------------------------------
-alpine_3.22_3.22_x86_64_cloud.tar.xz
-------------------------------------------
-alpine_3.23_3.23_x86_64_cloud.tar.xz
-------------------------------------------
-alpine_3.24_3.24_x86_64_cloud.tar.xz
-------------------------------------------
-alpine_edge_edge_x86_64_cloud.tar.xz
-------------------------------------------
 archlinux_current_current_x86_64_default.tar.xz
 ------------------------------------------
 archlinux_current_current_x86_64_cloud.tar.xz
@@ -111,25 +71,10 @@ reboot failed
 ------------------------------------------
 gentoo_current_current_x86_64_openrc.tar.xz
 ------------------------------------------
-openwrt_snapshot_snapshot_x86_64_default.tar.xz
-no public network
-reboot failed
-------------------------------------------
-openwrt_snapshot_snapshot_x86_64_cloud.tar.xz
-no public network
-reboot failed
-------------------------------------------
-openwrt_24.10_24.10_x86_64_default.tar.xz
-no public network
-reboot failed
-------------------------------------------
-openwrt_24.10_24.10_x86_64_cloud.tar.xz
-no public network
-reboot failed
-------------------------------------------
 oracle_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 openeuler_24.03_24.03_x86_64_default.tar.xz
