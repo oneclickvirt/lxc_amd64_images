@@ -431,7 +431,6 @@ packages:
     releases:
     - jammy
     - noble
-    - questing
     - resolute
     action: install
 
@@ -480,14 +479,12 @@ packages:
     action: install
     releases:
     - noble
-    - questing
     - resolute
 
   - packages:
     - systemd-timesyncd
     action: install
     releases:
-    - questing
     - resolute
 
   - packages:
@@ -618,7 +615,6 @@ actions:
     ln -sf ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
   releases:
   - noble
-  - questing
   - resolute
 
 - trigger: post-packages
