@@ -1,11 +1,10 @@
-Wed Aug 12 05:08:51 CEST 2026
+Thu Aug 13 05:12:05 CEST 2026
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_cloud.tar.xz
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_default.tar.xz
-reboot failed
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -58,6 +57,8 @@ almalinux_8_8_x86_64_default.tar.xz
 ------------------------------------------
 almalinux_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
+almalinux_9_9_x86_64_default.tar.xz
+------------------------------------------
 almalinux_9_9_x86_64_cloud.tar.xz
 ------------------------------------------
 almalinux_10_10_x86_64_default.tar.xz
@@ -73,7 +74,6 @@ rockylinux_9_9_x86_64_default.tar.xz
 rockylinux_9_9_x86_64_cloud.tar.xz
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_cloud.tar.xz
