@@ -1,4 +1,4 @@
-Thu Aug 20 04:05:24 CEST 2026
+Fri Aug 21 04:11:18 CEST 2026
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ------------------------------------------
@@ -37,6 +37,7 @@ debian_14_forky_x86_64_cloud.tar.xz
 reboot failed
 ------------------------------------------
 kali_latest_kali-rolling_x86_64_default.tar.xz
+no public network
 ------------------------------------------
 kali_latest_kali-rolling_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -59,6 +60,7 @@ almalinux_8_8_x86_64_default.tar.xz
 almalinux_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 almalinux_9_9_x86_64_default.tar.xz
+reboot failed
 ------------------------------------------
 almalinux_9_9_x86_64_cloud.tar.xz
 ------------------------------------------
