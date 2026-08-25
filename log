@@ -1,4 +1,4 @@
-Mon Aug 24 04:10:37 CEST 2026
+Tue Aug 25 04:07:01 CEST 2026
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ------------------------------------------
@@ -127,7 +127,6 @@ reboot failed
 oracle_8_8_x86_64_cloud.tar.xz
 ------------------------------------------
 oracle_9_9_x86_64_cloud.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 openeuler_24.03_24.03_x86_64_default.tar.xz
