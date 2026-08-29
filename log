@@ -1,4 +1,4 @@
-Fri Aug 28 14:13:10 CEST 2026
+Sat Aug 29 09:21:59 CEST 2026
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ------------------------------------------
@@ -13,7 +13,6 @@ ubuntu_26.04_resolute_x86_64_default.tar.xz
 ubuntu_26.04_resolute_x86_64_cloud.tar.xz
 ------------------------------------------
 debian_11_bullseye_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 debian_11_bullseye_x86_64_cloud.tar.xz
@@ -76,7 +75,6 @@ rockylinux_9_9_x86_64_default.tar.xz
 rockylinux_9_9_x86_64_cloud.tar.xz
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_cloud.tar.xz
