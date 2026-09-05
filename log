@@ -1,12 +1,10 @@
-Fri Sep  4 07:05:06 CEST 2026
+Sat Sep  5 06:55:40 CEST 2026
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_cloud.tar.xz
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_default.tar.xz
-no public network
-reboot failed
 ------------------------------------------
 ubuntu_24.04_noble_x86_64_cloud.tar.xz
 ------------------------------------------
@@ -15,6 +13,7 @@ ubuntu_26.04_resolute_x86_64_default.tar.xz
 ubuntu_26.04_resolute_x86_64_cloud.tar.xz
 ------------------------------------------
 debian_11_bullseye_x86_64_default.tar.xz
+no public network
 reboot failed
 ------------------------------------------
 debian_11_bullseye_x86_64_cloud.tar.xz
