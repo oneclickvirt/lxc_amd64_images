@@ -1,5 +1,3 @@
-debian_11_bullseye_x86_64_default.tar.xz
-debian_11_bullseye_x86_64_cloud.tar.xz
 debian_12_bookworm_x86_64_default.tar.xz
 debian_12_bookworm_x86_64_cloud.tar.xz
 debian_13_trixie_x86_64_default.tar.xz
@@ -42,8 +40,6 @@ alpine_3.24_3.24_x86_64_cloud.tar.xz
 alpine_edge_edge_x86_64_cloud.tar.xz
 openwrt_snapshot_snapshot_x86_64_default.tar.xz
 openwrt_snapshot_snapshot_x86_64_cloud.tar.xz
-openwrt_24.10_24.10_x86_64_default.tar.xz
-openwrt_24.10_24.10_x86_64_cloud.tar.xz
 oracle_8_8_x86_64_cloud.tar.xz
 oracle_9_9_x86_64_cloud.tar.xz
 opensuse_16.0_16.0_x86_64_default.tar.xz
