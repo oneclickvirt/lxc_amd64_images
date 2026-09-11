@@ -1,4 +1,4 @@
-Thu Sep 10 07:16:17 CEST 2026
+Fri Sep 11 07:14:27 CEST 2026
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ------------------------------------------
@@ -71,7 +71,6 @@ rockylinux_9_9_x86_64_default.tar.xz
 rockylinux_9_9_x86_64_cloud.tar.xz
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_default.tar.xz
-no public network
 reboot failed
 ------------------------------------------
 opensuse_16.0_16.0_x86_64_cloud.tar.xz
