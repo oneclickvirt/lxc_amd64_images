@@ -1,3 +1,4 @@
+debian_12_bookworm_x86_64_default.tar.xz
 debian_12_bookworm_x86_64_cloud.tar.xz
 debian_13_trixie_x86_64_default.tar.xz
 debian_13_trixie_x86_64_cloud.tar.xz
@@ -23,6 +24,7 @@ centos_8_8-Stream_x86_64_cloud.tar.xz
 centos_9_9-Stream_x86_64_default.tar.xz
 centos_9_9-Stream_x86_64_cloud.tar.xz
 almalinux_8_8_x86_64_default.tar.xz
+almalinux_8_8_x86_64_cloud.tar.xz
 almalinux_9_9_x86_64_default.tar.xz
 almalinux_9_9_x86_64_cloud.tar.xz
 almalinux_10_10_x86_64_default.tar.xz
@@ -40,7 +42,9 @@ openwrt_snapshot_snapshot_x86_64_default.tar.xz
 openwrt_snapshot_snapshot_x86_64_cloud.tar.xz
 oracle_8_8_x86_64_cloud.tar.xz
 oracle_9_9_x86_64_cloud.tar.xz
+opensuse_16.0_16.0_x86_64_default.tar.xz
 opensuse_16.0_16.0_x86_64_cloud.tar.xz
 opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
 opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
+openeuler_24.03_24.03_x86_64_default.tar.xz
 openeuler_24.03_24.03_x86_64_cloud.tar.xz
