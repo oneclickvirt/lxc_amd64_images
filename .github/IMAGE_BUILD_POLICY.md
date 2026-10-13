@@ -7,3 +7,5 @@ Legacy full-catalog Incus/LXD container and VM generation and the ARM LXC catalo
 AMD64 CentOS schedules only 9-Stream; retired 7/8-Stream are manual. Debian schedules bookworm/trixie; development forky and retired bullseye are manual. The checked-in Debian/Ubuntu release catalogs remain a bounded fallback when upstream catalog retrieval fails. Empty unknown catalogs still fail and retain prior assets.
 
 Image definitions are parsed with duplicate-key rejection before runner provisioning and in Action policy. OpenWrt 25.12/snapshot use apk and older lines use opkg; OpenWrt schedules select stable 25.12, with snapshot manual. Oracle 9/10 use the official ISO endpoint rather than the stale mirror; Oracle 10 is manual until separately verified. ARM Alma/Rocky definitions retain vendor GPG keys and no longer fall back to disabling package/ISO verification.
+
+OpenWrt and Oracle 10 require distrobuilder 3.4.0. These workflow paths compile the official SHA256-pinned, vendored release using the upstream build tags; the older stable Snap is not a compatible fallback. Failed download/checksum/compilation stops before image publication.
