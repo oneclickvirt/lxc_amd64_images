@@ -59,7 +59,7 @@ class ImageRecoveryTests(unittest.TestCase):
             with self.subTest(filename=filename), self.assertRaises(ValueError):
                 self.check(filename)
 
-    def run_builder(self, script, release, build=False, catalog_unavailable=False):
+    def run_builder(self, script, release, build=False, catalog_unavailable=False, distro="debian", catalog_releases="bookworm trixie"):
         # No provisioning or network in the fixture. All dependency commands are present.
         bin_dir = self.folder / "bin"
         bin_dir.mkdir(exist_ok=True)
@@ -70,12 +70,9 @@ class ImageRecoveryTests(unittest.TestCase):
         catalog = bin_dir / "curl"
         catalog.write_text("""#!/bin/sh
 if [ "$IMAGE_TEST_CATALOG_FAIL" = 1 ]; then exit 22; fi
-cat <<'CATALOG'
-name: release
-  - bookworm
-  - trixie
-
-CATALOG
+printf 'name: release\n'
+for item in $IMAGE_TEST_CATALOG; do printf '  - %s\n' "$item"; done
+printf '\n'
 """)
         catalog.chmod(0o755)
         sudo = bin_dir / "sudo"
@@ -85,17 +82,45 @@ CATALOG
             path = bin_dir / name
             path.write_text('#!/bin/sh\nprintf "%s\\n" "$*" >> "$IMAGE_TEST_CALLS"\nexit 17\n')
             path.chmod(0o755)
-        environment = dict(os.environ, CI_IMAGE_RELEASES=release, IMAGE_TEST_CATALOG_FAIL="1" if catalog_unavailable else "0", IMAGE_TEST_CALLS=str(self.folder / "calls"),
+        environment = dict(os.environ, IMAGE_TEST_CATALOG=catalog_releases, CI_IMAGE_RELEASES=release, IMAGE_TEST_CATALOG_FAIL="1" if catalog_unavailable else "0", IMAGE_TEST_CALLS=str(self.folder / "calls"),
                            PATH=str(bin_dir) + os.pathsep + os.environ["PATH"])
         bash = shutil.which("bash")
         # macOS's system Bash predates ${var,,}, used by these existing scripts.
         if Path("/opt/homebrew/bin/bash").exists():
             bash = "/opt/homebrew/bin/bash"
-        return subprocess.run([bash, str(script), "debian", "true" if build else "false", "amd64"],
+        return subprocess.run([bash, str(script), distro, "true" if build else "false", "amd64"],
                               env=environment, capture_output=True, text=True, timeout=15)
 
     def scripts(self):
         return [p for p in [ROOT / "build_images.sh", ROOT / "build_kvm_images.sh"] if p.exists()]
+
+    def test_openwrt_stable_and_snapshot_package_managers(self):
+        for release, manager in [("24.10", "opkg"), ("25.12", "apk"), ("snapshot", "apk")]:
+            with self.subTest(release=release):
+                Path("calls").unlink(missing_ok=True)
+                result = self.run_builder(ROOT / "build_images.sh", release, build=True, distro="openwrt")
+                self.assertNotEqual(result.returncode, 0)
+                call = Path("calls").read_text().splitlines()
+                self.assertEqual(len(call), 1)
+                self.assertIn("packages.manager=" + manager, call[0])
+                self.assertIn("image.release=" + release, call[0])
+
+    def test_oracle_10_uses_official_source_without_verification_bypass(self):
+        result = self.run_builder(ROOT / "build_images.sh", "10", build=True,
+                                  distro="oracle", catalog_releases="8 9 10")
+        self.assertNotEqual(result.returncode, 0)
+        call = Path("calls").read_text()
+        self.assertIn("source.url=https://yum.oracle.com/ISOS/OracleLinux", call)
+        self.assertNotIn("skip_verification=true", call)
+
+    def test_release_10_never_disables_iso_verification(self):
+        for distro in ["almalinux", "rockylinux"]:
+            with self.subTest(distro=distro):
+                Path("calls").unlink(missing_ok=True)
+                result = self.run_builder(ROOT / "build_images.sh", "10", build=True,
+                                          distro=distro, catalog_releases="8 9 10")
+                self.assertNotEqual(result.returncode, 0)
+                self.assertNotIn("skip_verification=true", Path("calls").read_text())
 
     def test_release_listing_is_exact_and_keeps_existing_images(self):
         for script in self.scripts():

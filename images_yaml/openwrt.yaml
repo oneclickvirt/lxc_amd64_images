@@ -178,8 +178,6 @@ actions:
   types:
     - container
 
-mappings:
-  architecture_map: openwrt
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -220,3 +218,6 @@ mappings:
   variants:
   - cloud
   - default
+
+mappings:
+  architecture_map: openwrt

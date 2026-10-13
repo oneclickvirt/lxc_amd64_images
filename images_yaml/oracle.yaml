@@ -180,12 +180,10 @@ packages:
     url: |-
       [AppStream]
       name=Oracle Linux AppStream
-      baseurl=http://yum.oracle.com/repo/OracleLinux/OL{{ image.release }}/appstream/$basearch/
+      baseurl=https://yum.oracle.com/repo/OracleLinux/OL{{ image.release }}/appstream/$basearch/
       enabled=1
       gpgcheck=1
       gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
-    variants:
-    - cloud
 
 actions:
 - trigger: post-unpack

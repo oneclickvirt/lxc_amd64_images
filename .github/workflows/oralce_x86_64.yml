@@ -1,4 +1,4 @@
-name: oralce x86_64
+name: oracle x86_64
 jobs:
   oralce_x86_64_images:
     runs-on: ubuntu-latest
@@ -10,6 +10,13 @@ jobs:
         curl --fail --silent --show-error --location --connect-timeout 15 --max-time 90 --retry 3 --retry-max-time 180 --retry-connrefused "https://raw.githubusercontent.com/oneclickvirt/lxc_amd64_images/main/.github/scripts/ci_network.sh" -o "$RUNNER_TEMP/ci-network.sh"
         curl --fail --silent --show-error --location --connect-timeout 15 --max-time 90 --retry 3 --retry-max-time 180 --retry-connrefused "https://raw.githubusercontent.com/oneclickvirt/lxc_amd64_images/main/.github/scripts/release_assets.py" -o "$RUNNER_TEMP/ci-release-assets.py"
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - name: Validate image definitions
+      shell: bash
+      run: |
+        set -euo pipefail
+        python3 -m venv "$RUNNER_TEMP/image-definition-check"
+        "$RUNNER_TEMP/image-definition-check/bin/python" -m pip install --disable-pip-version-check --retries 3 --timeout 30 PyYAML==6.0.3
+        "$RUNNER_TEMP/image-definition-check/bin/python" .github/scripts/verify_image_definitions.py
     - name: check path
       run: |
         pwd
@@ -35,7 +42,7 @@ jobs:
       shell: bash
       env:
         GH_TOKEN: ${{ github.token }}
-        CI_IMAGE_RELEASES: ${{ inputs.release }}
+        CI_IMAGE_RELEASES: ${{ inputs.release || '8 9' }}
     timeout-minutes: 180
 'on':
   schedule:
@@ -43,7 +50,7 @@ jobs:
   workflow_dispatch:
     inputs:
       release:
-        description: Build only this configured release; empty selects the catalog
+        description: Exact release; empty uses the verified automatic catalog (8/9)
         required: false
         type: string
         default: ''

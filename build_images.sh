@@ -107,7 +107,13 @@ build_or_list_images() {
                 elif [[ "$run_funct" == "alpine" ]]; then
                     manager="apk"
                 elif [[ "$run_funct" == "openwrt" ]]; then
+                    # Stable 25.12+ and snapshots use apk; 24.10 and older use opkg.
                     manager="opkg"
+                    if [[ "$version" == "snapshot" || "$version" =~ ^([0-9]+)\. ]]; then
+                        if [[ "$version" == "snapshot" ]] || (( 10#${BASH_REMATCH[1]} >= 25 )); then
+                            manager="apk"
+                        fi
+                    fi
                 elif [[ "$run_funct" == "gentoo" ]]; then
                     manager="portage"
                 elif [[ "$run_funct" == "opensuse" ]]; then
@@ -140,7 +146,7 @@ build_or_list_images() {
                 elif [[ "$run_funct" == "oracle" ]]; then
                     [ "${arch}" = "amd64" ] && arch="x86_64"
                     [ "${arch}" = "arm64" ] && arch="aarch64"
-                    if [[ "$version" == "9" ]]; then
+                    if [[ "$version" == "9" || "$version" == "10" ]]; then
                         EXTRA_ARGS="-o source.url=https://yum.oracle.com/ISOS/OracleLinux"
                     fi
                 elif [[ "$run_funct" == "archlinux" ]]; then
@@ -347,12 +353,11 @@ alpine)
     build_or_list_images "$curl_output" "$curl_output" "default cloud"
     ;;
 openwrt)
-    URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-openwrt.yaml"
-    if ! curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g'); then
-        curl_output=""
-    fi
-    build_or_list_images "$curl_output" "$curl_output" "default cloud"
+    # Frozen supported lines survive Jenkins catalog failures. The official
+    # downloader resolves each stable line to its latest signed service release.
+    build_or_list_images "24.10 25.12 snapshot" "24.10 25.12 snapshot" "default cloud"
     ;;
+
 oracle)
     URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-oracle.yaml"
     if ! curl_output=$(curl -s "$URL" | awk '/name: release/{flag=1; next} /^$/{flag=0} flag && /^ *-/{if (!first) {printf "%s", $2; first=1} else {printf " %s", $2}}' | sed 's/"//g'); then
