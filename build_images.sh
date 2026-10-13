@@ -146,7 +146,7 @@ build_or_list_images() {
                 elif [[ "$run_funct" == "oracle" ]]; then
                     [ "${arch}" = "amd64" ] && arch="x86_64"
                     [ "${arch}" = "arm64" ] && arch="aarch64"
-                    if [[ "$version" == "9" || "$version" == "10" ]]; then
+                    if [[ "$version" == "8" || "$version" == "9" || "$version" == "10" ]]; then
                         EXTRA_ARGS="-o source.url=https://yum.oracle.com/ISOS/OracleLinux"
                     fi
                 elif [[ "$run_funct" == "archlinux" ]]; then

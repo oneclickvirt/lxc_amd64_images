@@ -9,3 +9,5 @@ AMD64 CentOS schedules only 9-Stream; retired 7/8-Stream are manual. Debian sche
 Image definitions are parsed with duplicate-key rejection before runner provisioning and in Action policy. OpenWrt 25.12/snapshot use apk and older lines use opkg; OpenWrt schedules select stable 25.12, with snapshot manual. Oracle 9/10 use the official ISO endpoint rather than the stale mirror; Oracle 10 is manual until separately verified. ARM Alma/Rocky definitions retain vendor GPG keys and no longer fall back to disabling package/ISO verification.
 
 OpenWrt and Oracle 10 require distrobuilder 3.4.0. These workflow paths compile the official SHA256-pinned, vendored release using the upstream build tags; the older stable Snap is not a compatible fallback. Failed download/checksum/compilation stops before image publication.
+
+Oracle 8/9/10 use the official ISO host on these distrobuilder paths. The pinned 3.4.0 source receives one checked compatibility patch for the official OL8 versioned ISO filename; GPG package verification remains enabled. This avoids relying on the intermittently unreachable third-party OL8 mirror.

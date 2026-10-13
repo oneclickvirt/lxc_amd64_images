@@ -14,6 +14,20 @@ curl --fail --silent --show-error --location --connect-timeout 15 --max-time 120
 printf '%s  %s\n' "$digest" "$task_dir/source.tar.gz" | sha256sum --check --status
 tar -xzf "$task_dir/source.tar.gz" -C "$task_dir"
 
+# Oracle's official OL8 ISO uses the same versioned filename as OL9/OL10.
+# The upstream 3.4.0 iteration fallback only recognizes the latter two.
+python3 - "$task_dir/distrobuilder-${version}/sources/oraclelinux-http.go" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+source = path.read_text()
+before = 'if s.definition.Image.Release == "9" || s.definition.Image.Release == "10" {'
+after = 'if s.definition.Image.Release == "8" || s.definition.Image.Release == "9" || s.definition.Image.Release == "10" {'
+if source.count(before) != 1:
+    raise SystemExit('Oracle ISO compatibility patch does not match the verified source')
+path.write_text(source.replace(before, after))
+PY
+
 sudo apt-get update
 sudo apt-get install -y build-essential debootstrap rsync gpg squashfs-tools xz-utils
 (

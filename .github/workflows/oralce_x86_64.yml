@@ -21,11 +21,9 @@ jobs:
       with:
         go-version: 1.26.5
         cache: false
-      if: ${{ contains(inputs.release, '10') }}
     - name: Install compatible verified image builder
       shell: bash
       run: bash .github/scripts/install_distrobuilder.sh
-      if: ${{ contains(inputs.release, '10') }}
     - name: check path
       run: |
         pwd
