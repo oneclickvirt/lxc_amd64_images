@@ -1,47 +1,43 @@
 name: clone yaml
-
-on:
-  schedule:
-    - cron: '0 0 * * *'
-  workflow_dispatch:
-
 jobs:
   clone_yaml:
     runs-on: ubuntu-latest
-    
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-    - name: check path
-      run: |
-        pwd
-      
-    - name: clone yaml
-      run: |
-        bash clone_modify_yaml.sh
-        
-    - name: Configure Git
-      run: |
-        git config --global user.name "daily-update"
-        git config --global user.email "tg@spiritlhl.top"
-      
-    - name: Add files to Git staging area
-      run: |
-        ls
-        pwd
-        git add .
-        
-    - name: Check Git status
-      run: |
-        git branch -a
-        git remote -v
-        git status
-    
-    - name: Commit changes
-      run: |
-        git commit -m "Update files" | true
-    
-    - name: Push changes
-      uses: ad-m/github-push-action@881a6320fdb16eb5318c5054f31c218aec2b324c # v1.3.0
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Prepare definition validation
+      shell: bash
+      run: |-
+        set -euo pipefail
+        python3 -m venv "$RUNNER_TEMP/image-definition-check"
+        "$RUNNER_TEMP/image-definition-check/bin/python" -m pip install --disable-pip-version-check --retries 3 --timeout 30 PyYAML==6.0.3
+        "$RUNNER_TEMP/image-definition-check/bin/python" .github/scripts/verify_image_definitions.py
+    - name: Refresh sources with validated fallback
+      shell: bash
+      run: bash clone_modify_yaml.sh
+      env:
+        GH_TOKEN: ${{ github.token }}
+        CI_IMAGE_PYTHON: ${{ runner.temp }}/image-definition-check/bin/python
+    - name: Commit validated source snapshot
+      shell: bash
+      run: |-
+        set -euo pipefail
+        git config user.name "daily-update"
+        git config user.email "tg@spiritlhl.top"
+        git add images_yaml *_images.txt
+        if git diff --cached --quiet; then
+          echo "No new source snapshot to commit."
+          exit 0
+        fi
+        git commit -m "Update validated image definitions and release indexes"
+        source .github/scripts/ci_network.sh
+        ci_retry git push origin "HEAD:${GITHUB_REF_NAME}"
+    timeout-minutes: 15
+'on':
+  schedule:
+  - cron: 0 0 * * *
+  workflow_dispatch: null
+permissions:
+  contents: write
+concurrency:
+  group: image-source-refresh
+  cancel-in-progress: false
