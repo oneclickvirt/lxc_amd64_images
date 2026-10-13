@@ -28,24 +28,25 @@ jobs:
           read -r -a assets <<< "$output"
           [[ ${#assets[@]} -gt 0 ]] || { echo "No configured image outputs." >&2; exit 1; }
           bash -c 'source "$1"; export -f ci_retry gh git ci_clone_attempt curl wget; bash "$2" "$3" true "$4"' -- "$RUNNER_TEMP/ci-network.sh" "build_images.sh" "$distro" "$ARCH"
-          for file in "${assets[@]}"; do
-            [[ "$file" =~ ^[A-Za-z0-9_.-]+\.zip$ ]] || { echo "Invalid output filename." >&2; exit 1; }
-            [[ -f "$file" ]] || { echo "Expected image was not built: $file" >&2; exit 1; }
-            size=$(stat -c %s "$file")
-            (( size > 10485760 && size <= 2147483648 )) || { echo "Image size is outside release limits: $file" >&2; exit 1; }
-            python3 -m zipfile -t "$file"
-          done
+          python3 .github/scripts/verify_image_outputs.py "${assets[@]}"
           python3 "$RUNNER_TEMP/ci-release-assets.py" "$distro" "${assets[@]}"
           rm -f "${assets[@]}"
         done
       shell: bash
       env:
         GH_TOKEN: ${{ github.token }}
-    timeout-minutes: 360
+        CI_IMAGE_RELEASES: ${{ inputs.release }}
+    timeout-minutes: 180
 'on':
   schedule:
   - cron: 0 16 * * *
-  workflow_dispatch: null
+  workflow_dispatch:
+    inputs:
+      release:
+        description: Build only this configured release; empty selects the catalog
+        required: false
+        type: string
+        default: ''
 permissions:
   contents: write
 concurrency:

@@ -1,0 +1,5 @@
+# Image build recovery
+
+Build/list commands use the same exact release selector (`CI_IMAGE_RELEASES`). Listing is read-only. Unknown or empty catalogs fail before publication; a failed builder never publishes partial output. Image archives are validated according to their actual ZIP or tar.xz format. The publisher stages and checks the entire batch before replacing existing release assets and restores previous assets if replacement fails.
+
+Legacy full-catalog Incus/LXD container and VM generation and the ARM LXC catalog are manual while their upstream bootstrap sources need per-release verification. Select distro, release and architecture in workflow_dispatch. Scheduled index refresh remains enabled and uses already complete metadata/rootfs pairs. Existing downloadable images are retained. Rocky 10 automatic builds are paused because the configured upstream signing key does not validate its packages; GPG verification must remain enabled. AMD64 Rocky scheduled builds select 8/9; Ubuntu selects jammy/noble/resolute. Other manual historical releases are not certified by this change.

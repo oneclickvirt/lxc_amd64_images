@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eo pipefail
 # 从 https://github.com/oneclickvirt/lxc_amd64_images 获取
 
 run_funct="${1:-debian}"
@@ -6,10 +7,14 @@ is_build_image="${2:-false}"
 build_arch="${3:-amd64}"
 zip_name_list=()
 opath=$(pwd)
-rm -rf *.tar.xz
-ls
+selected_images=0
+[[ "$is_build_image" == true || "$is_build_image" == false ]] || { echo "Invalid build mode" >&2; exit 1; }
+[[ "$build_arch" =~ ^(amd64|x86_64|arm64|aarch64)$ ]] || { echo "Invalid image architecture" >&2; exit 1; }
+[[ "${CI_IMAGE_RELEASES:-}" =~ ^[A-Za-z0-9._\ -]*$ ]] || { echo "Invalid release selector" >&2; exit 1; }
+if [[ "$is_build_image" == true ]]; then rm -f -- rootfs.tar.xz incus.tar.xz lxd.tar.xz rootfs.squashfs; fi
+if [[ "$is_build_image" == true ]]; then ls; fi
 # 检查并安装依赖工具
-if command -v apt-get >/dev/null 2>&1; then
+if [ "$is_build_image" == true ] && command -v apt-get >/dev/null 2>&1; then
     # ubuntu debian kali
     if ! command -v sudo >/dev/null 2>&1; then
         apt-get install sudo -y
@@ -80,11 +85,16 @@ build_or_list_images() {
     read -ra variants <<< "$3"
     local architectures=("$build_arch")
     local len=${#versions[@]}
+    if (( len == 0 )); then echo "No image releases were obtained from the configured source" >&2; return 1; fi
     for ((i = 0; i < len; i++)); do
         version=${versions[i]}
         ver_num=${ver_nums[i]}
+        if [[ -n "${CI_IMAGE_RELEASES:-}" && " ${CI_IMAGE_RELEASES} " != *" ${version} "* && " ${CI_IMAGE_RELEASES} " != *" ${ver_num} "* ]]; then
+            continue
+        fi
         for arch in "${architectures[@]}"; do
             for variant in "${variants[@]}"; do
+                selected_images=$((selected_images + 1))
                 # apk apt dnf egoportage opkg pacman portage yum equo xbps zypper luet slackpkg
                 if [[ "$run_funct" == "centos" || "$run_funct" == "fedora" || "$run_funct" == "openeuler" ]]; then
                     manager="yum"
@@ -167,21 +177,31 @@ build_or_list_images() {
                     fi
                 fi
                 if [ "$is_build_image" == true ]; then
+                    rm -f -- incus.tar.xz lxd.tar.xz rootfs.squashfs rootfs.tar.xz disk.qcow2 disk_compressed.qcow2
                     if command -v distrobuilder >/dev/null 2>&1; then
                         if [[ "$run_funct" == "gentoo" ]]; then
                             echo "sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} ${EXTRA_ARGS}"
                             if sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} ${EXTRA_ARGS}; then
                                 echo "Command succeeded"
+                            else
+                                echo "Image builder failed; no new batch will be published" >&2
+                                return 1
                             fi
                         elif [[ "$run_funct" != "archlinux" ]]; then
                             echo "sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.release=${version} -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}"
                             if sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.release=${version} -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}; then
                                 echo "Command succeeded"
+                            else
+                                echo "Image builder failed; no new batch will be published" >&2
+                                return 1
                             fi
                         else
                             echo "sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}"
                             if sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}; then
                                 echo "Command succeeded"
+                            else
+                                echo "Image builder failed; no new batch will be published" >&2
+                                return 1
                             fi
                         fi
                     else
@@ -189,16 +209,25 @@ build_or_list_images() {
                             echo "sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} ${EXTRA_ARGS}"
                             if sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} ${EXTRA_ARGS}; then
                                 echo "Command succeeded"
+                            else
+                                echo "Image builder failed; no new batch will be published" >&2
+                                return 1
                             fi
                         elif [[ "$run_funct" != "archlinux" ]]; then
                             echo "sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.release=${version} -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}"
                             if sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.release=${version} -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}; then
                                 echo "Command succeeded"
+                            else
+                                echo "Image builder failed; no new batch will be published" >&2
+                                return 1
                             fi
                         else
                             echo "sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}"
                             if sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}; then
                                 echo "Command succeeded"
+                            else
+                                echo "Image builder failed; no new batch will be published" >&2
+                                return 1
                             fi
                         fi
                     fi
@@ -333,6 +362,9 @@ openeuler)
     build_or_list_images "$curl_output" "$curl_output" "default cloud"
     ;;
 *)
-    echo "Invalid distribution specified."
+    echo "Invalid distribution specified." >&2
+    exit 1
     ;;
 esac
+
+(( selected_images > 0 )) || { echo "No images match the requested release" >&2; exit 1; }
