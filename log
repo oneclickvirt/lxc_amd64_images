@@ -1,4 +1,4 @@
-Mon Oct 12 08:30:42 CEST 2026
+Tue Oct 13 09:05:18 CEST 2026
 ------------------------------------------
 ubuntu_22.04_jammy_x86_64_default.tar.xz
 ------------------------------------------
@@ -44,7 +44,6 @@ reboot failed
 centos_8_8-Stream_x86_64_default.tar.xz
 ------------------------------------------
 centos_8_8-Stream_x86_64_cloud.tar.xz
-reboot failed
 ------------------------------------------
 centos_9_9-Stream_x86_64_default.tar.xz
 ------------------------------------------
