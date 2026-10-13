@@ -8,6 +8,8 @@ build_arch="${3:-amd64}"
 zip_name_list=()
 opath=$(pwd)
 selected_images=0
+[[ "${CI_IMAGE_VARIANTS:-}" == "all" ]] && CI_IMAGE_VARIANTS=""
+[[ "${CI_IMAGE_VARIANTS:-}" =~ ^[A-Za-z0-9._\ -]*$ ]] || { echo "Invalid variant selector" >&2; exit 1; }
 [[ "$is_build_image" == true || "$is_build_image" == false ]] || { echo "Invalid build mode" >&2; exit 1; }
 [[ "$build_arch" =~ ^(amd64|x86_64|arm64|aarch64)$ ]] || { echo "Invalid image architecture" >&2; exit 1; }
 [[ "${CI_IMAGE_RELEASES:-}" =~ ^[A-Za-z0-9._\ -]*$ ]] || { echo "Invalid release selector" >&2; exit 1; }
@@ -94,6 +96,9 @@ build_or_list_images() {
         fi
         for arch in "${architectures[@]}"; do
             for variant in "${variants[@]}"; do
+                if [[ -n "${CI_IMAGE_VARIANTS:-}" && " ${CI_IMAGE_VARIANTS} " != *" ${variant} "* ]]; then
+                    continue
+                fi
                 selected_images=$((selected_images + 1))
                 # apk apt dnf egoportage opkg pacman portage yum equo xbps zypper luet slackpkg
                 if [[ "$run_funct" == "centos" || "$run_funct" == "fedora" || "$run_funct" == "openeuler" ]]; then

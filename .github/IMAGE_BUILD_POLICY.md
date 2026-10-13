@@ -15,3 +15,5 @@ Oracle 8/9/10 use the official ISO host on these distrobuilder paths. The pinned
 OpenWrt rootfs archives can validly be smaller than 10 MiB. They use a 1 MiB compressed size floor plus full XZ/tar integrity and an etc/openwrt_release identity check; other images retain the 10 MiB floor. ZIP CRC checks and maximum size limits remain enabled.
 
 Gentoo also uses the pinned 3.4.0 builder because its definition contains the newer VM boot_size field; even LXC-only construction must successfully parse the complete definition.
+
+Gentoo automatic publication selects the cloud variant. openrc/systemd or all variants remain explicitly selectable by workflow_dispatch, and old assets remain available. Listing/building use the same CI_IMAGE_VARIANTS filter; an unknown selection fails without publishing.

@@ -50,6 +50,7 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
         CI_IMAGE_RELEASES: ${{ inputs.release }}
+        CI_IMAGE_VARIANTS: ${{ inputs.variant || 'cloud' }}
     timeout-minutes: 180
 'on':
   schedule:
@@ -61,6 +62,16 @@ jobs:
         required: false
         type: string
         default: ''
+      variant:
+        description: Variant to rebuild; automatic runs use cloud
+        type: choice
+        required: true
+        default: cloud
+        options:
+        - cloud
+        - openrc
+        - systemd
+        - all
 permissions:
   contents: write
 concurrency:

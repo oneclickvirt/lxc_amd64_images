@@ -81,7 +81,7 @@ class ImageRecoveryTests(unittest.TestCase):
             with self.subTest(filename=filename), self.assertRaises(ValueError):
                 self.check(filename)
 
-    def run_builder(self, script, release, build=False, catalog_unavailable=False, distro="debian", catalog_releases="bookworm trixie"):
+    def run_builder(self, script, release, build=False, catalog_unavailable=False, distro="debian", catalog_releases="bookworm trixie", variants=""):
         # No provisioning or network in the fixture. All dependency commands are present.
         bin_dir = self.folder / "bin"
         bin_dir.mkdir(exist_ok=True)
@@ -104,7 +104,7 @@ printf '\n'
             path = bin_dir / name
             path.write_text('#!/bin/sh\nprintf "%s\\n" "$*" >> "$IMAGE_TEST_CALLS"\nexit 17\n')
             path.chmod(0o755)
-        environment = dict(os.environ, IMAGE_TEST_CATALOG=catalog_releases, CI_IMAGE_RELEASES=release, IMAGE_TEST_CATALOG_FAIL="1" if catalog_unavailable else "0", IMAGE_TEST_CALLS=str(self.folder / "calls"),
+        environment = dict(os.environ, CI_IMAGE_VARIANTS=variants, IMAGE_TEST_CATALOG=catalog_releases, CI_IMAGE_RELEASES=release, IMAGE_TEST_CATALOG_FAIL="1" if catalog_unavailable else "0", IMAGE_TEST_CALLS=str(self.folder / "calls"),
                            PATH=str(bin_dir) + os.pathsep + os.environ["PATH"])
         bash = shutil.which("bash")
         # macOS's system Bash predates ${var,,}, used by these existing scripts.
@@ -115,6 +115,17 @@ printf '\n'
 
     def scripts(self):
         return [p for p in [ROOT / "build_images.sh", ROOT / "build_kvm_images.sh"] if p.exists()]
+
+    def test_gentoo_variant_selection_is_exact_and_read_only(self):
+        for variant in ["cloud", "openrc", "systemd"]:
+            with self.subTest(variant=variant):
+                result = self.run_builder(ROOT / "build_images.sh", "current", distro="gentoo", variants=variant)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(len(result.stdout.splitlines()[-1].split()), 1)
+                self.assertIn("_" + variant + ".tar.xz", result.stdout)
+                self.assertFalse(Path("calls").exists())
+        result = self.run_builder(ROOT / "build_images.sh", "current", distro="gentoo", variants="unknown")
+        self.assertNotEqual(result.returncode, 0)
 
     def test_openwrt_stable_and_snapshot_package_managers(self):
         for release, manager in [("24.10", "opkg"), ("25.12", "apk"), ("snapshot", "apk")]:
