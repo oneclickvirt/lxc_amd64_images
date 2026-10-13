@@ -11,3 +11,5 @@ Image definitions are parsed with duplicate-key rejection before runner provisio
 OpenWrt and Oracle 10 require distrobuilder 3.4.0. These workflow paths compile the official SHA256-pinned, vendored release using the upstream build tags; the older stable Snap is not a compatible fallback. Failed download/checksum/compilation stops before image publication.
 
 Oracle 8/9/10 use the official ISO host on these distrobuilder paths. The pinned 3.4.0 source receives one checked compatibility patch for the official OL8 versioned ISO filename; GPG package verification remains enabled. This avoids relying on the intermittently unreachable third-party OL8 mirror.
+
+OpenWrt rootfs archives can validly be smaller than 10 MiB. They use a 1 MiB compressed size floor plus full XZ/tar integrity and an etc/openwrt_release identity check; other images retain the 10 MiB floor. ZIP CRC checks and maximum size limits remain enabled.
