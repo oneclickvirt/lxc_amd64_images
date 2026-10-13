@@ -13,3 +13,5 @@ OpenWrt and Oracle 10 require distrobuilder 3.4.0. These workflow paths compile 
 Oracle 8/9/10 use the official ISO host on these distrobuilder paths. The pinned 3.4.0 source receives one checked compatibility patch for the official OL8 versioned ISO filename; GPG package verification remains enabled. This avoids relying on the intermittently unreachable third-party OL8 mirror.
 
 OpenWrt rootfs archives can validly be smaller than 10 MiB. They use a 1 MiB compressed size floor plus full XZ/tar integrity and an etc/openwrt_release identity check; other images retain the 10 MiB floor. ZIP CRC checks and maximum size limits remain enabled.
+
+Gentoo also uses the pinned 3.4.0 builder because its definition contains the newer VM boot_size field; even LXC-only construction must successfully parse the complete definition.
