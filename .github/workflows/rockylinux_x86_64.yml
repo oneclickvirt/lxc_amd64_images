@@ -1,70 +1,53 @@
 name: rockylinux x86_64
-
-on:
-  schedule:
-    - cron: '0 8 * * *'
-  workflow_dispatch:
-
 jobs:
   rockylinux_x86_64_images:
     runs-on: ubuntu-latest
     steps:
+    - name: Load trusted network recovery helpers
+      shell: bash
+      run: |
+        set -euo pipefail
+        curl --fail --silent --show-error --location --connect-timeout 15 --max-time 90 --retry 3 --retry-max-time 180 --retry-connrefused "https://raw.githubusercontent.com/oneclickvirt/lxc_amd64_images/main/.github/scripts/ci_network.sh" -o "$RUNNER_TEMP/ci-network.sh"
+        curl --fail --silent --show-error --location --connect-timeout 15 --max-time 90 --retry 3 --retry-max-time 180 --retry-connrefused "https://raw.githubusercontent.com/oneclickvirt/lxc_amd64_images/main/.github/scripts/release_assets.py" -o "$RUNNER_TEMP/ci-release-assets.py"
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
     - name: check path
       run: |
         pwd
-
     - name: Configure Git
       run: |
         git config --global user.name "daily-update"
         git config --global user.email "tg@spiritlhl.top"
-      
     - name: Build and Upload Images
       run: |
+        source "$RUNNER_TEMP/ci-network.sh"
+        set -euo pipefail
         distros=("rockylinux")
+        ARCH=x86_64
         for distro in "${distros[@]}"; do
-            zip_name_list=($(bash build_images.sh $distro false x86_64 | tail -n 1))
-            release_json=$(curl -s -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/oneclickvirt/lxc_amd64_images/releases/tags/$distro")
-            release_id=$(echo "$release_json" | jq -r '.id // empty')
-            if ! [[ "$release_id" =~ ^[0-9]+$ ]]; then
-                echo "Skip $distro: release tag missing or API error"
-                echo "$release_json" | jq -r '.message // empty'
-                continue
-            fi
-            echo "Building $distro and packge zips"
-            bash build_images.sh $distro true x86_64
-            for file in "${zip_name_list[@]}"; do
-                if [ -f "$file" ] && [ $(stat -c %s "$file") -gt 10485760 ]; then
-                    echo "Checking if $file already exists in release..."
-                    assets_json=$(curl -s -H "Accept: application/vnd.github.v3+json" \
-                      "https://api.github.com/repos/oneclickvirt/lxc_amd64_images/releases/$release_id/assets")
-                    existing_asset_id=$(echo "$assets_json" | jq -r --arg name "$(basename "$file")" 'if type == "array" then (map(select(.name == $name))[0].id // empty) else empty end')
-                    if [ -n "$existing_asset_id" ]; then
-                        echo "Asset $file already exists in release, deleting existing asset..."
-                        delete_response=$(curl -s -X DELETE -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/oneclickvirt/lxc_amd64_images/releases/assets/$existing_asset_id")
-                        echo "$delete_response"
-                        if [ $? -eq 0 ] && ! echo "$delete_response" | grep -q "error"; then
-                            echo "Existing asset deleted successfully."
-                        else
-                            echo "Failed to delete existing asset. Skipping file upload..."
-                            rm -rf $file
-                            continue
-                        fi
-                    else
-                        echo "No $file file."
-                    fi
-                    echo "Uploading $file to release..."
-                    curl -f -s -X POST \
-                      -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                      -H "Content-Type: application/octet-stream" \
-                      --max-time 3600 \
-                      -T "$file" \
-                      "https://uploads.github.com/repos/oneclickvirt/lxc_amd64_images/releases/$release_id/assets?name=$(basename "$file")"
-                    rm -rf $file
-                else
-                    echo "No $file or less than 10 MB"
-                fi
-            done
+          output=$(bash build_images.sh "$distro" false "$ARCH" | tail -n 1)
+          read -r -a assets <<< "$output"
+          [[ ${#assets[@]} -gt 0 ]] || { echo "No configured image outputs." >&2; exit 1; }
+          bash -c 'source "$1"; export -f ci_retry gh git ci_clone_attempt curl wget; bash "$2" "$3" true "$4"' -- "$RUNNER_TEMP/ci-network.sh" "build_images.sh" "$distro" "$ARCH"
+          for file in "${assets[@]}"; do
+            [[ "$file" =~ ^[A-Za-z0-9_.-]+\.zip$ ]] || { echo "Invalid output filename." >&2; exit 1; }
+            [[ -f "$file" ]] || { echo "Expected image was not built: $file" >&2; exit 1; }
+            size=$(stat -c %s "$file")
+            (( size > 10485760 && size <= 2147483648 )) || { echo "Image size is outside release limits: $file" >&2; exit 1; }
+            python3 -m zipfile -t "$file"
+          done
+          python3 "$RUNNER_TEMP/ci-release-assets.py" "$distro" "${assets[@]}"
+          rm -f "${assets[@]}"
         done
-        
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+    timeout-minutes: 360
+'on':
+  schedule:
+  - cron: 0 8 * * *
+  workflow_dispatch: null
+permissions:
+  contents: write
+concurrency:
+  group: image-publish-rockylinux_x86_64
+  cancel-in-progress: false
