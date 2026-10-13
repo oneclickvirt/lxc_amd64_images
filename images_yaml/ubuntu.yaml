@@ -1,12 +1,10 @@
 image:
-  distribution: "ubuntu"
-
+  distribution: ubuntu
 source:
   downloader: debootstrap
   same_as: gutsy
   url: http://archive.ubuntu.com/ubuntu/
   keys:
-  # 0x790BC7277767219C42C86F933B4FE6ACC0B21F32
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -233,8 +231,6 @@ source:
     9D075ubd/JquyeE97TWuWxHGoGIrUk7D+DgaelfyIsYRfVU=
     =384X
     -----END PGP PUBLIC KEY BLOCK-----
-
-  # 0xf6ecb3762474eda9d21b7022871920d1991bc93c
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -277,7 +273,6 @@ source:
     DaOLQ1w=
     =VTg2
     -----END PGP PUBLIC KEY BLOCK-----
-
 targets:
   lxc:
     create_message: |-
@@ -288,51 +283,35 @@ targets:
     config:
     - type: all
       before: 5
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/ubuntu.common.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/ubuntu.common.conf
     - type: user
       before: 5
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/ubuntu.userns.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/ubuntu.userns.conf
     - type: all
       after: 4
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/common.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/common.conf
     - type: user
       after: 4
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/userns.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/userns.conf
     - type: all
-      content: |-
-        lxc.arch = {{ image.architecture_personality }}
-
+      content: lxc.arch = {{ image.architecture_personality }}
 files:
 - path: /etc/hostname
   generator: hostname
-
 - path: /etc/hosts
   generator: hosts
-
 - path: /etc/resolvconf/resolv.conf.d/original
   generator: remove
-
 - path: /etc/resolvconf/resolv.conf.d/tail
   generator: remove
-
 - path: /etc/machine-id
   generator: dump
   content: uninitialized
-
 - path: /var/lib/dbus/machine-id
   generator: remove
-
 - path: /etc/netplan/10-lxc.yaml
   generator: dump
-  mode: 0600
+  mode: 384
   content: |-
     network:
       version: 2
@@ -344,10 +323,9 @@ files:
   - container
   variants:
   - default
-
 - path: /etc/netplan/10-lxc.yaml
   generator: dump
-  mode: 0600
+  mode: 384
   content: |-
     network:
       version: 2
@@ -360,37 +338,30 @@ files:
   variants:
   - default
   - desktop
-
 - name: meta-data
   generator: cloud-init
   variants:
   - cloud
-
 - name: network-config
   generator: cloud-init
   variants:
   - cloud
-
 - name: user-data
   generator: cloud-init
   variants:
   - cloud
-
 - name: vendor-data
   generator: cloud-init
   variants:
   - cloud
-
 - name: ext4
   generator: fstab
   types:
   - vm
-
 - name: incus-agent
   generator: incus-agent
   types:
   - vm
-
 - path: /etc/default/grub.d/50-incus.cfg
   generator: dump
   content: |-
@@ -400,19 +371,17 @@ files:
     GRUB_TERMINAL=console
   types:
   - vm
-
 - path: /etc/sudoers.d/90-incus
   generator: dump
-  mode: 0440
+  mode: 288
   content: |-
     # User rules for ubuntu
     ubuntu ALL=(ALL) NOPASSWD:ALL
   variants:
-    - default
-
+  - default
 - path: /etc/sudoers.d/90-incus
   generator: dump
-  mode: 0440
+  mode: 288
   content: |-
     # User rules for ubuntu
     ubuntu ALL=(ALL) NOPASSWD:ALL
@@ -420,7 +389,6 @@ files:
   - desktop
   types:
   - vm
-
 packages:
   manager: apt
   update: true
@@ -433,7 +401,6 @@ packages:
     - noble
     - resolute
     action: install
-
   - packages:
     - curl
     - openssh-client
@@ -449,7 +416,6 @@ packages:
     - dos2unix
     - cron
     action: install
-
   - packages:
     - language-pack-en
     action: install
@@ -460,33 +426,28 @@ packages:
     - powerpc
     - powerpc64
     - s390x
-
   - packages:
     - language-pack-en
     action: install
     architectures:
     - ppc64el
-
   - packages:
     - cloud-init
     - python3-debian
     action: install
     variants:
     - cloud
-
   - packages:
     - systemd-resolved
     action: install
     releases:
     - noble
     - resolute
-
   - packages:
     - systemd-timesyncd
     action: install
     releases:
     - resolute
-
   - packages:
     - grub-efi-amd64-signed
     - shim-signed
@@ -495,7 +456,6 @@ packages:
     - amd64
     types:
     - vm
-
   - packages:
     - grub-efi-arm64-signed
     action: install
@@ -503,7 +463,6 @@ packages:
     - arm64
     types:
     - vm
-
   - packages:
     - shim-signed
     action: install
@@ -511,25 +470,21 @@ packages:
     - arm64
     types:
     - vm
-
   - packages:
     - linux-image-virtual
     action: install
     types:
     - vm
-
   - packages:
     - os-prober
     action: remove
     types:
     - vm
-
   - packages:
     - cloud-guest-utils
     action: install
     types:
     - vm
-
   - packages:
     - ubuntu-desktop-minimal
     action: install
@@ -537,7 +492,6 @@ packages:
     - desktop
     types:
     - vm
-
   repositories:
   - name: sources.list
     url: |-
@@ -547,7 +501,6 @@ packages:
     architectures:
     - amd64
     - i386
-
   - name: sources.list
     url: |-
       deb http://ports.ubuntu.com/ubuntu-ports {{ image.release }} main restricted universe multiverse
@@ -561,7 +514,6 @@ packages:
     - ppc64el
     - riscv64
     - s390x
-
 actions:
 - trigger: post-unpack
   action: |-
@@ -572,7 +524,6 @@ actions:
     [ ! -d /run/systemd ] && exit 0
     rm -Rf /run/systemd/system
     chattr +i /run/systemd
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -581,7 +532,6 @@ actions:
     # Remove the immutable flag.
     [ ! -d /run/systemd ] && exit 0
     chattr -i /run/systemd
-
 - trigger: post-update
   action: |-
     #!/bin/sh
@@ -592,7 +542,6 @@ actions:
     useradd --create-home -s /bin/bash -G sudo -U ubuntu
   variants:
   - default
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -603,7 +552,6 @@ actions:
 
     # Disable UA attach
     systemctl mask ua-auto-attach
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -616,7 +564,6 @@ actions:
   releases:
   - noble
   - resolute
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -633,7 +580,6 @@ actions:
 
     # Cleanup temporary shadow paths
     rm /etc/*-
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -655,7 +601,6 @@ actions:
     sed -i "s#root=[^ ]*#root=${DISTROBUILDER_ROOT_UUID}#g" /boot/grub/grub.cfg
   types:
   - vm
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -681,7 +626,6 @@ actions:
   variants:
   - default
   - desktop
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -751,7 +695,6 @@ actions:
   - desktop
   types:
   - vm
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -822,7 +765,6 @@ actions:
             printf 'auto lo\niface lo inet loopback\n\nauto eth0\niface eth0 inet dhcp\n' > /etc/network/interfaces
         fi
     fi
-
   types:
   - container
   variants:

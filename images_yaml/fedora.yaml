@@ -1,10 +1,8 @@
 image:
   distribution: fedora
-
 source:
   downloader: fedora-http
   url: https://kojipkgs.fedoraproject.org
-
 targets:
   lxc:
     create_message: |
@@ -12,28 +10,18 @@ targets:
     config:
     - type: all
       before: 5
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/fedora.common.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/fedora.common.conf
     - type: user
       before: 5
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/fedora.userns.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/fedora.userns.conf
     - type: all
       after: 4
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/common.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/common.conf
     - type: user
       after: 4
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/userns.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/userns.conf
     - type: all
-      content: |-
-        lxc.arch = {{ image.architecture_kernel }}
-
+      content: lxc.arch = {{ image.architecture_kernel }}
 files:
 - path: /etc/systemd/system-preset/00-lxc-fedora.preset
   generator: dump
@@ -41,7 +29,6 @@ files:
     # Preserve image-selected network services across systemd first boot.
     ignore systemd-resolved.service
     ignore systemd-networkd.service
-
 - path: /etc/default/grub
   generator: dump
   content: |-
@@ -61,36 +48,27 @@ files:
     GRUB_DISABLE_OS_PROBER=true
   types:
   - vm
-
 - path: /etc/dracut.conf.d/incus.conf
   generator: dump
-  content: |-
-    add_drivers+=" virtio_scsi "
+  content: add_drivers+=" virtio_scsi "
   types:
   - vm
-
 - generator: fstab
   types:
   - vm
-
 - path: /etc/machine-id
   generator: dump
   content: uninitialized
-
 - path: /var/lib/dbus/machine-id
   generator: remove
-
 - path: /etc/fstab
   generator: dump
   types:
   - container
-
 - path: /etc/hostname
   generator: hostname
-
 - path: /etc/hosts
   generator: hosts
-
 - name: eth0.network
   path: /etc/systemd/network/eth0.network
   generator: dump
@@ -111,7 +89,6 @@ files:
   - default
   types:
   - container
-
 - name: enp5s0.network
   path: /etc/systemd/network/enp5s0.network
   generator: dump
@@ -132,12 +109,10 @@ files:
   - default
   types:
   - vm
-
 - name: meta-data
   generator: cloud-init
   variants:
   - cloud
-
 - name: network-config
   generator: cloud-init
   content: |-
@@ -152,21 +127,17 @@ files:
             control: auto{% else %}{{ config_get("user.network-config", "") }}{% endif %}
   variants:
   - cloud
-
 - name: user-data
   generator: cloud-init
   variants:
   - cloud
-
 - name: vendor-data
   generator: cloud-init
   variants:
   - cloud
-
 - generator: incus-agent
   types:
   - vm
-
 packages:
   manager: dnf
   update: true
@@ -206,13 +177,11 @@ packages:
     - dos2unix
     - cronie
     action: install
-
   - packages:
     - cloud-init
     action: install
     variants:
     - cloud
-
   - packages:
     - cloud-utils-growpart
     action: install
@@ -220,7 +189,6 @@ packages:
     - vm
     variants:
     - cloud
-
   - packages:
     - grub2-efi-x64
     action: install
@@ -228,7 +196,6 @@ packages:
     - x86_64
     types:
     - vm
-
   - packages:
     - grub2-efi-aa64
     action: install
@@ -236,7 +203,6 @@ packages:
     - aarch64
     types:
     - vm
-
   - packages:
     - kernel
     - shim
@@ -244,20 +210,17 @@ packages:
     action: install
     types:
     - vm
-
   - packages:
     - lvm2
     - lvm2-libs
     action: remove
     types:
     - vm
-
   - packages:
     - libsss_idmap
     - libsss_nss_idmap
     - sssd-client
     action: remove
-
 actions:
 - trigger: post-unpack
   action: |-
@@ -275,7 +238,6 @@ actions:
     for repo in $(ls /etc/yum.repos.d/*.repo); do
       cp "${repo}" "${repo}.bak"
     done
-
 - trigger: post-unpack
   action: |-
     #!/bin/sh
@@ -293,7 +255,6 @@ actions:
   - x86_64
   releases:
   - Rawhide
-
 - trigger: post-unpack
   action: |-
     #!/bin/sh
@@ -309,7 +270,6 @@ actions:
   architectures:
   - ppc64le
   - s390x
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -329,7 +289,6 @@ actions:
     rpm -qa | sudo xargs -n1 rpm --setcaps || true
 
     exit 0
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -339,7 +298,6 @@ actions:
     systemctl mask dhcpcd
   variants:
   - cloud
-
 - trigger: post-unpack
   action: |-
     #!/bin/sh
@@ -347,7 +305,6 @@ actions:
     systemd-machine-id-setup
   types:
   - vm
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -378,7 +335,6 @@ actions:
     exit 0
   types:
   - vm
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -394,7 +350,6 @@ actions:
 
     # Disable xfs_healer
     systemctl mask xfs_healer@-.service
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -465,7 +420,6 @@ actions:
             printf 'auto lo\niface lo inet loopback\n\nauto eth0\niface eth0 inet dhcp\n' > /etc/network/interfaces
         fi
     fi
-
   types:
   - container
   variants:

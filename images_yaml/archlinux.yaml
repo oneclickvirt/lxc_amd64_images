@@ -1,10 +1,8 @@
 image:
   distribution: archlinux
-
 source:
   downloader: archlinux-http
   url: https://archive.archlinux.org/iso/
-
 targets:
   lxc:
     create_message: |
@@ -12,37 +10,25 @@ targets:
     config:
     - type: all
       before: 5
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/archlinux.common.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/archlinux.common.conf
     - type: user
       before: 5
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/archlinux.userns.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/archlinux.userns.conf
     - type: all
       after: 4
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/common.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/common.conf
     - type: user
       after: 4
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/userns.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/userns.conf
     - type: all
-      content: |-
-        lxc.arch = {{ image.architecture_kernel }}
-
+      content: lxc.arch = {{ image.architecture_kernel }}
 files:
 - name: hostname
   path: /etc/hostname
   generator: hostname
-
 - name: hosts
   path: /etc/hosts
   generator: hosts
-
 - path: /etc/default/grub
   generator: dump
   content: |-
@@ -59,7 +45,6 @@ files:
     GRUB_TERMINAL=console
   types:
   - vm
-
 - name: eth0.network
   path: /etc/systemd/network/eth0.network
   generator: dump
@@ -78,7 +63,6 @@ files:
     ClientIdentifier=mac
   types:
   - container
-
 - name: enp5s0.network
   path: /etc/systemd/network/enp5s0.network
   generator: dump
@@ -97,39 +81,32 @@ files:
     ClientIdentifier=mac
   types:
   - vm
-
 - name: incus-agent
   generator: incus-agent
   types:
   - vm
-
 - generator: fstab
   types:
   - vm
-
 - name: meta-data
   generator: cloud-init
   variants:
   - cloud
-
 - name: network-config
   generator: cloud-init
   variants:
   - cloud
-
 - name: user-data
   generator: cloud-init
   variants:
   - cloud
-
 - name: vendor-data
   generator: cloud-init
   variants:
   - cloud
-
 - path: /etc/sudoers.d/90-incus
   generator: dump
-  mode: 0440
+  mode: 288
   content: |-
     # User rules for archlinux
     archlinux ALL=(ALL) NOPASSWD: ALL
@@ -137,7 +114,6 @@ files:
   - vm
   variants:
   - desktop-gnome
-
 packages:
   manager: pacman
   update: true
@@ -180,21 +156,18 @@ packages:
     - iptables
     - dos2unix
     action: install
-
   - packages:
     - cloud-init
     - openbsd-netcat
     action: install
     variants:
     - cloud
-
   - packages:
     - cloud-guest-utils
     - grub
     action: install
     types:
     - vm
-
   - packages:
     - linux
     action: install
@@ -203,7 +176,6 @@ packages:
     - x86_64
     types:
     - vm
-
   - packages:
     - linux-aarch64
     action: remove
@@ -211,13 +183,11 @@ packages:
     - aarch64
     types:
     - container
-
   - packages:
     - linux-armv7
     action: remove
     architectures:
     - armv7
-
   - packages:
     - libedit
     - net-tools
@@ -226,7 +196,6 @@ packages:
     architectures:
     - aarch64
     - armv7
-
   - packages:
     - linux-firmware
     action: remove
@@ -234,14 +203,12 @@ packages:
     - aarch64
     types:
     - container
-
   - packages:
     - gnome
     - spice-vdagent
     action: install
     variants:
     - desktop-gnome
-
 actions:
 - trigger: post-unpack
   action: |-
@@ -249,7 +216,6 @@ actions:
     # Make sure we have our template targets
     touch /etc/hosts
     touch /etc/hostname
-
 - trigger: post-unpack
   action: |-
     #!/bin/sh
@@ -258,7 +224,6 @@ actions:
     echo 'Server = https://mirror.csclub.uwaterloo.ca/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
   architectures:
   - x86_64
-
 - trigger: post-unpack
   action: |-
     #!/bin/sh
@@ -269,7 +234,6 @@ actions:
 
     # Update pacman-keyring to ensure package installs will not break because of GPG issues
     pacman -Sy --needed --noconfirm archlinux-keyring
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -281,7 +245,6 @@ actions:
 
     # Fix ping
     setcap cap_net_raw=ep /usr/bin/ping || chmod +s /usr/bin/ping
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -298,7 +261,6 @@ actions:
     echo LANG=en_US.UTF-8 > /etc/locale.conf
   types:
   - vm
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -323,7 +285,6 @@ actions:
   - desktop-gnome
   types:
   - vm
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -390,7 +351,6 @@ actions:
   - desktop-gnome
   types:
   - vm
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -412,7 +372,6 @@ actions:
     mkinitcpio -P || true
   types:
   - vm
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -421,7 +380,6 @@ actions:
     systemctl enable cloud-init-main.service cloud-init-local.service cloud-config.service cloud-final.service
   variants:
   - cloud
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -431,7 +389,6 @@ actions:
     rm /etc/machine-id
   types:
   - vm
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -457,7 +414,6 @@ actions:
     WantedBy=multi-user.target
     EOF
     systemctl enable pacman-init.service
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -528,7 +484,6 @@ actions:
             printf 'auto lo\niface lo inet loopback\n\nauto eth0\niface eth0 inet dhcp\n' > /etc/network/interfaces
         fi
     fi
-
   types:
   - container
   variants:

@@ -1,7 +1,6 @@
 image:
-  distribution: "kali"
+  distribution: kali
   release: kali-rolling
-
 source:
   downloader: debootstrap
   url: https://kali.download/kali/
@@ -86,7 +85,6 @@ source:
     =EJtZ
     -----END PGP PUBLIC KEY BLOCK-----
   variant: minbase
-
 targets:
   lxc:
     create_message: |-
@@ -94,47 +92,32 @@ targets:
 
       To enable SSH, run: apt install openssh-server
       No default root or user password are set by LXC.
-
     config:
     - type: all
       before: 5
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/debian.common.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/debian.common.conf
     - type: all
       after: 4
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/common.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/common.conf
     - type: user
       after: 4
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/userns.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/userns.conf
     - type: all
-      content: |-
-        lxc.arch = {{ image.architecture_personality }}
-
+      content: lxc.arch = {{ image.architecture_personality }}
 files:
 - path: /etc/hostname
   generator: hostname
-
 - path: /etc/hosts
   generator: hosts
-
 - path: /etc/resolvconf/resolv.conf.d/original
   generator: remove
-
 - path: /etc/resolvconf/resolv.conf.d/tail
   generator: remove
-
 - path: /etc/machine-id
   generator: dump
   content: uninitialized
-
 - path: /var/lib/dbus/machine-id
   generator: remove
-
 - path: /etc/network/interfaces
   generator: dump
   content: |-
@@ -151,27 +134,22 @@ files:
     source /etc/network/interfaces.d/*.cfg
   variants:
   - default
-
 - name: meta-data
   generator: cloud-init
   variants:
   - cloud
-
 - name: network-config
   generator: cloud-init
   variants:
   - cloud
-
 - name: user-data
   generator: cloud-init
   variants:
   - cloud
-
 - name: vendor-data
   generator: cloud-init
   variants:
   - cloud
-
 packages:
   manager: apt
   update: true
@@ -181,7 +159,6 @@ packages:
     - kali-archive-keyring
     action: install
     early: true
-
   - packages:
     - dialog
     - init
@@ -203,7 +180,6 @@ packages:
     - dos2unix
     - cron
     action: install
-
   - packages:
     - cloud-init
     - systemd-resolved
@@ -219,19 +195,15 @@ packages:
     action: install
     variants:
     - cloud
-
   - packages:
     - ifupdown
     - isc-dhcp-client
     action: install
     variants:
     - default
-
   repositories:
   - name: sources.list
-    url: |-
-      deb http://kali.download/kali {{ image.release }} main contrib non-free non-free-firmware
-
+    url: deb http://kali.download/kali {{ image.release }} main contrib non-free non-free-firmware
 actions:
 - trigger: post-packages
   action: |-
@@ -250,7 +222,6 @@ actions:
 
     # Cleanup temporary shadow paths
     rm /etc/*-
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -260,7 +231,6 @@ actions:
     systemctl enable cloud-init-main.service cloud-init-local.service
   variants:
   - cloud
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -331,7 +301,6 @@ actions:
             printf 'auto lo\niface lo inet loopback\n\nauto eth0\niface eth0 inet dhcp\n' > /etc/network/interfaces
         fi
     fi
-
   types:
   - container
   variants:

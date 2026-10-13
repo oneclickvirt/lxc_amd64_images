@@ -1,10 +1,8 @@
 image:
   distribution: oracle
-
 source:
   downloader: oraclelinux-http
-  url: https://ftp.icm.edu.pl/pub/Linux/dist/oracle-linux/
-
+  url: https://yum.oracle.com/ISOS/OracleLinux
 targets:
   lxc:
     create_message: |
@@ -12,37 +10,25 @@ targets:
     config:
     - type: all
       before: 5
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/centos.common.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/centos.common.conf
     - type: user
       before: 5
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/centos.userns.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/centos.userns.conf
     - type: all
       after: 4
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/common.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/common.conf
     - type: user
       after: 4
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/userns.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/userns.conf
     - type: all
-      content: |-
-        lxc.arch = {{ image.architecture_kernel }}
-
+      content: lxc.arch = {{ image.architecture_kernel }}
 files:
 - name: hostname
   path: /etc/hostname
   generator: hostname
-
 - name: hosts
   path: /etc/hosts
   generator: hosts
-
 - name: ifcfg-eth0
   path: /etc/sysconfig/network-scripts/ifcfg-eth0
   generator: dump
@@ -55,7 +41,6 @@ files:
     TYPE=Ethernet
     MTU=
     DHCP_HOSTNAME=`cat /proc/sys/kernel/hostname`
-
 - name: ifcfg-eth0.incus
   path: /etc/sysconfig/network-scripts/ifcfg-eth0
   generator: template
@@ -68,7 +53,6 @@ files:
     MTU=
     DHCP_HOSTNAME=`cat /proc/sys/kernel/hostname`
     IPV6INIT=yes
-
 - name: network
   path: /etc/sysconfig/network
   generator: dump
@@ -76,19 +60,16 @@ files:
   content: |-
     NETWORKING=yes
     HOSTNAME=LXC_NAME
-
 - name: network.incus
   path: /etc/sysconfig/network
   generator: template
   content: |-
     NETWORKING=yes
     HOSTNAME={{ container.name }}
-
 - name: meta-data
   generator: cloud-init
   variants:
   - cloud
-
 - name: network-config
   generator: cloud-init
   content: |-
@@ -103,21 +84,17 @@ files:
             control: auto{% else %}{{ config_get("user.network-config", "") }}{% endif %}
   variants:
   - cloud
-
 - name: user-data
   generator: cloud-init
   variants:
   - cloud
-
 - name: vendor-data
   generator: cloud-init
   variants:
   - cloud
-
 - name: fstab
   path: /etc/fstab
   generator: dump
-
 - name: cloud-init-system_info-distro
   path: /etc/cloud/cloud.cfg.d/99_incus.cfg
   generator: dump
@@ -128,7 +105,6 @@ files:
         distro: fedora
   variants:
   - cloud
-
 packages:
   manager: yum
   update: true
@@ -156,25 +132,21 @@ packages:
     - dos2unix
     - cronie
     action: install
-
   - packages:
     - dhclient
     action: install
-    releases: # dhclient is deprecated. Use NetworkManager instead.
+    releases:
     - 8
     - 9
-
   - packages:
     - NetworkManager
     action: install
-
   - packages:
     - cloud-init
     - hostname
     action: install
     variants:
     - cloud
-
   repositories:
   - name: AppStream
     url: |-
@@ -184,7 +156,6 @@ packages:
       enabled=1
       gpgcheck=1
       gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
-
 actions:
 - trigger: post-unpack
   action: |-
@@ -192,7 +163,6 @@ actions:
     # Make sure we have our template targets
     touch /etc/hosts
     touch /etc/hostname
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -204,8 +174,6 @@ actions:
 
     # Disable loginuid in PAM stack
     sed -i '/^session.*pam_loginuid.so/s/^session/# session/' /etc/pam.d/*
-
-# Strip security.ima from all files that have it set.
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -215,7 +183,6 @@ actions:
     done
   types:
   - container
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -286,7 +253,6 @@ actions:
             printf 'auto lo\niface lo inet loopback\n\nauto eth0\niface eth0 inet dhcp\n' > /etc/network/interfaces
         fi
     fi
-
   types:
   - container
   variants:

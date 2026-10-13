@@ -1,17 +1,12 @@
 image:
   distribution: OpenWrt
-
 source:
   downloader: openwrt-http
   url: https://downloads.openwrt.org
-  # see https://openwrt.org/docs/guide-user/security/signatures
-  #  or https://git.openwrt.org/?p=keyring.git;a=tree;f=gpg 
   keys:
-# Universal GPG signing key from Nitrokey 3A key
-# Fingerprint: 8A8B C12F 46B8 36C0 F9CD B36F 1D53 D187 7742 E911
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
-    
+
     mDMEZGYbnhYJKwYBBAHaRw8BAQdATHfcRHxMqX/Z/bRtFvHekZK6uM1BV13gDBvR
     uHWswEG0Nk9wZW5XcnQgQnVpbGQgU3lzdGVtIChOaXRyb2tleTMpIDxjb250YWN0
     QG9wZW53cnQub3JnPoiUBBMWCgA8FiEEiovBL0a4NsD5zbNvHVPRh3dC6REFAmRm
@@ -62,41 +57,32 @@ source:
     DA==
     =kEP/
     -----END PGP PUBLIC KEY BLOCK-----
-
 targets:
   lxc:
     create_message: |
       You just created an {{ image.distribution }} container.
     config:
     - type: all
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/common.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/common.conf
     - type: user
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/userns.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/userns.conf
     - type: all
-      content: |-
-        lxc.arch = {{ image.architecture_kernel }}
-
+      content: lxc.arch = {{ image.architecture_kernel }}
 files:
 - generator: incus-agent
   types:
-    - vm
-
+  - vm
 - name: uci-defaults-hostname.incus
   path: /etc/uci-defaults/00-incus-set-hostname
   generator: template
-  mode: 0755
+  mode: 493
   template:
     when:
-      - create
-      - rename
+    - create
+    - rename
   content: |
     uci -q set system.@system[0].hostname='{{ container.name }}'
     exit 0
-
 - path: /etc/config/network
   generator: dump
   content: |-
@@ -116,7 +102,6 @@ files:
 
     config globals 'globals'
         option ula_prefix 'auto'
-
 packages:
   manager: apk
   update: false
@@ -129,44 +114,39 @@ packages:
     - virtio-console-helper
     action: install
     types:
-      - vm
-
+    - vm
 actions:
 - trigger: post-unpack
   action: |
     #!/bin/sh
     echo "console::askfirst:/usr/libexec/login.sh" >> /etc/inittab
   types:
-    - container
-
+  - container
 - trigger: post-files
   action: |
     #!/bin/sh
     # we don't need grub in a container
     rm -rf /boot/efi
   types:
-    - container
-
+  - container
 - trigger: post-files
   action: |
     #!/bin/sh
     target=/boot/efi/boot/grub/grub.cfg
     sed -i "s#root=[^ ]*#root=${DISTROBUILDER_ROOT_PARTUUID}#g" "${target}"
   types:
-    - vm
+  - vm
   architectures:
-    - x86-64
-
+  - x86-64
 - trigger: post-files
   action: |
     #!/bin/sh
     target=/boot/efi/efi/openwrt/grub.cfg
     sed -i "s#root=[^ ]*#root=${DISTROBUILDER_ROOT_PARTUUID}#g" "${target}"
   types:
-    - vm
+  - vm
   architectures:
-    - armsr-armv8
-
+  - armsr-armv8
 - trigger: post-files
   action: |
     #!/bin/sh
@@ -176,8 +156,7 @@ actions:
     # Disable conflicting sysntpd service to avoid crash loop
     rm -f /etc/rc.d/*sysntpd
   types:
-    - container
-
+  - container
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -212,12 +191,10 @@ actions:
     # Disable algif_aead kernel module to mitigate security vulnerabilities
     mkdir -p /etc/modprobe.d
     echo "install algif_aead /bin/false" > /etc/modprobe.d/disable-algif.conf
-    
   types:
   - container
   variants:
   - cloud
   - default
-
 mappings:
   architecture_map: openwrt

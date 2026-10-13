@@ -1,11 +1,9 @@
 image:
   distribution: openSUSE
-
 source:
   downloader: opensuse-http
   url: https://mirrorcache-eu.opensuse.org/download
   keys:
-  # 0x55A0B34D49501BB7CA474F5AA193FBB572174FC2
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -27,7 +25,6 @@ source:
     4VaII2/E
     =l8DH
     -----END PGP PUBLIC KEY BLOCK-----
-
 targets:
   lxc:
     create_message: |
@@ -35,42 +32,28 @@ targets:
     config:
     - type: all
       before: 5
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/opensuse.common.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/opensuse.common.conf
     - type: user
       before: 5
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/opensuse.userns.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/opensuse.userns.conf
     - type: all
       after: 4
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/common.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/common.conf
     - type: user
       after: 4
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/userns.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/userns.conf
     - type: all
-      content: |-
-        lxc.arch = {{ image.architecture_kernel }}
-
+      content: lxc.arch = {{ image.architecture_kernel }}
 files:
 - path: /etc/hostname
   generator: hostname
-
 - path: /etc/hosts
   generator: hosts
-
 - path: /etc/machine-id
   generator: dump
   content: uninitialized
-
 - path: /var/lib/dbus/machine-id
   generator: remove
-
 - path: /etc/default/grub
   generator: dump
   content: |-
@@ -89,7 +72,6 @@ files:
     GRUB_USE_LINUXEFI="true"
   types:
   - vm
-
 - name: ifcfg-eth0
   path: /etc/sysconfig/network/ifcfg-eth0
   generator: dump
@@ -100,7 +82,6 @@ files:
   - container
   releases:
   - tumbleweed
-
 - name: ifcfg-enp5s0
   path: /etc/sysconfig/network/ifcfg-enp5s0
   generator: dump
@@ -111,7 +92,6 @@ files:
   - vm
   releases:
   - tumbleweed
-
 - name: eth0.network
   path: /etc/systemd/network/eth0.network
   generator: dump
@@ -135,7 +115,6 @@ files:
   variants:
   - default
   - desktop
-
 - name: enp5s0.network
   path: /etc/systemd/network/enp5s0.network
   generator: dump
@@ -159,50 +138,40 @@ files:
   variants:
   - default
   - desktop
-
 - name: meta-data
   generator: cloud-init
   variants:
   - cloud
-
 - name: network-config
   generator: cloud-init
   variants:
   - cloud
-
 - name: user-data
   generator: cloud-init
   variants:
   - cloud
-
 - name: vendor-data
   generator: cloud-init
   variants:
   - cloud
-
 - generator: fstab
   types:
   - vm
-
 - generator: incus-agent
   types:
   - vm
-
 - path: /etc/dracut.conf.d/incus.conf
   generator: dump
-  content: |-
-    add_drivers+=" virtio_scsi virtio_pci sd_mod "
+  content: add_drivers+=" virtio_scsi virtio_pci sd_mod "
   types:
   - vm
-
 - path: /etc/fstab
   generator: dump
-  content: "# empty fstab to silence cloud-init warnings"
+  content: '# empty fstab to silence cloud-init warnings'
   types:
   - container
   variants:
   - cloud
-
 - path: /etc/polkit-1/rules.d/50-default.rules
   generator: dump
   content: |-
@@ -221,7 +190,6 @@ files:
   - vm
   variants:
   - desktop-kde
-
 - path: /etc/sddm.conf.d/autologin.conf
   generator: dump
   content: |-
@@ -236,7 +204,6 @@ files:
   releases:
   - tumbleweed
   - 16.0
-
 - path: /home/opensuse/.config/kscreenlockerrc
   generator: dump
   content: |-
@@ -247,10 +214,9 @@ files:
   - vm
   variants:
   - desktop-kde
-
 - path: /etc/sudoers.d/90-incus
   generator: dump
-  mode: 0440
+  mode: 288
   content: |-
     # User rules for opensuse
     opensuse ALL=(ALL) NOPASSWD: ALL
@@ -258,7 +224,6 @@ files:
   - vm
   variants:
   - desktop-kde
-
 packages:
   manager: zypper
   update: true
@@ -282,20 +247,17 @@ packages:
     - tar
     - which
     action: install
-
   - packages:
     - hardlink
     action: install
     releases:
     - tumbleweed
     - 16.0
-
   - packages:
     - libdevmapper1_03
     action: install
     architectures:
     - ppc64le
-
   - packages:
     - xz
     action: install
@@ -303,7 +265,6 @@ packages:
     - aarch64
     - x86_64
     - i686
-
   - packages:
     - cloud-init
     - cloud-init-config-suse
@@ -311,7 +272,6 @@ packages:
     action: install
     variants:
     - cloud
-
   - packages:
     - grub2-arm64-efi
     action: install
@@ -319,7 +279,6 @@ packages:
     - vm
     architectures:
     - aarch64
-
   - packages:
     - shim
     - grub2-x86_64-efi
@@ -328,7 +287,6 @@ packages:
     - vm
     architectures:
     - x86_64
-
   - packages:
     - dracut
     - e2fsprogs
@@ -337,7 +295,6 @@ packages:
     action: install
     types:
     - vm
-
   - packages:
     - discover
     - dolphin
@@ -348,7 +305,6 @@ packages:
     - vm
     variants:
     - desktop-kde
-
 actions:
 - trigger: post-unpack
   action: |-
@@ -359,7 +315,6 @@ actions:
     mount -t tmpfs tmpfs /sys/firmware
   types:
   - vm
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -395,7 +350,6 @@ actions:
   - vm
   variants:
   - desktop-kde
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -407,7 +361,6 @@ actions:
   - tumbleweed
   variants:
   - cloud
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -417,7 +370,6 @@ actions:
     systemctl enable cloud-init.service cloud-config.service cloud-final.service
   variants:
   - cloud
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -426,7 +378,6 @@ actions:
     ln -sf /var/run/netconfig/resolv.conf /etc/resolv.conf
   releases:
   - tumbleweed
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -435,13 +386,11 @@ actions:
     ln -sf ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
   releases:
   - 16.0
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
     # Disable first boot wizard
     systemctl mask systemd-firstboot.service
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -464,7 +413,6 @@ actions:
     sed -i "s#root=[^ ]*#root=${DISTROBUILDER_ROOT_UUID}#g" /boot/grub2/grub.cfg
   types:
   - vm
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -477,7 +425,6 @@ actions:
   - vm
   architectures:
   - aarch64
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -502,7 +449,6 @@ actions:
   variants:
   - default
   - desktop-kde
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -573,7 +519,6 @@ actions:
             printf 'auto lo\niface lo inet loopback\n\nauto eth0\niface eth0 inet dhcp\n' > /etc/network/interfaces
         fi
     fi
-
   types:
   - container
   variants:

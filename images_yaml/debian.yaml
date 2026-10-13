@@ -1,12 +1,10 @@
 image:
-  distribution: "debian"
-
+  distribution: debian
 source:
   downloader: debootstrap
   same_as: sid
   url: https://deb.debian.org/debian/
   keys:
-  # 0x126C0D24BD8A2942CC7DF8AC7638D0442B90D010
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -198,8 +196,6 @@ source:
     tizqJW3oSFiqIcpiyfN+0rLetGa0WslDnSIhyclfxOPMH14=
     =k46C
     -----END PGP PUBLIC KEY BLOCK-----
-
-  # 0xA1BD8E9D78F7FE5C3E65D8AF8B48AD6246925553
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -548,8 +544,6 @@ source:
     qCTHsZBLcjOQhV5Ubg==
     =L+5x
     -----END PGP PUBLIC KEY BLOCK-----
-
-  # 0x6D33866EDD8FFA41C0143AEDDCC9EFBF77E11517
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -604,8 +598,6 @@ source:
     idjr8CGNeffTyeMJbSniGisGOkhiX9TLbz8ufw==
     =a2kx
     -----END PGP PUBLIC KEY BLOCK-----
-
-  # 0x80D15823B7FD1561F9F7BCDDDC30D7C23CBBABEE
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -781,8 +773,6 @@ source:
     qn8+ouVQUr65+xcIST13Ffg80zc=
     =lfn1
     -----END PGP PUBLIC KEY BLOCK-----
-
-  # 0xE852514F5DF312F6
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -814,8 +804,6 @@ source:
     oPh9t/VGRvdQHA==
     =KM28
     -----END PGP PUBLIC KEY BLOCK-----
-
-  # 0xB7C5D7D6350947F8
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -943,8 +931,6 @@ source:
     22lSkijKki64QmcUnp84EDZQdk+myhnGBqi+yw==
     =swbo
     -----END PGP PUBLIC KEY BLOCK-----
-
-  # loong64
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -956,9 +942,7 @@ source:
     9/pnDQ==
     =EKk4
     -----END PGP PUBLIC KEY BLOCK-----
-
   variant: minbase
-
 targets:
   lxc:
     create_message: |-
@@ -966,51 +950,35 @@ targets:
 
       To enable SSH, run: apt install openssh-server
       No default root or user password are set by LXC.
-
     config:
     - type: all
       before: 5
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/debian.common.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/debian.common.conf
     - type: user
       before: 5
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/debian.userns.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/debian.userns.conf
     - type: all
       after: 4
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/common.conf
-
+      content: lxc.include = LXC_TEMPLATE_CONFIG/common.conf
     - type: user
       after: 4
-      content: |-
-        lxc.include = LXC_TEMPLATE_CONFIG/userns.conf
+      content: lxc.include = LXC_TEMPLATE_CONFIG/userns.conf
     - type: all
-      content: |-
-        lxc.arch = {{ image.architecture_personality }}
-
+      content: lxc.arch = {{ image.architecture_personality }}
 files:
 - path: /etc/hostname
   generator: hostname
-
 - path: /etc/hosts
   generator: hosts
-
 - path: /etc/resolvconf/resolv.conf.d/original
   generator: remove
-
 - path: /etc/resolvconf/resolv.conf.d/tail
   generator: remove
-
 - path: /etc/machine-id
   generator: dump
   content: uninitialized
-
 - path: /var/lib/dbus/machine-id
   generator: remove
-
 - path: /etc/systemd/network/eth0.network
   generator: dump
   content: |-
@@ -1030,7 +998,6 @@ files:
   - container
   variants:
   - default
-
 - path: /etc/systemd/network/enp5s0.network
   generator: dump
   content: |-
@@ -1050,7 +1017,6 @@ files:
   - vm
   variants:
   - default
-
 - path: /etc/default/grub.d/50-incus.cfg
   generator: dump
   content: |-
@@ -1067,45 +1033,36 @@ files:
     GRUB_TERMINAL=console
   types:
   - vm
-
 - path: /etc/dracut.conf.d/incus.conf
   generator: dump
-  content: |-
-    hostonly=no
+  content: hostonly=no
   types:
   - vm
   releases:
   - forky
-
 - name: meta-data
   generator: cloud-init
   variants:
   - cloud
-
 - name: network-config
   generator: cloud-init
   variants:
   - cloud
-
 - name: user-data
   generator: cloud-init
   variants:
   - cloud
-
 - name: vendor-data
   generator: cloud-init
   variants:
   - cloud
-
 - name: incus-agent
   generator: incus-agent
   types:
   - vm
-
 - generator: fstab
   types:
   - vm
-
 packages:
   manager: apt
   update: true
@@ -1135,14 +1092,12 @@ packages:
     - dos2unix
     - cron
     action: install
-
   - packages:
     - isc-dhcp-client
     releases:
     - bookworm
     - trixie
     action: install
-
   - packages:
     - debian-loong64-non-official-archive-keyring
     action: install
@@ -1151,7 +1106,6 @@ packages:
     - loong64
     releases:
     - trixie
-
   - packages:
     - dbus
     - systemd-resolved
@@ -1161,7 +1115,6 @@ packages:
     - bookworm
     - trixie
     - forky
-
   - packages:
     - cloud-init
     - gpg
@@ -1169,7 +1122,6 @@ packages:
     action: install
     variants:
     - cloud
-
   - packages:
     - polkitd
     action: install
@@ -1179,7 +1131,6 @@ packages:
     releases:
     - trixie
     - forky
-
   - packages:
     - pkexec
     action: install
@@ -1190,7 +1141,6 @@ packages:
     - bookworm
     - trixie
     - forky
-
   - packages:
     - grub-efi
     action: install
@@ -1198,7 +1148,6 @@ packages:
     - vm
     architectures:
     - amd64
-
   - packages:
     - linux-image-amd64
     action: install
@@ -1206,7 +1155,6 @@ packages:
     - vm
     architectures:
     - amd64
-
   - packages:
     - grub-efi-arm64
     - linux-image-arm64
@@ -1215,19 +1163,16 @@ packages:
     - vm
     architectures:
     - arm64
-
   - packages:
     - cloud-guest-utils
     action: install
     types:
     - vm
-
   - packages:
     - shim-signed
     action: install
     types:
     - vm
-
   - packages:
     - netplan.io
     action: install
@@ -1235,7 +1180,6 @@ packages:
     - cloud
     releases:
     - forky
-
   repositories:
   - name: sources.list
     url: |-
@@ -1247,7 +1191,6 @@ packages:
     - arm64
     - armhf
     - riscv64
-
   - name: sources.list
     url: |-
       deb https://loong13.debian.net/debian-loong64/ {{ image.release }} main contrib
@@ -1257,7 +1200,6 @@ packages:
     - loong64
     releases:
     - trixie
-
   - name: sources.list
     url: |-
       deb http://deb.debian.org/debian {{ image.release }} main contrib
@@ -1267,7 +1209,6 @@ packages:
     - loong64
     releases:
     - forky
-
 actions:
 - trigger: post-unpack
   action: |-
@@ -1277,10 +1218,8 @@ actions:
     cat /etc/resolv.conf > /tmp/resolv.conf
     umount -l /etc/resolv.conf || true
     mv /tmp/resolv.conf /etc/
-
   variants:
   - cloud
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -1289,7 +1228,6 @@ actions:
     # Enable networkd
     systemctl enable systemd-networkd.service
     systemctl enable systemd-networkd.socket
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -1301,7 +1239,6 @@ actions:
   - bookworm
   - trixie
   - forky
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -1319,7 +1256,6 @@ actions:
 
     # Cleanup temporary shadow paths
     rm /etc/*-
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -1328,7 +1264,6 @@ actions:
   releases:
   - trixie
   - forky
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -1339,7 +1274,6 @@ actions:
   - vm
   releases:
   - forky
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -1360,7 +1294,6 @@ actions:
     sed -i "s#root=[^ ]*#root=${DISTROBUILDER_ROOT_UUID}#g" /boot/grub/grub.cfg
   types:
   - vm
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -1385,7 +1318,6 @@ actions:
   - vm
   variants:
   - default
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -1397,7 +1329,6 @@ actions:
   - bookworm
   - trixie
   - forky
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -1468,7 +1399,6 @@ actions:
             printf 'auto lo\niface lo inet loopback\n\nauto eth0\niface eth0 inet dhcp\n' > /etc/network/interfaces
         fi
     fi
-
   types:
   - container
   variants:
