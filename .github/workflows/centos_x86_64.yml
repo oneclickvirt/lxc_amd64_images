@@ -35,7 +35,7 @@ jobs:
       shell: bash
       env:
         GH_TOKEN: ${{ github.token }}
-        CI_IMAGE_RELEASES: ${{ inputs.release }}
+        CI_IMAGE_RELEASES: ${{ github.event_name == 'schedule' && '9-Stream' || inputs.release }}
     timeout-minutes: 180
 'on':
   schedule:

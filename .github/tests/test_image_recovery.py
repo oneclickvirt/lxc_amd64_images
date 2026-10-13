@@ -59,7 +59,7 @@ class ImageRecoveryTests(unittest.TestCase):
             with self.subTest(filename=filename), self.assertRaises(ValueError):
                 self.check(filename)
 
-    def run_builder(self, script, release, build=False):
+    def run_builder(self, script, release, build=False, catalog_unavailable=False):
         # No provisioning or network in the fixture. All dependency commands are present.
         bin_dir = self.folder / "bin"
         bin_dir.mkdir(exist_ok=True)
@@ -67,6 +67,17 @@ class ImageRecoveryTests(unittest.TestCase):
             path = bin_dir / name
             path.write_text("#!/bin/sh\nexit 0\n")
             path.chmod(0o755)
+        catalog = bin_dir / "curl"
+        catalog.write_text("""#!/bin/sh
+if [ "$IMAGE_TEST_CATALOG_FAIL" = 1 ]; then exit 22; fi
+cat <<'CATALOG'
+name: release
+  - bookworm
+  - trixie
+
+CATALOG
+""")
+        catalog.chmod(0o755)
         sudo = bin_dir / "sudo"
         sudo.write_text('#!/bin/sh\nexec "$@"\n')
         sudo.chmod(0o755)
@@ -74,7 +85,7 @@ class ImageRecoveryTests(unittest.TestCase):
             path = bin_dir / name
             path.write_text('#!/bin/sh\nprintf "%s\\n" "$*" >> "$IMAGE_TEST_CALLS"\nexit 17\n')
             path.chmod(0o755)
-        environment = dict(os.environ, CI_IMAGE_RELEASES=release, IMAGE_TEST_CALLS=str(self.folder / "calls"),
+        environment = dict(os.environ, CI_IMAGE_RELEASES=release, IMAGE_TEST_CATALOG_FAIL="1" if catalog_unavailable else "0", IMAGE_TEST_CALLS=str(self.folder / "calls"),
                            PATH=str(bin_dir) + os.pathsep + os.environ["PATH"])
         bash = shutil.which("bash")
         # macOS's system Bash predates ${var,,}, used by these existing scripts.
@@ -99,6 +110,12 @@ class ImageRecoveryTests(unittest.TestCase):
                 self.assertEqual(Path("existing.tar.xz").read_bytes(), b"previous-good-image")
                 self.assertEqual(Path("disk.qcow2").read_bytes(), b"previous-good-vm")
                 self.assertFalse(Path("calls").exists())
+
+    def test_upstream_http_failure_uses_frozen_supported_catalog(self):
+        result = self.run_builder(ROOT / "build_images.sh", "trixie", catalog_unavailable=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue(all("_13_trixie_" in n for n in result.stdout.splitlines()[-1].split()))
+        self.assertFalse(Path("calls").exists())
 
     def test_unknown_release_and_distribution_fail(self):
         for script in self.scripts():
