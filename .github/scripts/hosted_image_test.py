@@ -153,6 +153,11 @@ def native_test(folder, metadata, rootfs, vm=False, cli='incus'):
         command=prefix+['init',alias,name,'-c','limits.memory=1GiB']
         if vm: command+=['--vm','-c','security.secureboot=false']
         run(command)
+        if vm and cli == 'incus':
+            # The upstream agent setup tries 9p, virtio-fs, then this CD.
+            # Keep native agent/SSH/network/reboot assertions unchanged even
+            # when an enterprise kernel omits a share filesystem driver.
+            run(prefix+['config','device','add',name,'agent-config','disk','source=agent:config'])
         if metadata.name=='metadata.tar.xz':
             address=run(prefix+['network','get','imagebr0','ipv4.address'],capture_output=True,text=True).stdout.strip()
             gateway=str(ipaddress.IPv4Interface(address).ip)

@@ -13,7 +13,9 @@ if [[ "$runtime" == lxd ]]; then
     sudo /snap/bin/lxd waitready --timeout=120
     cli=/snap/bin/lxc
 else
-    ci_retry sudo apt-get install -y --no-install-recommends incus incus-agent dnsmasq-base qemu-system-modules-spice swtpm
+    # Enterprise kernels can lack 9p. Provide both native virtio-fs and the
+    # supported agent configuration CD so guest execution survives that gap.
+    ci_retry sudo apt-get install -y --no-install-recommends incus incus-agent dnsmasq-base qemu-system-modules-spice swtpm virtiofsd genisoimage
     sudo systemctl start incus
     sudo incus admin waitready --timeout=120
     cli=incus
