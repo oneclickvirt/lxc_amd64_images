@@ -102,6 +102,29 @@ class SSHTransportTests(unittest.TestCase):
                 runtime.ssh_command(22022, Path('/tmp/key'), runtime.CHECK)
 
 class NativeStartupDiagnosticsTests(unittest.TestCase):
+    def test_readiness_diagnostics_are_bounded_and_exclude_host_keys_and_tokens(self):
+        output=io.StringIO()
+        diagnostic=subprocess.CompletedProcess(['fixture'],0,'x'*7000,'')
+        with mock.patch.dict(runtime.os.environ, {'GH_TOKEN':'secret-a','GITHUB_TOKEN':'secret-b'}), \
+             mock.patch.object(runtime.subprocess,'run',return_value=diagnostic) as execute, \
+             redirect_stderr(output):
+            runtime.native_diagnostics(['sudo','incus'],'fixture')
+        self.assertLess(len(output.getvalue()),12200)
+        self.assertEqual(execute.call_count,2)
+        for call in execute.call_args_list:
+            self.assertEqual(call.kwargs['timeout'],45)
+            self.assertNotIn('GH_TOKEN',call.kwargs['env'])
+            self.assertNotIn('GITHUB_TOKEN',call.kwargs['env'])
+        command=execute.call_args_list[1].args[0][-1]
+        self.assertIn('sshd -t',command)
+        self.assertNotIn('ssh_host_',command)
+
+    def test_readiness_diagnostic_error_does_not_interrupt_the_original_failure_path(self):
+        output=io.StringIO()
+        with mock.patch.object(runtime.subprocess,'run',side_effect=OSError('fixture')), redirect_stderr(output):
+            runtime.native_diagnostics(['sudo','incus'],'fixture')
+        self.assertEqual(output.getvalue().count('diagnostics unavailable: OSError'),2)
+
     def test_start_failure_prints_bounded_incus_instance_log(self):
         failure=subprocess.CalledProcessError(1,['sudo','incus','start','test-image'],stderr='forkstart failed')
         diagnostic=subprocess.CompletedProcess(['sudo','incus','info'],0,'x'*7000,'')

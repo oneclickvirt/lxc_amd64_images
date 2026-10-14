@@ -80,6 +80,36 @@ def kvm_available():
     except OSError:return False
 
 
+def native_diagnostics(prefix, name):
+    # Only public image guests reach this validator. Diagnose their service
+    # state without reading host keys, passwords or publishing credentials.
+    script = """set +e
+if command -v systemctl >/dev/null 2>&1; then
+  systemctl --no-pager --full status sshd ssh sshd-keygen.target
+  journalctl --no-pager -b -n 60 -u sshd -u ssh -u 'sshd-keygen*'
+fi
+if command -v rc-status >/dev/null 2>&1; then rc-status -a; fi
+if command -v sshd >/dev/null 2>&1; then sshd -t; fi
+if command -v ip >/dev/null 2>&1; then ip -brief address; ip route; fi
+if command -v ss >/dev/null 2>&1; then ss -lnt; fi
+test ! -f /etc/resolv.conf || cat /etc/resolv.conf
+"""
+    for title, command in [
+        ('instance', prefix+['info', name, '--show-log']),
+        ('guest service and network', prefix+['exec', name, '--', '/bin/sh', '-c', script]),
+    ]:
+        try:
+            result = subprocess.run(command, capture_output=True, text=True,
+                                    timeout=45, check=False, env=isolated_environment())
+            details = '\n'.join(part for part in (result.stdout, result.stderr) if part).strip()
+            if details:
+                print('Hosted '+title+' diagnostics:\n'+details[-6000:], file=sys.stderr)
+            elif result.returncode:
+                print('Hosted '+title+' diagnostics unavailable (exit '+str(result.returncode)+')', file=sys.stderr)
+        except (OSError, subprocess.SubprocessError) as error:
+            print('Hosted '+title+' diagnostics unavailable: '+type(error).__name__, file=sys.stderr)
+
+
 def native_test(folder, metadata, rootfs, vm=False, cli='incus'):
     alias='image-'+uuid.uuid4().hex[:12]; name='test-'+uuid.uuid4().hex[:12]
     prefix=['sudo', cli]
@@ -98,7 +128,7 @@ def native_test(folder, metadata, rootfs, vm=False, cli='incus'):
             except (subprocess.SubprocessError,OSError) as error:
                 last_error=type(error).__name__
             time.sleep(5)
-        subprocess.run(prefix+['info',name,'--show-log'],timeout=30,env=isolated_environment())
+        native_diagnostics(prefix, name)
         print('Last guest readiness error: '+last_error)
         raise RuntimeError('guest boot, SSH listener or external network check timed out')
     try:
