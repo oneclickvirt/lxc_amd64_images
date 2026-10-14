@@ -1,47 +1,53 @@
-name: test images
-
-on:
-  schedule:
-    - cron: '45 0 * * *'
+name: Hosted published image tests
+'on':
   workflow_dispatch:
-
+    inputs:
+      scope:
+        description: Published image coverage
+        type: choice
+        options:
+        - smoke
+        - full
+        default: smoke
+  schedule:
+  - cron: 27 3 * * 1
+permissions:
+  contents: read
+concurrency:
+  group: hosted-published-image-tests
+  cancel-in-progress: false
 jobs:
-  test_images:
-    runs-on: pve-1
-
+  catalog:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      matrix: ${{ steps.catalog.outputs.matrix }}
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-    - name: check path
-      run: |
-        pwd
-      
-    - name: test images
-      run: |
-        bash test.sh
-        
-    - name: Configure Git
-      run: |
-        git config --global user.name "daily-update"
-        git config --global user.email "tg@spiritlhl.top"
-      
-    - name: Add files to Git staging area
-      run: |
-        ls
-        pwd
-        git add .
-        
-    - name: Check Git status
-      run: |
-        git branch -a
-        git remote -v
-        git status
-    
-    - name: Commit changes
-      run: |
-        git commit -m "Update files" | true
-    
-    - name: Push changes
-      uses: ad-m/github-push-action@881a6320fdb16eb5318c5054f31c218aec2b324c # v1.3.0
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - id: catalog
+      env:
+        GH_TOKEN: ${{ github.token }}
+        SCOPE: ${{ inputs.scope || 'smoke' }}
+      run: python3 .github/scripts/published_image_suite.py matrix --scope "$SCOPE" --kind container
+  test:
+    needs: catalog
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix: ${{ fromJSON(needs.catalog.outputs.matrix) }}
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - name: Prepare disposable runtime
+      run: bash .github/scripts/prepare_hosted_runtime.sh incus
+    - name: Download verified published asset
+      env:
+        GH_TOKEN: ${{ github.token }}
+        IMAGE: ${{ matrix.image }}
+        TAG: ${{ matrix.tag }}
+      run: python3 .github/scripts/published_image_suite.py download
+    - name: Validate guest boot, SSH, network and restart
+      env:
+        IMAGE: ${{ matrix.image }}
+      run: python3 .github/scripts/hosted_image_test.py --file "$IMAGE" --runtime incus

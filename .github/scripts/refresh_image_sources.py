@@ -17,6 +17,7 @@ import urllib.request
 import yaml
 
 from append_image_actions import normalize_oracle
+from image_catalog import refresh_catalog
 from verify_image_definitions import verify
 
 REPOSITORIES = {"lxc_amd64_images", "lxc_arm_images", "incus_images", "lxd_images"}
@@ -133,11 +134,11 @@ def prepare(root, stage, repo, deadline):
         shutil.copy2(root / name, stage / name)
     scripts = stage / ".github/scripts"
     scripts.mkdir(parents=True)
-    for name in ["append_image_actions.py", "verify_image_definitions.py", "ci_network.sh"]:
+    for name in ["append_image_actions.py", "verify_image_definitions.py", "ci_network.sh", "image_catalog.py"]:
         shutil.copy2(root / ".github/scripts" / name, scripts / name)
     legacy = (root / ".github/scripts/refresh_image_definitions.sh").read_text()
+    source_commit = api_json("/repos/lxc/lxc-ci/commits/main", deadline)["sha"]
     if repo != "lxd_images":
-        source_commit = api_json("/repos/lxc/lxc-ci/commits/main", deadline)["sha"]
         if not re.fullmatch(r"[0-9a-f]{40}", source_commit):
             raise ValueError("invalid upstream definition commit")
         legacy = legacy.replace("/lxc/lxc-ci/main/", f"/lxc/lxc-ci/{source_commit}/")
@@ -158,11 +159,12 @@ def prepare(root, stage, repo, deadline):
     if code:
         raise subprocess.CalledProcessError(code, "isolated image definition generator")
     normalize_oracle(stage / "images_yaml/oracle.yaml")
+    refresh_catalog(stage, source_commit, deadline)
     validate(stage / "images_yaml")
     indexes = release_indexes(repo, deadline)
     for name, content in indexes.items():
         (stage / name).write_text(content)
-    names = ["images_yaml/" + path.name for path in sorted((stage / "images_yaml").iterdir()) if path.is_file()] + list(indexes)
+    names = ["images_yaml/" + path.name for path in sorted((stage / "images_yaml").iterdir()) if path.is_file()] + list(indexes) + [".github/image-catalog.json"]
     for name in names:
         (stage / name).chmod(0o644)
     return names

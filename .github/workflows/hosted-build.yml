@@ -1,0 +1,112 @@
+name: Hosted image build and boot validation
+'on':
+  workflow_dispatch:
+    inputs:
+      distro:
+        description: Distribution name or all
+        type: string
+        default: all
+      arch:
+        description: Hosted runner architecture
+        type: choice
+        options:
+        - all
+        - amd64
+        - arm64
+        default: all
+      scope:
+        description: Current supported catalog or include upstream development releases
+        type: choice
+        options:
+        - current
+        - full
+        default: current
+  schedule:
+  - cron: 41 1 * * 0
+permissions:
+  contents: read
+concurrency:
+  group: hosted-image-build-container
+  cancel-in-progress: false
+jobs:
+  catalog:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      matrix: ${{ steps.catalog.outputs.matrix }}
+    steps:
+    - &id001
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        persist-credentials: false
+    - id: catalog
+      env:
+        DISTRO: ${{ inputs.distro || 'all' }}
+        ARCH: ${{ inputs.arch || 'all' }}
+        SCOPE: ${{ inputs.scope || 'current' }}
+        KIND: container
+      run: python3 .github/scripts/image_catalog.py matrix --distro "$DISTRO" --arch "$ARCH" --scope "$SCOPE" --kind
+        "$KIND"
+  build-test-publish:
+    needs: catalog
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 180
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix: ${{ fromJSON(needs.catalog.outputs.matrix) }}
+    env:
+      CI_IMAGE_RELEASES: ${{ matrix.release }}
+      DISTRO: ${{ matrix.distro }}
+      ARCH: ${{ matrix.arch }}
+      KIND: ${{ matrix.kind }}
+    steps:
+    - *id001
+    - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+      with:
+        go-version: 1.26.5
+        cache: false
+    - name: Validate source definitions
+      run: |-
+        python3 -m venv "$RUNNER_TEMP/image-definition-check"
+        "$RUNNER_TEMP/image-definition-check/bin/python" -m pip install --disable-pip-version-check --retries 3 --timeout 30 PyYAML==6.0.3
+        "$RUNNER_TEMP/image-definition-check/bin/python" .github/scripts/verify_image_definitions.py
+    - name: Install verified image builder
+      run: bash .github/scripts/install_distrobuilder.sh
+    - name: Prepare disposable runtime
+      run: bash .github/scripts/prepare_hosted_runtime.sh incus
+    - name: Build, check, boot and restart every selected variant
+      shell: bash
+      run: |
+        set -euo pipefail
+        source .github/scripts/ci_network.sh
+        builder=build_images.sh
+        [[ "$KIND" != vm ]] || builder=build_kvm_images.sh
+        output=$(bash "$builder" "$DISTRO" false "$ARCH" | tail -n 1)
+        read -r -a assets <<< "$output"
+        [[ ${#assets[@]} -gt 0 ]] || { echo 'No image outputs selected' >&2; exit 1; }
+        sudo --preserve-env=CI_IMAGE_RELEASES,CI_IMAGE_VARIANTS bash -c 'source "$1"; export -f ci_retry gh git ci_clone_attempt curl wget; bash "$2" "$3" true "$4"' -- "$PWD/.github/scripts/ci_network.sh" "$builder" "$DISTRO" "$ARCH"
+        python3 .github/scripts/verify_image_outputs.py "${assets[@]}"
+        for file in "${assets[@]}"; do
+            python3 .github/scripts/hosted_image_test.py --file "$file" --runtime incus
+        done
+        printf '%s
+        ' "${assets[@]}" > "$RUNNER_TEMP/validated-images.txt"
+    - name: Publish only the completely validated image set
+      env:
+        GH_TOKEN: ${{ github.token }}
+      shell: bash
+      run: |
+        set -euo pipefail
+        mapfile -t assets < "$RUNNER_TEMP/validated-images.txt"
+        tag="$DISTRO"
+        [[ "$KIND" != vm ]] || tag=kvm_images
+        python3 .github/scripts/release_assets.py "$tag" "${assets[@]}"
+        printf '### Validated image outputs
+
+        ' >> "$GITHUB_STEP_SUMMARY"
+        printf -- '- %s
+        ' "${assets[@]}" >> "$GITHUB_STEP_SUMMARY"
+        sudo rm -f -- "${assets[@]}"

@@ -1,0 +1,302 @@
+{
+  "distros": {
+    "almalinux": {
+      "architectures": [
+        "amd64",
+        "arm64"
+      ],
+      "releases": [
+        {
+          "release": "8",
+          "version": "8"
+        },
+        {
+          "release": "9",
+          "version": "9"
+        },
+        {
+          "release": "10",
+          "version": "10"
+        }
+      ],
+      "variants": [
+        "default",
+        "cloud"
+      ]
+    },
+    "alpine": {
+      "architectures": [
+        "amd64",
+        "arm64"
+      ],
+      "releases": [
+        {
+          "release": "3.21",
+          "version": "3.21"
+        },
+        {
+          "release": "3.22",
+          "version": "3.22"
+        },
+        {
+          "release": "3.23",
+          "version": "3.23"
+        },
+        {
+          "release": "3.24",
+          "version": "3.24"
+        },
+        {
+          "release": "edge",
+          "version": "edge"
+        }
+      ],
+      "variants": [
+        "default",
+        "cloud"
+      ]
+    },
+    "archlinux": {
+      "architectures": [
+        "amd64",
+        "arm64"
+      ],
+      "releases": [
+        {
+          "release": "current",
+          "version": "current"
+        }
+      ],
+      "variants": [
+        "default",
+        "cloud"
+      ]
+    },
+    "centos": {
+      "architectures": [
+        "amd64",
+        "arm64"
+      ],
+      "releases": [
+        {
+          "release": "9-Stream",
+          "version": "9"
+        },
+        {
+          "release": "10-Stream",
+          "version": "10"
+        }
+      ],
+      "variants": [
+        "default",
+        "cloud"
+      ]
+    },
+    "debian": {
+      "architectures": [
+        "amd64",
+        "arm64"
+      ],
+      "releases": [
+        {
+          "release": "bookworm",
+          "version": "12"
+        },
+        {
+          "release": "trixie",
+          "version": "13"
+        },
+        {
+          "release": "forky",
+          "version": "14"
+        }
+      ],
+      "variants": [
+        "default",
+        "cloud"
+      ]
+    },
+    "fedora": {
+      "architectures": [
+        "amd64",
+        "arm64"
+      ],
+      "releases": [
+        {
+          "release": "43",
+          "version": "43"
+        },
+        {
+          "release": "44",
+          "version": "44"
+        }
+      ],
+      "variants": [
+        "default",
+        "cloud"
+      ]
+    },
+    "gentoo": {
+      "architectures": [
+        "amd64",
+        "arm64"
+      ],
+      "releases": [
+        {
+          "release": "current",
+          "version": "current"
+        }
+      ],
+      "variants": [
+        "cloud",
+        "openrc",
+        "systemd"
+      ]
+    },
+    "kali": {
+      "architectures": [
+        "amd64",
+        "arm64"
+      ],
+      "releases": [
+        {
+          "release": "kali-rolling",
+          "version": "latest"
+        }
+      ],
+      "variants": [
+        "default",
+        "cloud"
+      ]
+    },
+    "openeuler": {
+      "architectures": [
+        "amd64",
+        "arm64"
+      ],
+      "releases": [
+        {
+          "release": "24.03",
+          "version": "24.03"
+        }
+      ],
+      "variants": [
+        "default",
+        "cloud"
+      ]
+    },
+    "opensuse": {
+      "architectures": [
+        "amd64",
+        "arm64"
+      ],
+      "releases": [
+        {
+          "release": "16.0",
+          "version": "16.0"
+        },
+        {
+          "release": "tumbleweed",
+          "version": "tumbleweed"
+        }
+      ],
+      "variants": [
+        "default",
+        "cloud"
+      ]
+    },
+    "openwrt": {
+      "architectures": [
+        "amd64",
+        "arm64"
+      ],
+      "releases": [
+        {
+          "release": "snapshot",
+          "version": "snapshot"
+        },
+        {
+          "release": "25.12",
+          "version": "25.12"
+        }
+      ],
+      "variants": [
+        "default"
+      ]
+    },
+    "oracle": {
+      "architectures": [
+        "amd64",
+        "arm64"
+      ],
+      "releases": [
+        {
+          "release": "8",
+          "version": "8"
+        },
+        {
+          "release": "9",
+          "version": "9"
+        },
+        {
+          "release": "10",
+          "version": "10"
+        }
+      ],
+      "variants": [
+        "default",
+        "cloud"
+      ]
+    },
+    "rockylinux": {
+      "architectures": [
+        "amd64",
+        "arm64"
+      ],
+      "releases": [
+        {
+          "release": "8",
+          "version": "8"
+        },
+        {
+          "release": "9",
+          "version": "9"
+        },
+        {
+          "release": "10",
+          "version": "10"
+        }
+      ],
+      "variants": [
+        "default",
+        "cloud"
+      ]
+    },
+    "ubuntu": {
+      "architectures": [
+        "amd64",
+        "arm64"
+      ],
+      "releases": [
+        {
+          "release": "jammy",
+          "version": "22.04"
+        },
+        {
+          "release": "noble",
+          "version": "24.04"
+        },
+        {
+          "release": "resolute",
+          "version": "26.04"
+        }
+      ],
+      "variants": [
+        "default",
+        "cloud"
+      ]
+    }
+  },
+  "schema": 1,
+  "source_commit": "68c2ad30d002530333b3c6f22838d73808dde5ec"
+}

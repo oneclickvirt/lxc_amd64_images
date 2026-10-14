@@ -85,6 +85,14 @@ build_or_list_images() {
     read -ra versions <<< "$1"
     read -ra ver_nums <<< "$2"
     read -ra variants <<< "$3"
+    if [[ -n "${CI_IMAGE_VARIANTS:-}" ]]; then
+        local requested=() available=" ${variants[*]} "
+        read -ra requested <<< "$CI_IMAGE_VARIANTS"
+        for selected in "${requested[@]}"; do
+            [[ "$available" == *" $selected "* ]] || { echo "Unknown requested image variant" >&2; return 1; }
+        done
+        variants=("${requested[@]}")
+    fi
     local architectures=("$build_arch")
     local len=${#versions[@]}
     if (( len == 0 )); then echo "No image releases were obtained from the configured source" >&2; return 1; fi
@@ -278,6 +286,12 @@ build_or_list_images() {
 
 # 不同发行版的配置
 # build_or_list_images 镜像名字 镜像版本号 variants的值
+if [[ -f "${CI_IMAGE_CATALOG:-.github/image-catalog.json}" ]]; then
+    catalog_selection=$(python3 .github/scripts/image_catalog.py selection --catalog "${CI_IMAGE_CATALOG:-.github/image-catalog.json}" --distro "$run_funct" --arch "$build_arch") || exit 1
+    mapfile -t catalog_axes <<< "$catalog_selection"
+    [[ ${#catalog_axes[@]} == 3 ]] || { echo "Invalid validated catalog" >&2; exit 1; }
+    build_or_list_images "${catalog_axes[0]}" "${catalog_axes[1]}" "${catalog_axes[2]}"
+else
 case "$run_funct" in
 debian)
     URL="https://raw.githubusercontent.com/lxc/lxc-ci/main/jenkins/jobs/image-debian.yaml"
@@ -396,5 +410,6 @@ openeuler)
     exit 1
     ;;
 esac
+fi
 
 (( selected_images > 0 )) || { echo "No images match the requested release" >&2; exit 1; }

@@ -23,7 +23,7 @@ jobs:
         set -euo pipefail
         git config user.name "daily-update"
         git config user.email "tg@spiritlhl.top"
-        git add images_yaml *_images.txt
+        git add images_yaml *_images.txt .github/image-catalog.json
         if git diff --cached --quiet; then
           echo "No new source snapshot to commit."
           exit 0

@@ -29,7 +29,7 @@ path.write_text(source.replace(before, after))
 PY
 
 sudo apt-get update
-sudo apt-get install -y build-essential debootstrap rsync gpg squashfs-tools xz-utils
+sudo apt-get install -y build-essential debootstrap rsync gpg squashfs-tools xz-utils umoci btrfs-progs dosfstools qemu-utils parted
 (
   cd "$task_dir/distrobuilder-${version}"
   # The verified release contains vendored modules. Building cannot select a
