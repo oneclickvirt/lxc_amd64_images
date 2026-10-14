@@ -600,6 +600,7 @@ packages:
     - selinux-policy
     - selinux-policy-targeted
     action: remove
+  repositories: []
 actions:
 - trigger: post-unpack
   action: |-

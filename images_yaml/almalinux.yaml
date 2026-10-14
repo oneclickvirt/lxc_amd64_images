@@ -430,9 +430,7 @@ actions:
       done
     fi
     if [ ! -s "$kernel" ]; then echo "Kernel image $kernel not found" >&2; exit 1; fi
-    if command -v grubby >/dev/null 2>&1 && grubby --update-kernel="$kernel" --args="root=${DISTROBUILDER_ROOT_UUID} ro"; then
-      :
-    else
+    if ! grubby --update-kernel=/boot/vmlinuz-${kver} --args="root=${DISTROBUILDER_ROOT_UUID} ro"; then
       printf 'title AlmaLinux
     version %s
     linux /vmlinuz-%s
