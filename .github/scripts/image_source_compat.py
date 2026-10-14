@@ -109,6 +109,24 @@ kernel_path=$(find /boot -name "vmlinuz-${kver}" || true)"""
         entry['action'] = entry['action'].replace('console=tty1 console=ttyS0', 'console=tty1 console=ttyS0 console=ttyAMA0')
     path.write_text(serialize(document))
 
+    path = root / 'images_yaml/opensuse.yaml'
+    document = verify(path.read_text())
+    # New SUSE packages keep vendor SSH defaults under /usr/etc. Install the
+    # mutable config before repository customization hooks edit it.
+    ssh_hook = {'trigger': 'post-packages', 'action': """#!/bin/sh
+set -eu
+# hosted-suse-ssh-defaults
+if [ ! -s /etc/ssh/sshd_config ] && [ -s /usr/etc/ssh/sshd_config ]; then
+  mkdir -p /etc/ssh
+  cp /usr/etc/ssh/sshd_config /etc/ssh/sshd_config
+fi
+mkdir -p /etc/systemd/system/sshd.service.d
+printf '[Service]\\nExecStartPre=/usr/bin/ssh-keygen -A\\n' > /etc/systemd/system/sshd.service.d/10-host-keys.conf
+"""}
+    if ssh_hook not in document.setdefault('actions', []):
+        document['actions'].append(ssh_hook)
+    path.write_text(serialize(document))
+
     path = root / 'images_yaml/centos.yaml'
     document = verify(path.read_text())
     stale_mirror = 'https://mirror1.hs-esslingen.de/pub/Mirrors/centos-stream/'
@@ -134,4 +152,21 @@ kernel_path=$(find /boot -name "vmlinuz-${kver}" || true)"""
         document = verify(path.read_text())
         for entry in document.get('actions', []):
             entry['action'] = entry['action'].replace('PubkeyAuthentication no', 'PubkeyAuthentication yes')
+        # /run is recreated at boot. Dangling resolvers in SUSE and older
+        # Ubuntu images prevent the consumer from writing a DNS template
+        # before start. Keep DHCP policy and a writable resolver target.
+        dns_hook = {'trigger': 'post-files', 'types': ['container'], 'action': """#!/bin/sh
+set -eu
+# hosted-consumer-dns-file
+if [ -L /etc/resolv.conf ]; then
+  case "$(readlink /etc/resolv.conf)" in
+    /run/*|../run/*)
+      rm /etc/resolv.conf
+      touch /etc/resolv.conf
+      ;;
+  esac
+fi
+"""}
+        if dns_hook not in document.setdefault('actions', []):
+            document['actions'].append(dns_hook)
         path.write_text(serialize(document))

@@ -531,5 +531,20 @@ actions:
   variants:
   - cloud
   - default
+- trigger: post-files
+  types:
+  - container
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-consumer-dns-file
+    if [ -L /etc/resolv.conf ]; then
+      case "$(readlink /etc/resolv.conf)" in
+        /run/*|../run/*)
+          rm /etc/resolv.conf
+          touch /etc/resolv.conf
+          ;;
+      esac
+    fi
 mappings:
   architecture_map: alpinelinux

@@ -524,3 +524,29 @@ actions:
   variants:
   - cloud
   - default
+- trigger: post-packages
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-suse-ssh-defaults
+    if [ ! -s /etc/ssh/sshd_config ] && [ -s /usr/etc/ssh/sshd_config ]; then
+      mkdir -p /etc/ssh
+      cp /usr/etc/ssh/sshd_config /etc/ssh/sshd_config
+    fi
+    mkdir -p /etc/systemd/system/sshd.service.d
+    printf '[Service]\nExecStartPre=/usr/bin/ssh-keygen -A\n' > /etc/systemd/system/sshd.service.d/10-host-keys.conf
+- trigger: post-files
+  types:
+  - container
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-consumer-dns-file
+    if [ -L /etc/resolv.conf ]; then
+      case "$(readlink /etc/resolv.conf)" in
+        /run/*|../run/*)
+          rm /etc/resolv.conf
+          touch /etc/resolv.conf
+          ;;
+      esac
+    fi

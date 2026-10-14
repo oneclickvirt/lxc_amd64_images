@@ -138,6 +138,40 @@ class ImageSourceRefreshTests(unittest.TestCase):
         image_source_compat.normalize(self.root)
         self.assertEqual(before, self.snapshot())
 
+    def test_suse_dns_template_target_and_vendor_ssh_defaults_survive_refresh(self):
+        import image_source_compat
+        image_source_compat.normalize(self.root)
+        actions = verify((self.root / 'images_yaml/opensuse.yaml').read_text())['actions']
+        ssh = next(a for a in actions if 'hosted-suse-ssh-defaults' in a['action'])
+        dns = next(a for a in actions if 'hosted-consumer-dns-file' in a['action'])
+        self.assertEqual(ssh['trigger'], 'post-packages')
+        self.assertIn('cp /usr/etc/ssh/sshd_config /etc/ssh/sshd_config', ssh['action'])
+        self.assertIn('ExecStartPre=/usr/bin/ssh-keygen -A', ssh['action'])
+        self.assertEqual(dns['types'], ['container'])
+        self.assertIn('touch /etc/resolv.conf', dns['action'])
+        self.assertNotIn('NETCONFIG_DNS_POLICY', dns['action'])
+        previous = self.snapshot()
+        image_source_compat.normalize(self.root)
+        self.assertEqual(previous, self.snapshot())
+
+    def test_dangling_run_resolver_becomes_a_writable_consumer_target(self):
+        import image_source_compat
+        import subprocess
+        image_source_compat.normalize(self.root)
+        actions = verify((self.root / 'images_yaml/ubuntu.yaml').read_text())['actions']
+        hook = next(a['action'] for a in actions if 'hosted-consumer-dns-file' in a['action'])
+        directory = self.root / 'resolver-fixture'
+        directory.mkdir()
+        resolver = directory / 'resolv.conf'
+        for target in ['/run/netconfig/resolv.conf', '../run/systemd/resolve/stub-resolv.conf']:
+            resolver.unlink(missing_ok=True)
+            resolver.symlink_to(target)
+            subprocess.run(['sh', '-c', hook.replace('/etc/resolv.conf', str(resolver))], check=True, timeout=5)
+            self.assertFalse(resolver.is_symlink())
+            resolver.write_text('nameserver 10.0.0.1\n')
+            subprocess.run(['sh', '-c', hook.replace('/etc/resolv.conf', str(resolver))], check=True, timeout=5)
+            self.assertEqual(resolver.read_text(), 'nameserver 10.0.0.1\n')
+
     def test_upstream_compatibility_retains_signatures_and_is_idempotent(self):
         import image_source_compat
         fedora=self.root/'images_yaml/fedora.yaml'
@@ -168,7 +202,7 @@ class ImageSourceRefreshTests(unittest.TestCase):
         self.assertIn('/usr/lib/modules/',verify(alma.read_text())['actions'][0]['action'])
         openssh=[s for s in verify(gentoo.read_text())['packages']['sets'] if 'net-misc/openssh' in s['packages']]
         self.assertEqual(len(openssh),1)
-        self.assertIn('rc-update add sshd default',verify(gentoo.read_text())['actions'][-1]['action'])
+        self.assertTrue(any('rc-update add sshd default' in a['action'] for a in verify(gentoo.read_text())['actions']))
         centos_action=verify(centos.read_text())['actions'][0]['action']
         self.assertNotIn('mirror1.hs-esslingen.de',centos_action)
         self.assertEqual(centos_action.count('https://mirror.stream.centos.org/'),3)

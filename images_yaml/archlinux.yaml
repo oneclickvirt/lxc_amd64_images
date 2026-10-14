@@ -221,6 +221,17 @@ actions:
     cat > /etc/pacman.d/mirrorlist <<'MIRRORS'
     Server = https://ca.us.mirror.archlinuxarm.org/$arch/$repo
     Server = https://de3.mirror.archlinuxarm.org/$arch/$repo
+    MIRRORS
+- trigger: post-unpack
+  architectures:
+  - aarch64
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-arm-mirror-fallback
+    cat > /etc/pacman.d/mirrorlist <<'MIRRORS'
+    Server = https://ca.us.mirror.archlinuxarm.org/$arch/$repo
+    Server = https://de3.mirror.archlinuxarm.org/$arch/$repo
         MIRRORS
 - trigger: post-unpack
   action: |-
@@ -501,5 +512,20 @@ actions:
   variants:
   - cloud
   - default
+- trigger: post-files
+  types:
+  - container
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-consumer-dns-file
+    if [ -L /etc/resolv.conf ]; then
+      case "$(readlink /etc/resolv.conf)" in
+        /run/*|../run/*)
+          rm /etc/resolv.conf
+          touch /etc/resolv.conf
+          ;;
+      esac
+    fi
 mappings:
   architecture_map: archlinux
