@@ -36,7 +36,7 @@ jobs:
           rebuild=true
         fi
         git commit -m "Update validated image definitions and release indexes"
-        ci_retry git push origin "HEAD:${GITHUB_REF_NAME}"
+        "$RUNNER_TEMP/image-definition-check/bin/python" .github/scripts/push_image_snapshot.py --branch "$GITHUB_REF_NAME"
         if [[ "$rebuild" != true || "$BUILD_IMAGES" != true ]]; then
           echo "Validated source snapshot committed; no duplicate image build requested."
           exit 0
