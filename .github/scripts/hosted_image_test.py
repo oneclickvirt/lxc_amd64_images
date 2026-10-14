@@ -110,6 +110,22 @@ test ! -f /etc/resolv.conf || cat /etc/resolv.conf
             print('Hosted '+title+' diagnostics unavailable: '+type(error).__name__, file=sys.stderr)
 
 
+def native_host_diagnostics(prefix, name, vm=False):
+    unit = 'snap.lxd.daemon' if 'lxc' in Path(prefix[-1]).name else 'incus'
+    commands = [('runtime daemon', ['sudo', 'journalctl', '--no-pager', '-n', '80', '-u', unit])]
+    if vm:
+        commands.append(('VM console', prefix + ['console', name, '--show-log']))
+    for title, command in commands:
+        try:
+            result = subprocess.run(command, capture_output=True, text=True, timeout=30,
+                                    check=False, env=isolated_environment())
+            details = '\n'.join(part for part in (result.stdout, result.stderr) if part).strip()
+            if details:
+                print('Hosted '+title+' diagnostics:\n'+details[-12000:], file=sys.stderr)
+        except (OSError, subprocess.SubprocessError) as error:
+            print('Hosted '+title+' diagnostics unavailable: '+type(error).__name__, file=sys.stderr)
+
+
 def native_test(folder, metadata, rootfs, vm=False, cli='incus'):
     alias='image-'+uuid.uuid4().hex[:12]; name='test-'+uuid.uuid4().hex[:12]
     prefix=['sudo', cli]
@@ -129,6 +145,7 @@ def native_test(folder, metadata, rootfs, vm=False, cli='incus'):
                 last_error=type(error).__name__
             time.sleep(5)
         native_diagnostics(prefix, name)
+        native_host_diagnostics(prefix, name, vm=vm)
         print('Last guest readiness error: '+last_error)
         raise RuntimeError('guest boot, SSH listener or external network check timed out')
     try:
@@ -158,6 +175,7 @@ def native_test(folder, metadata, rootfs, vm=False, cli='incus'):
                     print('Incus instance diagnostics unavailable (exit '+str(diagnostic.returncode)+')',file=sys.stderr)
             except (OSError,subprocess.SubprocessError) as diagnostic_error:
                 print('Incus instance diagnostics unavailable: '+type(diagnostic_error).__name__,file=sys.stderr)
+            native_host_diagnostics(prefix, name, vm=vm)
             raise
         boot=ready()
         run(prefix+['restart',name,'--force'],timeout=180)

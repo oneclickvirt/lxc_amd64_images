@@ -119,6 +119,26 @@ class FirmwareFallbackTests(unittest.TestCase):
 
 
 class NativeStartupDiagnosticsTests(unittest.TestCase):
+    def test_vm_host_diagnostics_capture_console_without_guest_agent_or_tokens(self):
+        output = io.StringIO()
+        diagnostic = subprocess.CompletedProcess(['fixture'], 0, 'x' * 15000, '')
+        with mock.patch.dict(runtime.os.environ, {'GH_TOKEN': 'secret-a', 'GITHUB_TOKEN': 'secret-b'}), mock.patch.object(runtime.subprocess, 'run', return_value=diagnostic) as execute, redirect_stderr(output):
+            runtime.native_host_diagnostics(['sudo', 'incus'], 'fixture', vm=True)
+        self.assertEqual(execute.call_count, 2)
+        self.assertLess(len(output.getvalue()), 24200)
+        self.assertEqual(execute.call_args_list[1].args[0], ['sudo', 'incus', 'console', 'fixture', '--show-log'])
+        for call in execute.call_args_list:
+            self.assertEqual(call.kwargs['timeout'], 30)
+            self.assertNotIn('GH_TOKEN', call.kwargs['env'])
+            self.assertNotIn('GITHUB_TOKEN', call.kwargs['env'])
+
+    def test_lxd_diagnostics_select_its_snap_daemon_and_preserve_failures(self):
+        output = io.StringIO()
+        with mock.patch.object(runtime.subprocess, 'run', side_effect=OSError('fixture')) as execute, redirect_stderr(output):
+            runtime.native_host_diagnostics(['sudo', '/snap/bin/lxc'], 'fixture')
+        self.assertIn('snap.lxd.daemon', execute.call_args.args[0])
+        self.assertIn('diagnostics unavailable: OSError', output.getvalue())
+
     def test_readiness_diagnostics_are_bounded_and_exclude_host_keys_and_tokens(self):
         output=io.StringIO()
         diagnostic=subprocess.CompletedProcess(['fixture'],0,'x'*7000,'')
@@ -147,7 +167,7 @@ class NativeStartupDiagnosticsTests(unittest.TestCase):
         diagnostic=subprocess.CompletedProcess(['sudo','incus','info'],0,'x'*7000,'')
         output=io.StringIO()
         with mock.patch.object(runtime,'run',side_effect=[None,None,None,failure]), \
-             mock.patch.object(runtime.subprocess,'run',return_value=diagnostic) as execute, \
+             mock.patch.object(runtime.subprocess,'run',side_effect=[diagnostic, subprocess.CompletedProcess(['journalctl'],0,'',''), None, None]) as execute, \
              redirect_stderr(output):
             with self.assertRaises(subprocess.CalledProcessError):
                 runtime.native_test(Path('/tmp'),SimpleNamespace(name='image.tar.xz'),Path('/tmp/rootfs.tar.xz'))
@@ -163,6 +183,7 @@ class NativeStartupDiagnosticsTests(unittest.TestCase):
         with mock.patch.object(runtime,'run',side_effect=[None,None,None,failure]), \
              mock.patch.object(runtime.subprocess,'run',side_effect=[
                  subprocess.TimeoutExpired('incus info',30),
+                 subprocess.TimeoutExpired('journalctl',30),
                  subprocess.TimeoutExpired('incus delete',60),
                  OSError('incus image delete unavailable'),
              ]), \
