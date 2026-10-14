@@ -62,7 +62,8 @@ def refresh_catalog(root, commit, deadline):
     path.write_text(json.dumps(data,indent=2,sort_keys=True)+'\n')
 
 
-def matrix(data, repo, distro='all', scope='current', kind='container', architecture='all'):
+def matrix(data, repo, distro='all', scope='current', kind='container', architecture='all', exact_release='', variant=''):
+    if repo.startswith('lxc_') and kind != 'container': raise ValueError('LXC repositories only build containers')
     if distro != 'all' and distro not in DISTROS: raise ValueError('unknown distribution')
     arches = ['amd64'] if repo=='lxc_amd64_images' else ['arm64'] if repo=='lxc_arm_images' else ['amd64','arm64']
     if architecture != 'all': arches=[a for a in arches if a==architecture]
@@ -70,8 +71,10 @@ def matrix(data, repo, distro='all', scope='current', kind='container', architec
     for name,config in sorted(data['distros'].items()):
         if distro != 'all' and distro != name: continue
         if kind == 'vm' and name in ('kali','oracle'): continue
+        if variant and variant not in config['variants']: raise ValueError('unknown image variant')
         for release in config['releases']:
-            if scope != 'full' and release['release'] in ('forky','snapshot','edge'): continue
+            if exact_release and exact_release != release['release']: continue
+            if not exact_release and scope != 'full' and release['release'] in ('forky','snapshot','edge'): continue
             for arch in arches:
                 if arch in config['architectures']:
                     rows.append({'distro':name,'release':release['release'],'arch':arch,
@@ -84,6 +87,7 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('command',choices=['selection','matrix'])
     parser.add_argument('--catalog',default='.github/image-catalog.json');parser.add_argument('--distro',default='all')
     parser.add_argument('--scope',choices=['current','full'],default='current');parser.add_argument('--kind',choices=['container','vm'],default='container')
+    parser.add_argument('--release',default='');parser.add_argument('--variant',default='')
     parser.add_argument('--arch',choices=['all','amd64','arm64','x86_64','aarch64'],default='all')
     args=parser.parse_args();data=validate(json.loads(Path(args.catalog).read_text()))
     if args.command=='selection':
@@ -92,7 +96,7 @@ def main():
         print(' '.join(r['version'] for r in config['releases']))
         print(' '.join(config['variants']))
     else:
-        value=matrix(data,os.environ['GITHUB_REPOSITORY'].split('/')[-1],args.distro,args.scope,args.kind,args.arch)
+        value=matrix(data,os.environ['GITHUB_REPOSITORY'].split('/')[-1],args.distro,args.scope,args.kind,args.arch,args.release,args.variant)
         encoded=json.dumps(value,separators=(',',':'));print(encoded)
         with open(os.environ['GITHUB_OUTPUT'],'a') as output:print('matrix='+encoded,file=output)
 

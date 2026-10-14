@@ -142,11 +142,11 @@ build_or_list_images() {
                     if [ "$version" = "7" ] && [ "${arch}" != "amd64" ] && [ "${arch}" != "x86_64" ]; then
                         EXTRA_ARGS="-o source.url=http://mirror.math.princeton.edu/pub/centos-altarch/ -o source.skip_verification=true"
                     fi
-                    if [ "$version" = "8-Stream" ] || [ "$version" = "9-Stream" ]; then
+                    if [ "$version" = "8-Stream" ] || [ "$version" = "9-Stream" ] || [ "$version" = "10-Stream" ]; then
                         EXTRA_ARGS="${EXTRA_ARGS} -o source.variant=boot"
                     fi
-                    if [ "$version" = "9-Stream" ]; then
-                        EXTRA_ARGS="${EXTRA_ARGS} -o source.url=https://mirror1.hs-esslingen.de/pub/Mirrors/centos-stream"
+                    if [ "$version" = "9-Stream" ] || [ "$version" = "10-Stream" ]; then
+                        EXTRA_ARGS="${EXTRA_ARGS} -o source.url=https://mirror.stream.centos.org"
                     fi
                 elif [[ "$run_funct" == "rockylinux" ]]; then
                     [ "${arch}" = "amd64" ] && arch="x86_64"
@@ -166,7 +166,7 @@ build_or_list_images() {
                     [ "${arch}" = "amd64" ] && arch="x86_64"
                     [ "${arch}" = "arm64" ] && arch="aarch64"
                     if [ "${arch}" != "amd64" ] && [ "${arch}" != "i386" ] && [ "${arch}" != "x86_64" ]; then
-                        EXTRA_ARGS="-o source.url=http://os.archlinuxarm.org"
+                        EXTRA_ARGS="-o source.url=https://ca.us.mirror.archlinuxarm.org"
                     fi
                 elif [[ "$run_funct" == "alpine" ]]; then
                     [ "${arch}" = "amd64" ] && arch="x86_64"

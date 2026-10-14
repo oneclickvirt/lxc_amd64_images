@@ -16,7 +16,7 @@ import urllib.request
 
 import yaml
 
-from append_image_actions import normalize_oracle
+from append_image_actions import normalize_oracle, normalize_el10, normalize_el_boot
 from image_catalog import refresh_catalog
 from verify_image_definitions import verify
 
@@ -159,6 +159,8 @@ def prepare(root, stage, repo, deadline):
     if code:
         raise subprocess.CalledProcessError(code, "isolated image definition generator")
     normalize_oracle(stage / "images_yaml/oracle.yaml")
+    normalize_el10(stage / "images_yaml/almalinux.yaml")
+    normalize_el_boot(stage / "images_yaml/almalinux.yaml")
     refresh_catalog(stage, source_commit, deadline)
     validate(stage / "images_yaml")
     indexes = release_indexes(repo, deadline)

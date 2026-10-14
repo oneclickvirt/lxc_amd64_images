@@ -21,12 +21,48 @@ name: Hosted image build and boot validation
         - current
         - full
         default: current
+      release:
+        description: Exact upstream release; empty uses the selected catalog
+        type: string
+        default: ''
+      variant:
+        description: Exact variant; empty builds all supported variants
+        type: string
+        default: ''
+      kind:
+        type: choice
+        options:
+        - container
+        default: container
+        description: LXC image type
   schedule:
   - cron: 41 1 * * 0
+  workflow_call:
+    inputs:
+      distro:
+        type: string
+        default: all
+      arch:
+        type: string
+        default: all
+      scope:
+        type: string
+        default: current
+      release:
+        type: string
+        default: ''
+      variant:
+        type: string
+        default: ''
+      kind:
+        type: string
+        default: container
 permissions:
-  contents: read
+  contents: write
 concurrency:
-  group: hosted-image-build-container
+  group: hosted-image-build-${{ inputs.distro || 'all' }}-${{ inputs.kind || 'container'
+    }}-${{ inputs.arch || 'all' }}-${{ inputs.release || inputs.scope || 'current'
+    }}
   cancel-in-progress: false
 jobs:
   catalog:
@@ -36,7 +72,7 @@ jobs:
       matrix: ${{ steps.catalog.outputs.matrix }}
     steps:
     - &id001
-      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         persist-credentials: false
     - id: catalog
@@ -45,8 +81,10 @@ jobs:
         ARCH: ${{ inputs.arch || 'all' }}
         SCOPE: ${{ inputs.scope || 'current' }}
         KIND: container
-      run: python3 .github/scripts/image_catalog.py matrix --distro "$DISTRO" --arch "$ARCH" --scope "$SCOPE" --kind
-        "$KIND"
+        RELEASE: ${{ inputs.release }}
+        VARIANT: ${{ inputs.variant }}
+      run: python3 .github/scripts/image_catalog.py matrix --distro "$DISTRO" --arch
+        "$ARCH" --scope "$SCOPE" --kind "$KIND" --release "$RELEASE" --variant "$VARIANT"
   build-test-publish:
     needs: catalog
     runs-on: ${{ matrix.runner }}
@@ -62,51 +100,62 @@ jobs:
       DISTRO: ${{ matrix.distro }}
       ARCH: ${{ matrix.arch }}
       KIND: ${{ matrix.kind }}
+      CI_IMAGE_VARIANTS: ${{ inputs.variant }}
     steps:
     - *id001
-    - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+    - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e
       with:
         go-version: 1.26.5
         cache: false
     - name: Validate source definitions
-      run: |-
-        python3 -m venv "$RUNNER_TEMP/image-definition-check"
-        "$RUNNER_TEMP/image-definition-check/bin/python" -m pip install --disable-pip-version-check --retries 3 --timeout 30 PyYAML==6.0.3
-        "$RUNNER_TEMP/image-definition-check/bin/python" .github/scripts/verify_image_definitions.py
+      run: 'python3 -m venv "$RUNNER_TEMP/image-definition-check"
+
+        "$RUNNER_TEMP/image-definition-check/bin/python" -m pip install --disable-pip-version-check
+        --retries 3 --timeout 30 PyYAML==6.0.3
+
+        "$RUNNER_TEMP/image-definition-check/bin/python" .github/scripts/verify_image_definitions.py'
     - name: Install verified image builder
       run: bash .github/scripts/install_distrobuilder.sh
     - name: Prepare disposable runtime
       run: bash .github/scripts/prepare_hosted_runtime.sh incus
     - name: Build, check, boot and restart every selected variant
       shell: bash
-      run: |
-        set -euo pipefail
-        source .github/scripts/ci_network.sh
-        builder=build_images.sh
-        [[ "$KIND" != vm ]] || builder=build_kvm_images.sh
-        output=$(bash "$builder" "$DISTRO" false "$ARCH" | tail -n 1)
-        read -r -a assets <<< "$output"
-        [[ ${#assets[@]} -gt 0 ]] || { echo 'No image outputs selected' >&2; exit 1; }
-        sudo --preserve-env=CI_IMAGE_RELEASES,CI_IMAGE_VARIANTS bash -c 'source "$1"; export -f ci_retry gh git ci_clone_attempt curl wget; bash "$2" "$3" true "$4"' -- "$PWD/.github/scripts/ci_network.sh" "$builder" "$DISTRO" "$ARCH"
-        python3 .github/scripts/verify_image_outputs.py "${assets[@]}"
-        for file in "${assets[@]}"; do
-            python3 .github/scripts/hosted_image_test.py --file "$file" --runtime incus
-        done
-        printf '%s
-        ' "${assets[@]}" > "$RUNNER_TEMP/validated-images.txt"
+      run: "set -euo pipefail\nsource .github/scripts/ci_network.sh\nbuilder=build_images.sh\n\
+        [[ \"$KIND\" != vm ]] || builder=build_kvm_images.sh\noutput=$(bash \"$builder\"\
+        \ \"$DISTRO\" false \"$ARCH\" | tail -n 1)\nread -r -a assets <<< \"$output\"\
+        \n[[ ${#assets[@]} -gt 0 ]] || { echo 'No image outputs selected' >&2; exit\
+        \ 1; }\nsudo --preserve-env=CI_IMAGE_RELEASES,CI_IMAGE_VARIANTS bash -c 'source\
+        \ \"$1\"; export -f ci_retry gh git ci_clone_attempt curl wget; bash \"$2\"\
+        \ \"$3\" true \"$4\"' -- \"$PWD/.github/scripts/ci_network.sh\" \"$builder\"\
+        \ \"$DISTRO\" \"$ARCH\"\npython3 .github/scripts/verify_image_outputs.py \"\
+        ${assets[@]}\"\nfor file in \"${assets[@]}\"; do\n    python3 .github/scripts/hosted_image_test.py\
+        \ --file \"$file\" --runtime incus\ndone\nprintf '%s\n' \"${assets[@]}\" >\
+        \ \"$RUNNER_TEMP/validated-images.txt\"\n"
     - name: Publish only the completely validated image set
       env:
         GH_TOKEN: ${{ github.token }}
       shell: bash
-      run: |
-        set -euo pipefail
-        mapfile -t assets < "$RUNNER_TEMP/validated-images.txt"
-        tag="$DISTRO"
-        [[ "$KIND" != vm ]] || tag=kvm_images
-        python3 .github/scripts/release_assets.py "$tag" "${assets[@]}"
-        printf '### Validated image outputs
+      run: 'set -euo pipefail
 
-        ' >> "$GITHUB_STEP_SUMMARY"
-        printf -- '- %s
-        ' "${assets[@]}" >> "$GITHUB_STEP_SUMMARY"
+        mapfile -t assets < "$RUNNER_TEMP/validated-images.txt"
+
+        tag="$DISTRO"
+
+        [[ "$KIND" != vm ]] || tag=kvm_images
+
+        python3 .github/scripts/release_assets.py "$tag" "${assets[@]}"
+
+        printf ''### Validated image outputs
+
+
+        '' >> "$GITHUB_STEP_SUMMARY"
+
+        printf -- ''- %s
+
+        '' "${assets[@]}" >> "$GITHUB_STEP_SUMMARY"
+
         sudo rm -f -- "${assets[@]}"
+
+        '
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'

@@ -13,6 +13,7 @@ def verify(path, minimum=None, maximum=2 * 1024 * 1024 * 1024):
     path = Path(path)
     openwrt = path.name.startswith("openwrt_")
     alpine = path.name.startswith("alpine_")
+    alpine = path.name.startswith("alpine_")
     if minimum is None:
         minimum = (1 if openwrt or alpine else 10) * 1024 * 1024
     if not re.fullmatch(r"[A-Za-z0-9_.-]+\.(zip|tar\.xz)", path.name) or path.name != str(path):
@@ -25,6 +26,14 @@ def verify(path, minimum=None, maximum=2 * 1024 * 1024 * 1024):
         with zipfile.ZipFile(path) as archive:
             if not archive.infolist() or archive.testzip() is not None:
                 raise ValueError("ZIP image integrity check failed")
+            if alpine and not path.name.endswith('_kvm.zip'):
+                names = [Path(member.filename).name for member in archive.infolist() if not member.is_dir()]
+                if names.count('rootfs.squashfs') != 1 or sum(names.count(n) for n in ['incus.tar.xz','lxd.tar.xz']) != 1:
+                    raise ValueError('Alpine ZIP requires exactly one rootfs and metadata pair')
+                member = next(m for m in archive.infolist() if Path(m.filename).name == 'rootfs.squashfs')
+                with archive.open(member) as rootfs:
+                    if rootfs.read(4) != b'hsqs':
+                        raise ValueError('Alpine ZIP rootfs is not SquashFS')
     else:
         # Consume the entire XZ stream to check its checksum, not just its first tar header.
         with lzma.open(path, "rb") as compressed:

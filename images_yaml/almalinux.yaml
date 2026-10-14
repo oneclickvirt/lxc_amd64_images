@@ -418,7 +418,22 @@ actions:
 
     # Update files in /boot/loader/entries/. `grubby` needs to be run after
     # `grub2-mkconfig` as the latter overwrites files in /boot/loader/entries/.
-    grubby --update-kernel=/boot/vmlinuz-${kver} --args="root=${DISTROBUILDER_ROOT_UUID} ro"
+    # hosted-compatible-bls: retain upstream grubby and supply missing RPM boot metadata
+    mkdir -p /boot/grub2 /boot/loader/entries
+    if [ ! -f /boot/grub2/grubenv ]; then
+      grub2-editenv /boot/grub2/grubenv create
+    fi
+    test -s "/boot/vmlinuz-${kver}"
+    if ! grubby --update-kernel=/boot/vmlinuz-${kver} --args="root=${DISTROBUILDER_ROOT_UUID} ro"; then
+      printf 'title AlmaLinux
+    version %s
+    linux /vmlinuz-%s
+    initrd /initramfs-%s.img
+    options root=%s ro console=tty0 console=ttyS0 console=ttyAMA0
+    ' "${kver}" "${kver}" "${kver}" "${DISTROBUILDER_ROOT_UUID}" > "/boot/loader/entries/hosted-${kver}.conf"
+      grubby --update-kernel=/boot/vmlinuz-${kver} --args="root=${DISTROBUILDER_ROOT_UUID} ro"
+      grub2-mkconfig -o "${target}"
+    fi
 
     # Regenerate initramfs
     dracut --kver "${kver}" -f
@@ -539,9 +554,9 @@ actions:
     printf "[main]\ndhcp=dhclient\n" > /etc/NetworkManager/conf.d/dhcp-client.conf
 
     systemctl enable NetworkManager.service
-  types:
+  types: &id001
   - container
-  variants:
+  variants: &id002
   - default
   releases:
   - 9
@@ -632,3 +647,16 @@ actions:
   variants:
   - cloud
   - default
+- trigger: post-files
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    mkdir -p /etc/NetworkManager/conf.d/
+    printf "[main]\ndhcp=internal\n" > /etc/NetworkManager/conf.d/dhcp-client.conf
+
+    systemctl enable NetworkManager.service
+  types: *id001
+  variants: *id002
+  releases:
+  - '10'

@@ -62,6 +62,21 @@ class ImageSourceRefreshTests(unittest.TestCase):
             hooks.normalize_oracle(path)
         self.assertEqual(path.read_bytes(), rejected)
 
+    def test_el10_network_normalization_is_stable_and_preserves_el8_el9(self):
+        path = self.root / 'images_yaml/almalinux.yaml'
+        path.write_text(DEFINITION.replace('actions: []', 'actions:\n- trigger: post-files\n  types: [container]\n  releases: [9]\n  action: printf "dhcp=dhclient"') + 'packages:\n  sets:\n  - action: install\n    packages: [curl, dhclient]\n  - action: install\n    packages: [NetworkManager]\n    types: [container]\n    releases: [9]\n')
+        hooks.normalize_el10(path)
+        document = verify(path.read_text())
+        for entry in document['packages']['sets']:
+            if 'dhclient' in entry['packages']:
+                self.assertEqual(set(map(str, entry['releases'])), {'8', '9'})
+            if 'NetworkManager' in entry['packages']:
+                self.assertIn('10', list(map(str, entry['releases'])))
+        self.assertTrue(any('dhcp=internal' in e['action'] and e['releases'] == ['10'] for e in document['actions']))
+        normalized = path.read_bytes()
+        hooks.normalize_el10(path)
+        self.assertEqual(path.read_bytes(), normalized)
+
     def test_failed_partial_source_refresh_preserves_every_original(self):
         before = self.snapshot()
 
