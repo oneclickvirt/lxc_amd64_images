@@ -185,6 +185,28 @@ class ImageSourceRefreshTests(unittest.TestCase):
             subprocess.run(['sh', '-c', hook.replace('/etc/resolv.conf', str(resolver))], check=True, timeout=5)
             self.assertEqual(resolver.read_text(), 'nameserver 10.0.0.1\n')
 
+    def test_vm_kernel_core_layout_recovers_missing_boot_image_and_preserves_existing(self):
+        import image_source_compat
+        import subprocess
+        import re
+        image_source_compat.normalize(self.root)
+        actions = verify((self.root / 'images_yaml/centos.yaml').read_text())['actions']
+        hook = next(a for a in actions if 'hosted-rpm-kernel-image' in a['action'])
+        self.assertEqual(hook['types'], ['vm'])
+        folder = self.root / 'kernel-fixture'
+        (folder / 'usr/lib/modules/test-kernel').mkdir(parents=True)
+        (folder / 'lib/modules').mkdir(parents=True)
+        kernel = folder / 'usr/lib/modules/test-kernel/vmlinuz'
+        kernel.write_bytes(b'vendor kernel fixture')
+        command = re.sub(r'/usr/lib/modules/|/lib/modules/|/boot', lambda match: str(folder) + match.group(), hook['action'])
+        subprocess.run(['sh', '-c', command], check=True, timeout=5)
+        output = folder / 'boot/vmlinuz-test-kernel'
+        self.assertEqual(output.read_bytes(), kernel.read_bytes())
+        output.write_bytes(b'existing boot image')
+        subprocess.run(['sh', '-c', command], check=True, timeout=5)
+        self.assertEqual(output.read_bytes(), b'existing boot image')
+
+
     def test_upstream_compatibility_retains_signatures_and_is_idempotent(self):
         import image_source_compat
         fedora=self.root/'images_yaml/fedora.yaml'

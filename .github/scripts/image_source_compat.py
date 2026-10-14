@@ -164,6 +164,23 @@ systemctl set-default multi-user.target
 
     for path in (root / 'images_yaml').glob('*.yaml'):
         document = verify(path.read_text())
+        if path.stem in ('almalinux', 'centos', 'rockylinux', 'fedora', 'openeuler'):
+            # Current kernel-core packages can keep their bootable image in
+            # /usr/lib/modules, while the VM hooks expect it under /boot.
+            kernel_hook = {'trigger': 'post-packages', 'types': ['vm'], 'action': """#!/bin/sh
+set -eu
+# hosted-rpm-kernel-image
+mkdir -p /boot
+for modules in /usr/lib/modules/* /lib/modules/*; do
+  [ -d "$modules" ] || continue
+  version=${modules##*/}
+  if [ -s "$modules/vmlinuz" ] && [ ! -s "/boot/vmlinuz-$version" ]; then
+    cp "$modules/vmlinuz" "/boot/vmlinuz-$version"
+  fi
+done
+"""}
+            if kernel_hook not in document.setdefault('actions', []):
+                document['actions'].append(kernel_hook)
         for entry in document.get('actions', []):
             entry['action'] = entry['action'].replace('PubkeyAuthentication no', 'PubkeyAuthentication yes')
         # /run is recreated at boot. Dangling resolvers in SUSE and older

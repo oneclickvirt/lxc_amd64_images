@@ -688,3 +688,18 @@ actions:
           ;;
       esac
     fi
+- trigger: post-packages
+  types:
+  - vm
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-rpm-kernel-image
+    mkdir -p /boot
+    for modules in /usr/lib/modules/* /lib/modules/*; do
+      [ -d "$modules" ] || continue
+      version=${modules##*/}
+      if [ -s "$modules/vmlinuz" ] && [ ! -s "/boot/vmlinuz-$version" ]; then
+        cp "$modules/vmlinuz" "/boot/vmlinuz-$version"
+      fi
+    done
