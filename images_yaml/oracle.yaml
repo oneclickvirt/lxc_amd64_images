@@ -273,3 +273,9 @@ actions:
           ;;
       esac
     fi
+- trigger: post-packages
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-oracle-runtime-target
+    systemctl set-default multi-user.target

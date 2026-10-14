@@ -138,6 +138,19 @@ class ImageSourceRefreshTests(unittest.TestCase):
         image_source_compat.normalize(self.root)
         self.assertEqual(before, self.snapshot())
 
+    def test_oracle_installer_default_target_is_replaced_after_every_refresh(self):
+        import image_source_compat
+        image_source_compat.normalize(self.root)
+        actions = verify((self.root / 'images_yaml/oracle.yaml').read_text())['actions']
+        hook = next(a for a in actions if 'hosted-oracle-runtime-target' in a['action'])
+        self.assertEqual(hook['trigger'], 'post-packages')
+        self.assertIn('systemctl set-default multi-user.target', hook['action'])
+        self.assertNotIn('variants', hook)
+        before = self.snapshot()
+        image_source_compat.normalize(self.root)
+        self.assertEqual(before, self.snapshot())
+
+
     def test_suse_dns_template_target_and_vendor_ssh_defaults_survive_refresh(self):
         import image_source_compat
         image_source_compat.normalize(self.root)

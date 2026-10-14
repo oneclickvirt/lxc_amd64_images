@@ -127,6 +127,20 @@ printf '[Service]\\nExecStartPre=/usr/bin/ssh-keygen -A\\n' > /etc/systemd/syste
         document['actions'].append(ssh_hook)
     path.write_text(serialize(document))
 
+    path = root / 'images_yaml/oracle.yaml'
+    document = verify(path.read_text())
+    # Oracle's ISO rootfs retains Anaconda's installer default.target. SSH
+    # can be enabled yet never started because multi-user.target is absent
+    # from that boot transaction. Select the normal installed-system target.
+    target_hook = {'trigger': 'post-packages', 'action': """#!/bin/sh
+set -eu
+# hosted-oracle-runtime-target
+systemctl set-default multi-user.target
+"""}
+    if target_hook not in document.setdefault('actions', []):
+        document['actions'].append(target_hook)
+    path.write_text(serialize(document))
+
     path = root / 'images_yaml/centos.yaml'
     document = verify(path.read_text())
     stale_mirror = 'https://mirror1.hs-esslingen.de/pub/Mirrors/centos-stream/'
