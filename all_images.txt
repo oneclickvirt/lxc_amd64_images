@@ -45,6 +45,10 @@ fedora_39_39_x86_64_cloud.tar.xz
 fedora_39_39_x86_64_default.tar.xz
 fedora_40_40_x86_64_cloud.tar.xz
 fedora_40_40_x86_64_default.tar.xz
+fedora_43_43_x86_64_cloud.tar.xz
+fedora_43_43_x86_64_default.tar.xz
+fedora_44_44_x86_64_cloud.tar.xz
+fedora_44_44_x86_64_default.tar.xz
 gentoo_current_current_x86_64_cloud.tar.xz
 gentoo_current_current_x86_64_openrc.tar.xz
 gentoo_current_current_x86_64_systemd.tar.xz
