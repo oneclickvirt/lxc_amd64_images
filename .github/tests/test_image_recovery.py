@@ -75,6 +75,28 @@ class ImageRecoveryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "size"):
             verifier.verify("unidentified.tar.xz")
 
+    def test_lightweight_alpine_archive_requires_rootfs_identity(self):
+        name = "alpine_3.24_3.24_x86_64_default.tar.xz"
+        payload = os.urandom(1024 * 1024 + 4096)
+        for identified in [False, True]:
+            with tarfile.open(name, "w:xz") as archive:
+                binary = tarfile.TarInfo("bin/busybox")
+                binary.size = len(payload)
+                archive.addfile(binary, io.BytesIO(payload))
+                if identified:
+                    identity = tarfile.TarInfo("./etc/alpine-release")
+                    identity.size = 7
+                    archive.addfile(identity, io.BytesIO(b"fixture"))
+            self.assertLess(Path(name).stat().st_size, 10 * 1024 * 1024)
+            if identified:
+                verifier.verify(name)
+            else:
+                with self.assertRaisesRegex(ValueError, "identity"):
+                    verifier.verify(name)
+        Path("unidentified.tar.xz").write_bytes(Path(name).read_bytes())
+        with self.assertRaisesRegex(ValueError, "size"):
+            verifier.verify("unidentified.tar.xz")
+
     def test_missing_empty_and_unsafe_outputs_are_rejected(self):
         Path("empty.tar.xz").write_bytes(b"")
         for filename in ["missing.zip", "empty.tar.xz", "../image.zip", "LICENSE"]:

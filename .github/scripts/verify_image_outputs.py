@@ -12,8 +12,9 @@ import zipfile
 def verify(path, minimum=None, maximum=2 * 1024 * 1024 * 1024):
     path = Path(path)
     openwrt = path.name.startswith("openwrt_")
+    alpine = path.name.startswith("alpine_")
     if minimum is None:
-        minimum = (1 if openwrt else 10) * 1024 * 1024
+        minimum = (1 if openwrt or alpine else 10) * 1024 * 1024
     if not re.fullmatch(r"[A-Za-z0-9_.-]+\.(zip|tar\.xz)", path.name) or path.name != str(path):
         raise ValueError("Invalid image output filename")
     if path.is_symlink() or not path.is_file():
@@ -33,6 +34,8 @@ def verify(path, minimum=None, maximum=2 * 1024 * 1024 * 1024):
             names = {entry.name.removeprefix("./") for entry in archive}
             if not names:
                 raise ValueError("Empty tar image archive")
+            if alpine and "etc/alpine-release" not in names:
+                raise ValueError("Alpine root filesystem identity is missing")
             if openwrt and "etc/openwrt_release" not in names:
                 raise ValueError("OpenWrt root filesystem identity is missing")
 
