@@ -33,6 +33,20 @@ def normalize(root):
     sets[:] = [s for s in sets if s.get('packages')]
     if not any('openssh' in s['packages'] and s.get('action')=='install' and not s.get('architectures') for s in sets):
         sets.append({'packages': ['openssh'], 'action': 'install'})
+    # Regional official mirrors allow pacman to recover from a stalled CDN
+    # endpoint without changing package signature verification.
+    mirror_hook = {'trigger': 'post-unpack', 'architectures': ['aarch64'], 'action': """#!/bin/sh
+set -eu
+# hosted-arm-mirror-fallback
+cat > /etc/pacman.d/mirrorlist <<'MIRRORS'
+Server = https://ca.us.mirror.archlinuxarm.org/$arch/$repo
+Server = https://de3.mirror.archlinuxarm.org/$arch/$repo
+MIRRORS
+"""}
+    actions = document.setdefault('actions', [])
+    if mirror_hook not in actions:
+        # Configure mirrors before the upstream pacman-keyring bootstrap hook.
+        actions.insert(0, mirror_hook)
     path.write_text(serialize(document))
 
     path = root / 'images_yaml/gentoo.yaml'
@@ -67,6 +81,11 @@ fi
 
     path = root / 'images_yaml/almalinux.yaml'
     document = verify(path.read_text())
+    # Upstream's aaarch64 typo silently omitted grub2-efi-aarch64 for ARM VMs.
+    for entry in document.get('packages', {}).get('sets', []):
+        if 'architectures' in entry:
+            entry['architectures'] = ['aarch64' if arch == 'aaarch64' else arch
+                                      for arch in entry['architectures']]
     for entry in document.get('actions', []):
         if 'hosted-compatible-bls' in entry['action']:
             entry['action'] = entry['action'].replace('\n  grub2-mkconfig -o "${target}"\nfi', '\nfi')

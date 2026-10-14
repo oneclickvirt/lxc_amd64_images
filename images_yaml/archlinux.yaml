@@ -212,6 +212,17 @@ packages:
     action: install
 actions:
 - trigger: post-unpack
+  architectures:
+  - aarch64
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-arm-mirror-fallback
+    cat > /etc/pacman.d/mirrorlist <<'MIRRORS'
+    Server = https://ca.us.mirror.archlinuxarm.org/$arch/$repo
+    Server = https://de3.mirror.archlinuxarm.org/$arch/$repo
+        MIRRORS
+- trigger: post-unpack
   action: |-
     #!/bin/sh
     # Make sure we have our template targets

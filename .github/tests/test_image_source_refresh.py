@@ -120,6 +120,24 @@ class ImageSourceRefreshTests(unittest.TestCase):
         self.assertTrue(any(s['packages'] == ['dhclient'] and set(map(str, s['releases'])) == {'8', '9'}
                             for s in oracle_doc['packages']['sets']))
 
+    def test_arm_bootloader_selector_and_mirror_recovery_survive_refresh(self):
+        import image_source_compat
+        alma = self.root / 'images_yaml/almalinux.yaml'
+        alma.write_text(DEFINITION + 'packages:\n  sets:\n  - action: install\n    packages: [grub2-efi-aarch64]\n    architectures: [aaarch64]\n    types: [vm]\n')
+        arch = self.root / 'images_yaml/archlinux.yaml'
+        arch.write_text(DEFINITION.replace('actions: []', 'actions:\n- trigger: post-unpack\n  action: pacman -Sy --needed --noconfirm archlinux-keyring'))
+        image_source_compat.normalize(self.root)
+        self.assertEqual(verify(alma.read_text())['packages']['sets'][0]['architectures'], ['aarch64'])
+        actions = verify(arch.read_text())['actions']
+        self.assertEqual(actions[0]['architectures'], ['aarch64'])
+        self.assertIn('https://ca.us.mirror.archlinuxarm.org/$arch/$repo', actions[0]['action'])
+        self.assertIn('https://de3.mirror.archlinuxarm.org/$arch/$repo', actions[0]['action'])
+        self.assertNotIn('SigLevel', actions[0]['action'])
+        self.assertTrue(actions[1]['action'].startswith('pacman'))
+        before = self.snapshot()
+        image_source_compat.normalize(self.root)
+        self.assertEqual(before, self.snapshot())
+
     def test_upstream_compatibility_retains_signatures_and_is_idempotent(self):
         import image_source_compat
         fedora=self.root/'images_yaml/fedora.yaml'

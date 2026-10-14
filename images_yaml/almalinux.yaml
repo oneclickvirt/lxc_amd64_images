@@ -347,7 +347,7 @@ packages:
     types:
     - vm
     architectures:
-    - aaarch64
+    - aarch64
 actions:
 - trigger: post-unpack
   action: |-
