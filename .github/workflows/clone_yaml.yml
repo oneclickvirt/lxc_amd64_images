@@ -31,12 +31,21 @@ jobs:
           echo "No new source snapshot to commit."
           exit 0
         fi
+        rebuild=false
+        if ! git diff --cached --quiet -- images_yaml .github/image-catalog.json; then
+          rebuild=true
+        fi
         git commit -m "Update validated image definitions and release indexes"
         ci_retry git push origin "HEAD:${GITHUB_REF_NAME}"
+        if [[ "$rebuild" != true || "$BUILD_IMAGES" != true ]]; then
+          echo "Validated source snapshot committed; no duplicate image build requested."
+          exit 0
+        fi
         ci_retry gh workflow run hosted-build.yml --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME" \
           --field distro=all --field arch=amd64 --field scope=current --field kind=container
       env:
         GH_TOKEN: ${{ github.token }}
+        BUILD_IMAGES: ${{ github.event_name != 'workflow_dispatch' || inputs.rebuild }}
     timeout-minutes: 15
 'on':
   schedule:
@@ -44,7 +53,11 @@ jobs:
   workflow_dispatch:
     inputs:
       publish:
-        description: Commit validated upstream snapshot and start hosted builds
+        description: Commit validated upstream definitions and release indexes
+        type: boolean
+        default: true
+      rebuild:
+        description: Build images when definitions or the build catalog change
         type: boolean
         default: true
 permissions:
