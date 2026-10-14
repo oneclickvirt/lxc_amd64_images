@@ -104,6 +104,9 @@ class ImageRecoveryTests(unittest.TestCase):
                 self.check(filename)
 
     def run_builder(self, script, release, build=False, catalog_unavailable=False, distro="debian", catalog_releases="bookworm trixie", variants=""):
+        helper = self.folder / '.github/scripts/build_image_retry.py'
+        helper.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / '.github/scripts/build_image_retry.py', helper)
         # No provisioning or network in the fixture. All dependency commands are present.
         bin_dir = self.folder / "bin"
         bin_dir.mkdir(exist_ok=True)

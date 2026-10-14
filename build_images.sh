@@ -172,7 +172,7 @@ build_or_list_images() {
                     printf 'Running:'
                     printf ' %q' "${BUILDER_CMD[@]}"
                     printf '\n'
-                    if "${BUILDER_CMD[@]}"; then
+                    if python3 "${opath}/.github/scripts/build_image_retry.py" -- "${BUILDER_CMD[@]}"; then
                         echo "Command succeeded"
                     else
                         echo "Image builder failed; no new batch will be published" >&2
