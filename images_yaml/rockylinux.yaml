@@ -527,9 +527,9 @@ actions:
     printf "[main]\ndhcp=dhclient\n" > /etc/NetworkManager/conf.d/dhcp-client.conf
 
     systemctl enable NetworkManager.service
-  types:
+  types: &id001
   - container
-  variants:
+  variants: &id002
   - default
   releases:
   - 9
@@ -620,3 +620,16 @@ actions:
   variants:
   - cloud
   - default
+- trigger: post-files
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    mkdir -p /etc/NetworkManager/conf.d/
+    printf "[main]\ndhcp=internal\n" > /etc/NetworkManager/conf.d/dhcp-client.conf
+
+    systemctl enable NetworkManager.service
+  types: *id001
+  variants: *id002
+  releases:
+  - '10'

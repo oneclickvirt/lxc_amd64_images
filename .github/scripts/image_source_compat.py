@@ -90,6 +90,14 @@ kernel_path=$(find /boot -name "vmlinuz-${kver}" || true)"""
         entry['action'] = entry['action'].replace('console=tty1 console=ttyS0', 'console=tty1 console=ttyS0 console=ttyAMA0')
     path.write_text(serialize(document))
 
+    path = root / 'images_yaml/centos.yaml'
+    document = verify(path.read_text())
+    stale_mirror = 'https://mirror1.hs-esslingen.de/pub/Mirrors/centos-stream/'
+    canonical_mirror = 'https://mirror.stream.centos.org/'
+    for entry in document.get('actions', []):
+        entry['action'] = entry['action'].replace(stale_mirror, canonical_mirror)
+    path.write_text(serialize(document))
+
     for path in (root / 'images_yaml').glob('*.yaml'):
         document = verify(path.read_text())
         for entry in document.get('actions', []):

@@ -60,20 +60,29 @@ def normalize_el10(path):
     sets = document.get('packages', {}).get('sets', [])
     for entry in list(sets):
         releases = [str(r) for r in entry.get('releases', [])]
-        if 'dhclient' in entry.get('packages', []) and not releases:
-            entry['packages'].remove('dhclient')
-            limited = dict(entry, packages=['dhclient'], releases=['8','9'])
-            sets.append(limited)
+        if 'dhclient' in entry.get('packages', []) and ('10' in releases or not releases):
+            entry['packages'] = [package for package in entry['packages'] if package != 'dhclient']
+            legacy_releases = [r for r in entry.get('releases', []) if str(r) != '10'] or (['8', '9'] if not releases else [])
+            if legacy_releases:
+                sets.append(dict(entry, packages=['dhclient'], releases=legacy_releases))
         if 'NetworkManager' in entry.get('packages', []) and entry.get('types') == ['container'] and '9' in releases and '10' not in releases:
             entry['releases'].append('10')
+    sets[:] = [entry for entry in sets if entry.get('packages')]
     for entry in list(document.get('actions', [])):
         releases = [str(r) for r in entry.get('releases', [])]
-        if 'dhcp=dhclient' in entry['action'] and entry.get('types') == ['container'] and '9' in releases:
-            if '10' in releases:
-                entry['releases'] = [r for r in entry['releases'] if str(r) != '10']
-            additional = dict(entry, releases=['10'], action=entry['action'].replace('dhcp=dhclient','dhcp=internal'))
-            if additional not in document['actions']:
-                document['actions'].append(additional)
+        if ('dhcp=dhclient' not in entry['action'] or entry.get('types') != ['container']
+                or (releases and not {'9', '10'}.intersection(releases))):
+            continue
+        legacy_releases = [r for r in entry.get('releases', []) if str(r) != '10']
+        if not releases:
+            legacy_releases = ['8', '9']
+        if legacy_releases:
+            entry['releases'] = legacy_releases
+        else:
+            document['actions'].remove(entry)
+        additional = dict(entry, releases=['10'], action=entry['action'].replace('dhcp=dhclient','dhcp=internal'))
+        if additional not in document['actions']:
+            document['actions'].append(additional)
     path.write_text(serialize(document))
 
 

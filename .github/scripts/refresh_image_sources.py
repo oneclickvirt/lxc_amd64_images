@@ -160,7 +160,8 @@ def prepare(root, stage, repo, deadline):
     if code:
         raise subprocess.CalledProcessError(code, "isolated image definition generator")
     normalize_oracle(stage / "images_yaml/oracle.yaml")
-    normalize_el10(stage / "images_yaml/almalinux.yaml")
+    for distro in ("almalinux", "rockylinux", "oracle"):
+        normalize_el10(stage / f"images_yaml/{distro}.yaml")
     normalize_el_boot(stage / "images_yaml/almalinux.yaml")
     normalize(stage)
     refresh_catalog(stage, source_commit, deadline)

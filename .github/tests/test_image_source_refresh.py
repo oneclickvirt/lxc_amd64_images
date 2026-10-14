@@ -77,6 +77,36 @@ class ImageSourceRefreshTests(unittest.TestCase):
         hooks.normalize_el10(path)
         self.assertEqual(path.read_bytes(), normalized)
 
+    def test_el10_dhclient_normalization_covers_rocky_and_oracle_defaults(self):
+        rocky = self.root / 'images_yaml/rockylinux.yaml'
+        rocky_actions = chr(10).join([
+            'actions:', '- trigger: post-files', '  types: [container]',
+            "  action: 'printf dhcp=dhclient'",
+        ])
+        rocky_packages = chr(10).join([
+            'packages:', '  sets:', '  - action: install', '    packages: [curl, dhclient]',
+        ])
+        rocky.write_text(DEFINITION.replace('actions: []', rocky_actions) + rocky_packages + chr(10))
+        hooks.normalize_el10(rocky)
+        rocky_doc = verify(rocky.read_text())
+        self.assertNotIn('dhclient', next(s for s in rocky_doc['packages']['sets'] if 'curl' in s['packages'])['packages'])
+        self.assertTrue(any(s['packages'] == ['dhclient'] and set(map(str, s['releases'])) == {'8', '9'}
+                            for s in rocky_doc['packages']['sets']))
+        actions = [a for a in rocky_doc['actions'] if 'dhcp=' in a['action']]
+        self.assertEqual({tuple(map(str, a['releases'])) for a in actions}, {('8', '9'), ('10',)})
+        self.assertTrue(any('dhcp=internal' in a['action'] and list(map(str, a['releases'])) == ['10'] for a in actions))
+
+        oracle = self.root / 'images_yaml/oracle.yaml'
+        oracle_packages = chr(10).join([
+            'packages:', '  sets:', '  - action: install', '    packages: [curl, dhclient]',
+        ])
+        oracle.write_text(DEFINITION + oracle_packages + chr(10))
+        hooks.normalize_el10(oracle)
+        oracle_doc = verify(oracle.read_text())
+        self.assertNotIn('dhclient', next(s for s in oracle_doc['packages']['sets'] if 'curl' in s['packages'])['packages'])
+        self.assertTrue(any(s['packages'] == ['dhclient'] and set(map(str, s['releases'])) == {'8', '9'}
+                            for s in oracle_doc['packages']['sets']))
+
     def test_upstream_compatibility_retains_signatures_and_is_idempotent(self):
         import image_source_compat
         fedora=self.root/'images_yaml/fedora.yaml'
@@ -85,6 +115,15 @@ class ImageSourceRefreshTests(unittest.TestCase):
         alma.write_text(DEFINITION.replace('actions: []', 'actions:\n- trigger: post-files\n  releases: [10]\n  types: [vm]\n  action: |\n    # Track down the kernel\n    kernel_path=$(find /boot -name "vmlinuz-${kver}" || true)'))
         gentoo=self.root/'images_yaml/gentoo.yaml'
         gentoo.write_text(DEFINITION.replace('actions: []', 'actions: []')+'packages:\n  sets:\n  - action: install\n    packages: [app-admin/sudo]\n')
+        centos_lines = [
+            'actions:', '- trigger: post-unpack', '  action: |', '    cat <<EOF',
+            '    baseurl=https://mirror1.hs-esslingen.de/pub/Mirrors/centos-stream/$stream/BaseOS/$basearch/os/',
+            '    baseurl=https://mirror1.hs-esslingen.de/pub/Mirrors/centos-stream/$stream/AppStream/$basearch/os/',
+            '    baseurl=https://mirror1.hs-esslingen.de/pub/Mirrors/centos-stream/SIGs/$stream/extras/$basearch/extras-common',
+            '    gpgcheck=1', '    EOF',
+        ]
+        centos=self.root/'images_yaml/centos.yaml'
+        centos.write_text(DEFINITION.replace('actions: []', chr(10).join(centos_lines)))
         image_source_compat.normalize(self.root)
         normalized=self.snapshot()
         image_source_compat.normalize(self.root)
@@ -94,6 +133,10 @@ class ImageSourceRefreshTests(unittest.TestCase):
         openssh=[s for s in verify(gentoo.read_text())['packages']['sets'] if 'net-misc/openssh' in s['packages']]
         self.assertEqual(len(openssh),1)
         self.assertIn('rc-update add sshd default',verify(gentoo.read_text())['actions'][-1]['action'])
+        centos_action=verify(centos.read_text())['actions'][0]['action']
+        self.assertNotIn('mirror1.hs-esslingen.de',centos_action)
+        self.assertEqual(centos_action.count('https://mirror.stream.centos.org/'),3)
+        self.assertIn('gpgcheck=1',centos_action)
 
     def test_failed_partial_source_refresh_preserves_every_original(self):
         before = self.snapshot()
