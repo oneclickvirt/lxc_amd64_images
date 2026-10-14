@@ -115,6 +115,10 @@ packages:
     action: install
     types:
     - vm
+  - packages:
+    - curl
+    - ca-bundle
+    action: install
 actions:
 - trigger: post-unpack
   action: |

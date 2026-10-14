@@ -531,6 +531,5 @@ actions:
   variants:
   - cloud
   - default
- 
 mappings:
   architecture_map: alpinelinux

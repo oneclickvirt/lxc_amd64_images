@@ -15,7 +15,7 @@
     sed -i 's/#ListenAddress 0.0.0.0/ListenAddress 0.0.0.0/' /etc/ssh/sshd_config || true
     sed -i 's/#ListenAddress ::/ListenAddress ::/' /etc/ssh/sshd_config || true
     sed -i 's/#AddressFamily any/AddressFamily any/' /etc/ssh/sshd_config || true
-    sed -i 's/^#\?PubkeyAuthentication.*/PubkeyAuthentication no/g' /etc/ssh/sshd_config || true
+    sed -i 's/^#\?PubkeyAuthentication.*/PubkeyAuthentication yes/g' /etc/ssh/sshd_config || true
     sed -i '/^#UsePAM\\|UsePAM/c #UsePAM no' /etc/ssh/sshd_config || true
     sed -i '/^AuthorizedKeysFile/s/^/#/' /etc/ssh/sshd_config || true
     # cloud-init
@@ -27,7 +27,7 @@
     sed -i 's/#ListenAddress 0.0.0.0/ListenAddress 0.0.0.0/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     sed -i 's/#ListenAddress ::/ListenAddress ::/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     sed -i 's/#AddressFamily any/AddressFamily any/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
-    sed -i 's/^#\?PubkeyAuthentication.*/PubkeyAuthentication no/g' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    sed -i 's/^#\?PubkeyAuthentication.*/PubkeyAuthentication yes/g' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     sed -i '/^#UsePAM\\|UsePAM/c #UsePAM no' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     sed -i '/^AuthorizedKeysFile/s/^/#/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     # other config

@@ -1,0 +1,97 @@
+"""Apply compatibility fixes after every upstream definition refresh."""
+from pathlib import Path
+from append_image_actions import serialize
+from verify_image_definitions import verify
+
+
+def normalize(root):
+    path = root / 'images_yaml/fedora.yaml'
+    document = verify(path.read_text())
+    # fedora-http expects Koji's /packages tree, not the release ISO directory.
+    document['source']['url'] = 'https://kojipkgs.fedoraproject.org'
+    path.write_text(serialize(document))
+
+    path = root / 'images_yaml/openwrt.yaml'
+    document = verify(path.read_text())
+    # Upstream APK definitions no longer have the old '- sudo' insertion anchor.
+    sets = document.setdefault('packages', {}).setdefault('sets', [])
+    existing = {p for s in sets if s.get('action') == 'install' and not s.get('types')
+                for p in s.get('packages', [])}
+    missing = [p for p in ['curl', 'ca-bundle'] if p not in existing]
+    if missing:
+        sets.append({'packages': missing, 'action': 'install'})
+    path.write_text(serialize(document))
+
+    path = root / 'images_yaml/archlinux.yaml'
+    document = verify(path.read_text())
+    sets = document.setdefault('packages', {}).setdefault('sets', [])
+    # ARM's rootfs is now minimal; retaining an upstream removal block also
+    # removed openssh/libedit after installation. Keep runtime dependencies.
+    for entry in sets:
+        if entry.get('action') == 'remove':
+            entry['packages'] = [p for p in entry['packages'] if p not in ['openssh', 'libedit']]
+    sets[:] = [s for s in sets if s.get('packages')]
+    if not any('openssh' in s['packages'] and s.get('action')=='install' and not s.get('architectures') for s in sets):
+        sets.append({'packages': ['openssh'], 'action': 'install'})
+    path.write_text(serialize(document))
+
+    path = root / 'images_yaml/gentoo.yaml'
+    document = verify(path.read_text())
+    # The old sudo anchor is now app-admin/sudo. Install runtime capabilities
+    # independently of textual anchors and enable the selected init system.
+    sets = document.setdefault('packages', {}).setdefault('sets', [])
+    existing = {p for s in sets if s.get('action') == 'install' and not s.get('types')
+                for p in s.get('packages', [])}
+    missing = [p for p in ['net-misc/openssh', 'net-misc/curl', 'app-misc/ca-certificates'] if p not in existing]
+    if missing:
+        sets.append({'packages': missing, 'action': 'install'})
+    for entry in document.get('actions', []):
+        if 'sshd_config' in entry['action']:
+            entry['variants'] = ['cloud', 'openrc', 'systemd']
+    action = {'trigger': 'post-files', 'action': """#!/bin/sh
+set -eu
+command -v sshd >/dev/null
+ssh-keygen -A
+if command -v rc-update >/dev/null 2>&1; then
+  rc-update add sshd default
+elif command -v systemctl >/dev/null 2>&1; then
+  systemctl enable sshd
+else
+  echo 'Unsupported Gentoo init system' >&2
+  exit 1
+fi
+"""}
+    if action not in document['actions']:
+        document['actions'].append(action)
+    path.write_text(serialize(document))
+
+    path = root / 'images_yaml/almalinux.yaml'
+    document = verify(path.read_text())
+    for entry in document.get('actions', []):
+        if 'hosted-compatible-bls' in entry['action']:
+            entry['action'] = entry['action'].replace('\n  grub2-mkconfig -o "${target}"\nfi', '\nfi')
+        if 'Track down the kernel' not in entry['action'] or 'hosted-el10-kernel' in entry['action']:
+            continue
+        before = 'kernel_path=$(find /boot -name "vmlinuz-${kver}" || true)'
+        if before not in entry['action']:
+            raise ValueError('unexpected EL10 kernel discovery hook')
+        replacement = """# hosted-el10-kernel: kernel-core now keeps the RPM image under /usr/lib/modules.
+if [ ! -s "/boot/vmlinuz-${kver}" ]; then
+  for candidate in "/usr/lib/modules/${kver}/vmlinuz" "/lib/modules/${kver}/vmlinuz"; do
+    if [ -s "$candidate" ]; then
+      cp "$candidate" "/boot/vmlinuz-${kver}"
+      break
+    fi
+  done
+fi
+kernel_path=$(find /boot -name "vmlinuz-${kver}" || true)"""
+        entry['action'] = entry['action'].replace(before, replacement)
+        # ARM guests use PL011 serial; retain x86's ttyS0 too.
+        entry['action'] = entry['action'].replace('console=tty1 console=ttyS0', 'console=tty1 console=ttyS0 console=ttyAMA0')
+    path.write_text(serialize(document))
+
+    for path in (root / 'images_yaml').glob('*.yaml'):
+        document = verify(path.read_text())
+        for entry in document.get('actions', []):
+            entry['action'] = entry['action'].replace('PubkeyAuthentication no', 'PubkeyAuthentication yes')
+        path.write_text(serialize(document))

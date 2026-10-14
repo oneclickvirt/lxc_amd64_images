@@ -77,6 +77,24 @@ class ImageSourceRefreshTests(unittest.TestCase):
         hooks.normalize_el10(path)
         self.assertEqual(path.read_bytes(), normalized)
 
+    def test_upstream_compatibility_retains_signatures_and_is_idempotent(self):
+        import image_source_compat
+        fedora=self.root/'images_yaml/fedora.yaml'
+        fedora.write_text(DEFINITION.replace('downloader: fixture','downloader: fedora-http\n  url: https://dl.fedoraproject.org/pub/fedora/linux/releases'))
+        alma=self.root/'images_yaml/almalinux.yaml'
+        alma.write_text(DEFINITION.replace('actions: []', 'actions:\n- trigger: post-files\n  releases: [10]\n  types: [vm]\n  action: |\n    # Track down the kernel\n    kernel_path=$(find /boot -name "vmlinuz-${kver}" || true)'))
+        gentoo=self.root/'images_yaml/gentoo.yaml'
+        gentoo.write_text(DEFINITION.replace('actions: []', 'actions: []')+'packages:\n  sets:\n  - action: install\n    packages: [app-admin/sudo]\n')
+        image_source_compat.normalize(self.root)
+        normalized=self.snapshot()
+        image_source_compat.normalize(self.root)
+        self.assertEqual(self.snapshot(),normalized)
+        self.assertEqual(verify(fedora.read_text())['source']['url'],'https://kojipkgs.fedoraproject.org')
+        self.assertIn('/usr/lib/modules/',verify(alma.read_text())['actions'][0]['action'])
+        openssh=[s for s in verify(gentoo.read_text())['packages']['sets'] if 'net-misc/openssh' in s['packages']]
+        self.assertEqual(len(openssh),1)
+        self.assertIn('rc-update add sshd default',verify(gentoo.read_text())['actions'][-1]['action'])
+
     def test_failed_partial_source_refresh_preserves_every_original(self):
         before = self.snapshot()
 
@@ -97,7 +115,7 @@ class ImageSourceRefreshTests(unittest.TestCase):
     def test_generator_timeout_uses_validated_fallback_without_file_changes(self):
         scripts = self.root / ".github/scripts"
         scripts.mkdir(parents=True)
-        for name in ["append_image_actions.py", "verify_image_definitions.py", "ci_network.sh"]:
+        for name in ["append_image_actions.py", "verify_image_definitions.py", "ci_network.sh", "image_catalog.py", "image_source_compat.py"]:
             shutil.copy2(SCRIPTS / name, scripts / name)
         (scripts / "refresh_image_definitions.sh").write_text("#!/bin/bash\nsleep 30\n")
         for name in ["bash_insert_content.text", "sh_insert_content.text"]:

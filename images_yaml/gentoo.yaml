@@ -1221,6 +1221,11 @@ packages:
     - vm
     variants:
     - openrc
+  - packages:
+    - net-misc/openssh
+    - net-misc/curl
+    - app-misc/ca-certificates
+    action: install
 actions:
 - trigger: post-unpack
   action: |-
@@ -1384,7 +1389,7 @@ actions:
     sed -i 's/#ListenAddress 0.0.0.0/ListenAddress 0.0.0.0/' /etc/ssh/sshd_config || true
     sed -i 's/#ListenAddress ::/ListenAddress ::/' /etc/ssh/sshd_config || true
     sed -i 's/#AddressFamily any/AddressFamily any/' /etc/ssh/sshd_config || true
-    sed -i 's/^#\?PubkeyAuthentication.*/PubkeyAuthentication no/g' /etc/ssh/sshd_config || true
+    sed -i 's/^#\?PubkeyAuthentication.*/PubkeyAuthentication yes/g' /etc/ssh/sshd_config || true
     sed -i '/^#UsePAM\\|UsePAM/c #UsePAM no' /etc/ssh/sshd_config || true
     sed -i '/^AuthorizedKeysFile/s/^/#/' /etc/ssh/sshd_config || true
     # cloud-init
@@ -1396,7 +1401,7 @@ actions:
     sed -i 's/#ListenAddress 0.0.0.0/ListenAddress 0.0.0.0/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     sed -i 's/#ListenAddress ::/ListenAddress ::/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     sed -i 's/#AddressFamily any/AddressFamily any/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
-    sed -i 's/^#\?PubkeyAuthentication.*/PubkeyAuthentication no/g' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    sed -i 's/^#\?PubkeyAuthentication.*/PubkeyAuthentication yes/g' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     sed -i '/^#UsePAM\\|UsePAM/c #UsePAM no' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     sed -i '/^AuthorizedKeysFile/s/^/#/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     # other config
@@ -1442,5 +1447,20 @@ actions:
   variants:
   - cloud
   - openrc
+  - systemd
+- trigger: post-files
+  action: |
+    #!/bin/sh
+    set -eu
+    command -v sshd >/dev/null
+    ssh-keygen -A
+    if command -v rc-update >/dev/null 2>&1; then
+      rc-update add sshd default
+    elif command -v systemctl >/dev/null 2>&1; then
+      systemctl enable sshd
+    else
+      echo 'Unsupported Gentoo init system' >&2
+      exit 1
+    fi
 mappings:
   architecture_map: gentoo

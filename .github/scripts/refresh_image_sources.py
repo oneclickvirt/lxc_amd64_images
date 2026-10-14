@@ -17,6 +17,7 @@ import urllib.request
 import yaml
 
 from append_image_actions import normalize_oracle, normalize_el10, normalize_el_boot
+from image_source_compat import normalize
 from image_catalog import refresh_catalog
 from verify_image_definitions import verify
 
@@ -134,7 +135,7 @@ def prepare(root, stage, repo, deadline):
         shutil.copy2(root / name, stage / name)
     scripts = stage / ".github/scripts"
     scripts.mkdir(parents=True)
-    for name in ["append_image_actions.py", "verify_image_definitions.py", "ci_network.sh", "image_catalog.py"]:
+    for name in ["append_image_actions.py", "verify_image_definitions.py", "ci_network.sh", "image_catalog.py", "image_source_compat.py"]:
         shutil.copy2(root / ".github/scripts" / name, scripts / name)
     legacy = (root / ".github/scripts/refresh_image_definitions.sh").read_text()
     source_commit = api_json("/repos/lxc/lxc-ci/commits/main", deadline)["sha"]
@@ -161,6 +162,7 @@ def prepare(root, stage, repo, deadline):
     normalize_oracle(stage / "images_yaml/oracle.yaml")
     normalize_el10(stage / "images_yaml/almalinux.yaml")
     normalize_el_boot(stage / "images_yaml/almalinux.yaml")
+    normalize(stage)
     refresh_catalog(stage, source_commit, deadline)
     validate(stage / "images_yaml")
     indexes = release_indexes(repo, deadline)

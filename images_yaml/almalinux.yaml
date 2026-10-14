@@ -432,7 +432,6 @@ actions:
     options root=%s ro console=tty0 console=ttyS0 console=ttyAMA0
     ' "${kver}" "${kver}" "${kver}" "${DISTROBUILDER_ROOT_UUID}" > "/boot/loader/entries/hosted-${kver}.conf"
       grubby --update-kernel=/boot/vmlinuz-${kver} --args="root=${DISTROBUILDER_ROOT_UUID} ro"
-      grub2-mkconfig -o "${target}"
     fi
 
     # Regenerate initramfs
@@ -453,6 +452,15 @@ actions:
       exit 1
     fi
 
+    # hosted-el10-kernel: kernel-core now keeps the RPM image under /usr/lib/modules.
+    if [ ! -s "/boot/vmlinuz-${kver}" ]; then
+      for candidate in "/usr/lib/modules/${kver}/vmlinuz" "/lib/modules/${kver}/vmlinuz"; do
+        if [ -s "$candidate" ]; then
+          cp "$candidate" "/boot/vmlinuz-${kver}"
+          break
+        fi
+      done
+    fi
     kernel_path=$(find /boot -name "vmlinuz-${kver}" || true)
     if [ -z "$kernel_path" ]; then
       echo "Kernel image /boot/vmlinuz-${kver} not found!" >&2
@@ -504,7 +512,7 @@ actions:
 
     menuentry '${GRUB_ENTRY_NAME}' {
         set root=(hd0,gpt2)
-        linux /boot/vmlinuz-${kver} root=UUID=${root_uuid} ro console=tty1 console=ttyS0
+        linux /boot/vmlinuz-${kver} root=UUID=${root_uuid} ro console=tty1 console=ttyS0 console=ttyAMA0
         initrd /boot/initramfs-${kver}.img
     }
 
@@ -589,7 +597,7 @@ actions:
     sed -i 's/#ListenAddress 0.0.0.0/ListenAddress 0.0.0.0/' /etc/ssh/sshd_config || true
     sed -i 's/#ListenAddress ::/ListenAddress ::/' /etc/ssh/sshd_config || true
     sed -i 's/#AddressFamily any/AddressFamily any/' /etc/ssh/sshd_config || true
-    sed -i 's/^#\?PubkeyAuthentication.*/PubkeyAuthentication no/g' /etc/ssh/sshd_config || true
+    sed -i 's/^#\?PubkeyAuthentication.*/PubkeyAuthentication yes/g' /etc/ssh/sshd_config || true
     sed -i '/^#UsePAM\\|UsePAM/c #UsePAM no' /etc/ssh/sshd_config || true
     sed -i '/^AuthorizedKeysFile/s/^/#/' /etc/ssh/sshd_config || true
     # cloud-init
@@ -601,7 +609,7 @@ actions:
     sed -i 's/#ListenAddress 0.0.0.0/ListenAddress 0.0.0.0/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     sed -i 's/#ListenAddress ::/ListenAddress ::/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     sed -i 's/#AddressFamily any/AddressFamily any/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
-    sed -i 's/^#\?PubkeyAuthentication.*/PubkeyAuthentication no/g' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
+    sed -i 's/^#\?PubkeyAuthentication.*/PubkeyAuthentication yes/g' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     sed -i '/^#UsePAM\\|UsePAM/c #UsePAM no' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     sed -i '/^AuthorizedKeysFile/s/^/#/' /etc/ssh/sshd_config.d/50-cloud-init.conf || true
     # other config

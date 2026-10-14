@@ -26,6 +26,12 @@ after = 'if s.definition.Image.Release == "8" || s.definition.Image.Release == "
 if source.count(before) != 1:
     raise SystemExit('Oracle ISO compatibility patch does not match the verified source')
 path.write_text(source.replace(before, after))
+path = path.with_name('centos-http.go')
+source = path.read_text()
+before = 'https://mirror1.hs-esslingen.de/pub/Mirrors/centos-stream/'
+if source.count(before) != 2:
+    raise SystemExit('CentOS repository compatibility patch does not match the verified source')
+path.write_text(source.replace(before, 'https://mirror.stream.centos.org/'))
 PY
 
 sudo apt-get update
@@ -35,6 +41,7 @@ sudo apt-get install -y build-essential debootstrap rsync gpg squashfs-tools xz-
   # The verified release contains vendored modules. Building cannot select a
   # different dependency graph or depend on a live module proxy.
   export GOFLAGS=-mod=vendor
+  timeout --kill-after=30s 600s go test -tags=containers_image_storage_stub,containers_image_docker_daemon_stub,containers_image_openpgp ./sources
   go build -trimpath \
     -tags=containers_image_storage_stub,containers_image_docker_daemon_stub,containers_image_openpgp \
     -o "$task_dir/distrobuilder" ./distrobuilder
