@@ -180,8 +180,8 @@ class NativeStartupDiagnosticsTests(unittest.TestCase):
              mock.patch.object(runtime.subprocess,'run',return_value=diagnostic) as execute, \
              redirect_stderr(output):
             runtime.native_diagnostics(['sudo','incus'],'fixture')
-        self.assertLess(len(output.getvalue()),12200)
-        self.assertEqual(execute.call_count,2)
+        self.assertLess(len(output.getvalue()),18500)
+        self.assertEqual(execute.call_count,3)
         for call in execute.call_args_list:
             self.assertEqual(call.kwargs['timeout'],45)
             self.assertNotIn('GH_TOKEN',call.kwargs['env'])
@@ -189,12 +189,15 @@ class NativeStartupDiagnosticsTests(unittest.TestCase):
         command=execute.call_args_list[1].args[0][-1]
         self.assertIn('sshd -t',command)
         self.assertNotIn('ssh_host_',command)
+        network_command=execute.call_args_list[2].args[0][-1]
+        self.assertIn('networkctl --no-pager --full status --all',network_command)
+        self.assertIn('journalctl --no-pager -b -n 60 -u systemd-networkd',network_command)
 
     def test_readiness_diagnostic_error_does_not_interrupt_the_original_failure_path(self):
         output=io.StringIO()
         with mock.patch.object(runtime.subprocess,'run',side_effect=OSError('fixture')), redirect_stderr(output):
             runtime.native_diagnostics(['sudo','incus'],'fixture')
-        self.assertEqual(output.getvalue().count('diagnostics unavailable: OSError'),2)
+        self.assertEqual(output.getvalue().count('diagnostics unavailable: OSError'),3)
 
     def test_start_failure_prints_bounded_incus_instance_log(self):
         failure=subprocess.CalledProcessError(1,['sudo','incus','start','test-image'],stderr='forkstart failed')

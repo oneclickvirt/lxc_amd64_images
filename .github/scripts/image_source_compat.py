@@ -83,6 +83,9 @@ fi
     document = verify(path.read_text())
     # Upstream's aaarch64 typo silently omitted grub2-efi-aarch64 for ARM VMs.
     for entry in document.get('packages', {}).get('sets', []):
+        # Alma's BaseOS packages use aa64 for EFI on ARM in EL8/EL9/EL10.
+        entry['packages'] = ['grub2-efi-aa64' if package == 'grub2-efi-aarch64' else package
+                             for package in entry.get('packages', [])]
         if 'architectures' in entry:
             entry['architectures'] = ['aarch64' if arch == 'aaarch64' else arch
                                       for arch in entry['architectures']]
@@ -191,13 +194,18 @@ set -eu
 # hosted-consumer-dns-file
 if [ -L /etc/resolv.conf ]; then
   case "$(readlink /etc/resolv.conf)" in
-    /run/*|../run/*)
+    /run/*|../run/*|/var/run/*|../var/run/*)
       rm /etc/resolv.conf
       touch /etc/resolv.conf
       ;;
   esac
 fi
 """}
-        if dns_hook not in document.setdefault('actions', []):
-            document['actions'].append(dns_hook)
+        actions = document.setdefault('actions', [])
+        for index, entry in enumerate(actions):
+            if 'hosted-consumer-dns-file' in entry['action']:
+                actions[index] = dns_hook
+                break
+        else:
+            actions.append(dns_hook)
         path.write_text(serialize(document))

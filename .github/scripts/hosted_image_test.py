@@ -94,9 +94,25 @@ if command -v ip >/dev/null 2>&1; then ip -brief address; ip route; fi
 if command -v ss >/dev/null 2>&1; then ss -lnt; fi
 test ! -f /etc/resolv.conf || cat /etc/resolv.conf
 """
+    network_script = """set +e
+if command -v networkctl >/dev/null 2>&1; then networkctl --no-pager --full status --all; fi
+if command -v systemctl >/dev/null 2>&1; then
+  systemctl --no-pager --full status systemd-networkd wicked NetworkManager cloud-init-local
+  journalctl --no-pager -b -n 60 -u systemd-networkd -u wicked -u NetworkManager -u cloud-init-local
+fi
+for directory in /etc/systemd/network /run/systemd/network; do
+  for file in "$directory"/*.network; do
+    [ -f "$file" ] || continue
+    printf '\\nNetwork configuration: %s\\n' "$file"
+    head -n 80 "$file"
+  done
+done
+if command -v ip >/dev/null 2>&1; then ip -brief address; ip route; fi
+"""
     for title, command in [
         ('instance', prefix+['info', name, '--show-log']),
         ('guest service and network', prefix+['exec', name, '--', '/bin/sh', '-c', script]),
+        ('guest DHCP', prefix+['exec', name, '--', '/bin/sh', '-c', network_script]),
     ]:
         try:
             result = subprocess.run(command, capture_output=True, text=True,

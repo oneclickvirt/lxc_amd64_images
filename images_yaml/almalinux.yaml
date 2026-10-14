@@ -342,7 +342,7 @@ packages:
     - x86_64
     - x86_64_v2
   - packages:
-    - grub2-efi-aarch64
+    - grub2-efi-aa64
     action: install
     types:
     - vm
@@ -682,7 +682,7 @@ actions:
     # hosted-consumer-dns-file
     if [ -L /etc/resolv.conf ]; then
       case "$(readlink /etc/resolv.conf)" in
-        /run/*|../run/*)
+        /run/*|../run/*|/var/run/*|../var/run/*)
           rm /etc/resolv.conf
           touch /etc/resolv.conf
           ;;

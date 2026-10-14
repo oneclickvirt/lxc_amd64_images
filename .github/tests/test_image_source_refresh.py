@@ -128,6 +128,7 @@ class ImageSourceRefreshTests(unittest.TestCase):
         arch.write_text(DEFINITION.replace('actions: []', 'actions:\n- trigger: post-unpack\n  action: pacman -Sy --needed --noconfirm archlinux-keyring'))
         image_source_compat.normalize(self.root)
         self.assertEqual(verify(alma.read_text())['packages']['sets'][0]['architectures'], ['aarch64'])
+        self.assertEqual(verify(alma.read_text())['packages']['sets'][0]['packages'], ['grub2-efi-aa64'])
         actions = verify(arch.read_text())['actions']
         self.assertEqual(actions[0]['architectures'], ['aarch64'])
         self.assertIn('https://ca.us.mirror.archlinuxarm.org/$arch/$repo', actions[0]['action'])
@@ -176,7 +177,8 @@ class ImageSourceRefreshTests(unittest.TestCase):
         directory = self.root / 'resolver-fixture'
         directory.mkdir()
         resolver = directory / 'resolv.conf'
-        for target in ['/run/netconfig/resolv.conf', '../run/systemd/resolve/stub-resolv.conf']:
+        for target in ['/run/netconfig/resolv.conf', '../run/systemd/resolve/stub-resolv.conf',
+                       '/var/run/netconfig/resolv.conf', '../var/run/netconfig/resolv.conf']:
             resolver.unlink(missing_ok=True)
             resolver.symlink_to(target)
             subprocess.run(['sh', '-c', hook.replace('/etc/resolv.conf', str(resolver))], check=True, timeout=5)
