@@ -106,7 +106,7 @@ files:
   - cloud
 - path: /etc/sudoers.d/90-incus
   generator: dump
-  mode: 288
+  mode: '0440'
   content: |-
     # User rules for archlinux
     archlinux ALL=(ALL) NOPASSWD: ALL

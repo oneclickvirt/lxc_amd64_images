@@ -75,7 +75,7 @@ files:
 - name: uci-defaults-hostname.incus
   path: /etc/uci-defaults/00-incus-set-hostname
   generator: template
-  mode: 493
+  mode: '0755'
   template:
     when:
     - create

@@ -216,7 +216,7 @@ files:
   - desktop-kde
 - path: /etc/sudoers.d/90-incus
   generator: dump
-  mode: 288
+  mode: '0440'
   content: |-
     # User rules for opensuse
     opensuse ALL=(ALL) NOPASSWD: ALL

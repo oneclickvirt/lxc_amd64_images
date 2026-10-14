@@ -311,7 +311,7 @@ files:
   generator: remove
 - path: /etc/netplan/10-lxc.yaml
   generator: dump
-  mode: 384
+  mode: '0600'
   content: |-
     network:
       version: 2
@@ -325,7 +325,7 @@ files:
   - default
 - path: /etc/netplan/10-lxc.yaml
   generator: dump
-  mode: 384
+  mode: '0600'
   content: |-
     network:
       version: 2
@@ -373,7 +373,7 @@ files:
   - vm
 - path: /etc/sudoers.d/90-incus
   generator: dump
-  mode: 288
+  mode: '0440'
   content: |-
     # User rules for ubuntu
     ubuntu ALL=(ALL) NOPASSWD:ALL
@@ -381,7 +381,7 @@ files:
   - default
 - path: /etc/sudoers.d/90-incus
   generator: dump
-  mode: 288
+  mode: '0440'
   content: |-
     # User rules for ubuntu
     ubuntu ALL=(ALL) NOPASSWD:ALL

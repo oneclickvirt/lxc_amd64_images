@@ -20,6 +20,19 @@ DEFINITION = "image:\n  distribution: fixture\nsource:\n  downloader: fixture\na
 
 
 class ImageSourceRefreshTests(unittest.TestCase):
+    def test_file_permissions_survive_yaml_refresh_without_decimal_conversion(self):
+        for mode in ['0600', '0440', '0755', '644']:
+            document = verify(DEFINITION + 'files:\n- path: /fixture\n  mode: ' + mode + '\n')
+            self.assertEqual(document['files'][0]['mode'], mode)
+            refreshed = hooks.serialize(document)
+            self.assertEqual(verify(refreshed)['files'][0]['mode'], mode)
+            self.assertEqual(hooks.serialize(verify(refreshed)), refreshed)
+
+    def test_invalid_decimal_permissions_fail_before_build(self):
+        for mode in ['384', '288', '493', 'not-a-mode']:
+            with self.assertRaisesRegex(ValueError, 'octal permission'):
+                verify(DEFINITION + 'files:\n- path: /fixture\n  mode: ' + mode + '\n')
+
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
         self.root = Path(self.directory.name)
