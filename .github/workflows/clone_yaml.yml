@@ -21,16 +21,21 @@ jobs:
       shell: bash
       run: |-
         set -euo pipefail
+        # shellcheck source=.github/scripts/ci_network.sh
+        source .github/scripts/ci_network.sh
         git config user.name "daily-update"
         git config user.email "tg@spiritlhl.top"
-        git add images_yaml *_images.txt .github/image-catalog.json
+        git add images_yaml -- *_images.txt .github/image-catalog.json
         if git diff --cached --quiet; then
           echo "No new source snapshot to commit."
           exit 0
         fi
         git commit -m "Update validated image definitions and release indexes"
-        source .github/scripts/ci_network.sh
         ci_retry git push origin "HEAD:${GITHUB_REF_NAME}"
+        ci_retry gh workflow run hosted-build.yml --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME" \
+          --field distro=all --field arch=amd64 --field scope=current --field kind=container
+      env:
+        GH_TOKEN: ${{ github.token }}
     timeout-minutes: 15
 'on':
   schedule:
@@ -38,6 +43,7 @@ jobs:
   workflow_dispatch: null
 permissions:
   contents: write
+  actions: write
 concurrency:
   group: image-source-refresh
   cancel-in-progress: false

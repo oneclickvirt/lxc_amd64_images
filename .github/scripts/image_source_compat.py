@@ -94,8 +94,21 @@ kernel_path=$(find /boot -name "vmlinuz-${kver}" || true)"""
     document = verify(path.read_text())
     stale_mirror = 'https://mirror1.hs-esslingen.de/pub/Mirrors/centos-stream/'
     canonical_mirror = 'https://mirror.stream.centos.org/'
+
+    def replace_mirror(value):
+        if isinstance(value, str):
+            return value.replace(stale_mirror, canonical_mirror)
+        if isinstance(value, list):
+            return [replace_mirror(item) for item in value]
+        if isinstance(value, dict):
+            return {key: replace_mirror(item) for key, item in value.items()}
+        return value
+
     for entry in document.get('actions', []):
-        entry['action'] = entry['action'].replace(stale_mirror, canonical_mirror)
+        entry['action'] = replace_mirror(entry['action'])
+    packages = document.setdefault('packages', {})
+    repositories = packages.get('repositories', [])
+    packages['repositories'] = replace_mirror(repositories)
     path.write_text(serialize(document))
 
     for path in (root / 'images_yaml').glob('*.yaml'):

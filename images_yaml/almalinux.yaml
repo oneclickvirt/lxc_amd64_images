@@ -402,7 +402,7 @@ actions:
     #!/bin/sh
     set -eux
     kver=$(ls /boot/initramfs-*.img | sed -r 's#.*initramfs-(.+)\.img#\1#')
-    target=/boot/efi/EFI/almalinux/grub.cfg
+    target=/boot/grub2/grub.cfg
 
     # Create grub.cfg file
     grub2-mkconfig -o "${target}"
@@ -420,18 +420,25 @@ actions:
     # `grub2-mkconfig` as the latter overwrites files in /boot/loader/entries/.
     # hosted-compatible-bls: retain upstream grubby and supply missing RPM boot metadata
     mkdir -p /boot/grub2 /boot/loader/entries
-    if [ ! -f /boot/grub2/grubenv ]; then
+    if command -v grub2-editenv >/dev/null 2>&1 && [ ! -f /boot/grub2/grubenv ]; then
       grub2-editenv /boot/grub2/grubenv create
     fi
-    test -s "/boot/vmlinuz-${kver}"
-    if ! grubby --update-kernel=/boot/vmlinuz-${kver} --args="root=${DISTROBUILDER_ROOT_UUID} ro"; then
+    kernel="/boot/vmlinuz-${kver}"
+    if [ ! -s "$kernel" ]; then
+      for candidate in "/usr/lib/modules/${kver}/vmlinuz" "/lib/modules/${kver}/vmlinuz"; do
+        if [ -s "$candidate" ]; then cp "$candidate" "$kernel"; break; fi
+      done
+    fi
+    if [ ! -s "$kernel" ]; then echo "Kernel image $kernel not found" >&2; exit 1; fi
+    if command -v grubby >/dev/null 2>&1 && grubby --update-kernel="$kernel" --args="root=${DISTROBUILDER_ROOT_UUID} ro"; then
+      :
+    else
       printf 'title AlmaLinux
     version %s
     linux /vmlinuz-%s
     initrd /initramfs-%s.img
     options root=%s ro console=tty0 console=ttyS0 console=ttyAMA0
     ' "${kver}" "${kver}" "${kver}" "${DISTROBUILDER_ROOT_UUID}" > "/boot/loader/entries/hosted-${kver}.conf"
-      grubby --update-kernel=/boot/vmlinuz-${kver} --args="root=${DISTROBUILDER_ROOT_UUID} ro"
     fi
 
     # Regenerate initramfs

@@ -13,7 +13,6 @@ def verify(path, minimum=None, maximum=2 * 1024 * 1024 * 1024):
     path = Path(path)
     openwrt = path.name.startswith("openwrt_")
     alpine = path.name.startswith("alpine_")
-    alpine = path.name.startswith("alpine_")
     if minimum is None:
         minimum = (1 if openwrt or alpine else 10) * 1024 * 1024
     if not re.fullmatch(r"[A-Za-z0-9_.-]+\.(zip|tar\.xz)", path.name) or path.name != str(path):

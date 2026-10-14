@@ -11,6 +11,7 @@ import secrets
 import shutil
 import socket
 import subprocess
+import sys
 import tarfile
 import tempfile
 import time
@@ -37,13 +38,37 @@ https_check() {
   done
   return 1
 }
+network_recovery() {
+  command -v ip >/dev/null 2>&1 || return 0
+  ip -4 route get 1.1.1.1 >/dev/null 2>&1 && return 0
+  interface=$(ip -o link show | awk -F': ' '$2 != "lo" {sub(/@.*/, "", $2); print $2; exit}')
+  [ -n "$interface" ] || return 0
+  if command -v dhclient >/dev/null 2>&1; then
+    timeout 20 dhclient -1 "$interface" >/dev/null 2>&1 || true
+  elif command -v udhcpc >/dev/null 2>&1; then
+    udhcpc -n -q -t 3 -T 3 -i "$interface" >/dev/null 2>&1 || true
+  elif command -v dhcpcd >/dev/null 2>&1; then
+    timeout 20 dhcpcd -n "$interface" >/dev/null 2>&1 || true
+  fi
+}
+network_recovery
 https_check || { echo 'Guest HTTPS/DNS network check failed' >&2; exit 1; }
 cat /proc/sys/kernel/random/boot_id
 """
 
 
+def isolated_environment(overrides=None):
+    environment=os.environ.copy()
+    if overrides is not None:
+        environment.update(overrides)
+    environment.pop('GH_TOKEN',None)
+    environment.pop('GITHUB_TOKEN',None)
+    return environment
+
+
 def run(args, **kwargs):
-    return subprocess.run(args, check=True, timeout=kwargs.pop('timeout', 120), **kwargs)
+    environment=isolated_environment(kwargs.pop('env',None))
+    return subprocess.run(args, check=True, timeout=kwargs.pop('timeout', 120), env=environment, **kwargs)
 
 
 def kvm_available():
@@ -73,7 +98,7 @@ def native_test(folder, metadata, rootfs, vm=False, cli='incus'):
             except (subprocess.SubprocessError,OSError) as error:
                 last_error=type(error).__name__
             time.sleep(5)
-        subprocess.run(prefix+['info',name,'--show-log'],timeout=30)
+        subprocess.run(prefix+['info',name,'--show-log'],timeout=30,env=isolated_environment())
         print('Last guest readiness error: '+last_error)
         raise RuntimeError('guest boot, SSH listener or external network check timed out')
     try:
@@ -87,14 +112,34 @@ def native_test(folder, metadata, rootfs, vm=False, cli='incus'):
             run(prefix+['config','set',name,'user.hosted_dns',gateway])
         # Older images have init systems that need nesting for their own mount units.
         if not vm: run(prefix+['config','set',name,'security.nesting','true'])
-        run(prefix+['start',name],timeout=180)
+        try:
+            run(prefix+['start',name],timeout=180)
+        except (subprocess.CalledProcessError,subprocess.TimeoutExpired) as error:
+            start_output='\n'.join(part for part in [getattr(error,'stdout',None),getattr(error,'stderr',None)] if part).strip()
+            if start_output:
+                print('Incus start output:\n'+start_output[-2000:],file=sys.stderr)
+            try:
+                diagnostic=subprocess.run(prefix+['info',name,'--show-log'],capture_output=True,
+                                           text=True,timeout=30,check=False,env=isolated_environment())
+                details='\n'.join(part for part in [diagnostic.stdout,diagnostic.stderr] if part).strip()
+                if details:
+                    print('Incus instance diagnostics:\n'+details[-6000:],file=sys.stderr)
+                elif diagnostic.returncode:
+                    print('Incus instance diagnostics unavailable (exit '+str(diagnostic.returncode)+')',file=sys.stderr)
+            except (OSError,subprocess.SubprocessError) as diagnostic_error:
+                print('Incus instance diagnostics unavailable: '+type(diagnostic_error).__name__,file=sys.stderr)
+            raise
         boot=ready()
         run(prefix+['restart',name,'--force'],timeout=180)
         ready(boot)
         print('Runtime validation: native '+('VM' if vm else 'container')+' boot, SSH listener, network and restart passed')
     finally:
-        subprocess.run(prefix+['delete',name,'--force'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=60)
-        subprocess.run(prefix+['image','delete',alias],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=60)
+        for command in [prefix+['delete',name,'--force'],prefix+['image','delete',alias]]:
+            try:
+                subprocess.run(command,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,
+                               timeout=60,check=False,env=isolated_environment())
+            except (OSError,subprocess.SubprocessError):
+                pass
 
 
 def qga_command(sock, command, arguments=None, expect_response=True):
@@ -224,7 +269,8 @@ def qemu_test(folder, disk, provision_key=False):
         devices=['-device','virtio-blk-pci,drive=guestdisk,bootindex=1']
         if storage=='scsi':devices=['-device','virtio-scsi-pci,id=guest-scsi','-device','scsi-hd,drive=guestdisk,bus=guest-scsi.0,bootindex=1']
         if storage=='sata':devices=['-device','ide-hd,drive=guestdisk,bus=ide.0,bootindex=1']
-        process=subprocess.Popen([command[0]]+devices+command[1:]+([] if bios else firmware(arch,folder)),stdout=log,stderr=log)
+        process=subprocess.Popen([command[0]]+devices+command[1:]+([] if bios else firmware(arch,folder)),
+                                 stdout=log,stderr=log,env=isolated_environment())
     def ready(previous=None, allow_bios=False):
         nonlocal transport,ssh_password,retry_reason
         deadline=time.monotonic()+(1500 if not accelerated else 600)

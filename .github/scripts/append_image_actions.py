@@ -89,8 +89,12 @@ def normalize_el10(path):
 def normalize_el_boot(path):
     document = verify(path.read_text())
     for entry in document.get('actions', []):
+        if 'hosted-compatible-bls' in entry['action']:
+            entry['action'] = entry['action'].replace(
+                'target=/boot/efi/EFI/almalinux/grub.cfg', 'target=/boot/grub2/grub.cfg')
+            continue
         before = '    grubby --update-kernel=/boot/vmlinuz-${kver} --args="root=${DISTROBUILDER_ROOT_UUID} ro"'
-        if 'grubby --update-kernel=/boot/vmlinuz-${kver}' not in entry['action'] or 'hosted-compatible-bls' in entry['action']:
+        if 'grubby --update-kernel=/boot/vmlinuz-${kver}' not in entry['action']:
             continue
         action = entry['action']
         rootvar = 'LXD_IMAGEBUILDER_ROOT_UUID' if 'LXD_IMAGEBUILDER_ROOT_UUID' in action else 'DISTROBUILDER_ROOT_UUID'
@@ -100,7 +104,19 @@ def normalize_el_boot(path):
         if action.count(before) != 1:
             raise ValueError('unexpected AlmaLinux boot entry hook')
         replacement = '# hosted-compatible-bls: retain upstream grubby and supply missing RPM boot metadata\nmkdir -p /boot/grub2 /boot/loader/entries\nif [ ! -f /boot/grub2/grubenv ]; then\n  grub2-editenv /boot/grub2/grubenv create\nfi\ntest -s "/boot/vmlinuz-${kver}"\nif ! grubby --update-kernel=/boot/vmlinuz-${kver} --args="root=${DISTROBUILDER_ROOT_UUID} ro"; then\n  printf \'title AlmaLinux\nversion %s\nlinux /vmlinuz-%s\ninitrd /initramfs-%s.img\noptions root=%s ro console=tty0 console=ttyS0 console=ttyAMA0\n\' "${kver}" "${kver}" "${kver}" "${DISTROBUILDER_ROOT_UUID}" > "/boot/loader/entries/hosted-${kver}.conf"\n  grubby --update-kernel=/boot/vmlinuz-${kver} --args="root=${DISTROBUILDER_ROOT_UUID} ro"\nfi'
-        entry['action'] = action.replace(before, replacement.replace('DISTROBUILDER_ROOT_UUID', rootvar))
+        rendered = replacement.replace('DISTROBUILDER_ROOT_UUID', rootvar)
+        rendered = rendered.replace(
+            'if [ ! -f /boot/grub2/grubenv ]; then\n  grub2-editenv /boot/grub2/grubenv create\nfi',
+            'if command -v grub2-editenv >/dev/null 2>&1 && [ ! -f /boot/grub2/grubenv ]; then\n  grub2-editenv /boot/grub2/grubenv create\nfi')
+        rendered = rendered.replace(
+            'test -s "/boot/vmlinuz-${kver}"',
+            'kernel="/boot/vmlinuz-${kver}"\nif [ ! -s "$kernel" ]; then\n  for candidate in "/usr/lib/modules/${kver}/vmlinuz" "/lib/modules/${kver}/vmlinuz"; do\n    if [ -s "$candidate" ]; then cp "$candidate" "$kernel"; break; fi\n  done\nfi\nif [ ! -s "$kernel" ]; then echo "Kernel image $kernel not found" >&2; exit 1; fi')
+        rendered = rendered.replace(
+            '  grubby --update-kernel=/boot/vmlinuz-${kver} --args="root=${' + rootvar + '} ro"\nfi',
+            'fi')
+        action = action.replace(before, rendered)
+        action = action.replace('target=/boot/efi/EFI/almalinux/grub.cfg', 'target=/boot/grub2/grub.cfg')
+        entry['action'] = action
     path.write_text(serialize(document))
 
 

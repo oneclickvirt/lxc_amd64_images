@@ -123,7 +123,12 @@ class ImageSourceRefreshTests(unittest.TestCase):
             '    gpgcheck=1', '    EOF',
         ]
         centos=self.root/'images_yaml/centos.yaml'
-        centos.write_text(DEFINITION.replace('actions: []', chr(10).join(centos_lines)))
+        centos_repositories = chr(10).join([
+            'packages:', '  repositories:', '  - name: BaseOS', '    url: |',
+            '      baseurl=https://mirror1.hs-esslingen.de/pub/Mirrors/centos-stream/$stream/BaseOS/$basearch/os/',
+            '      gpgcheck=1',
+        ])
+        centos.write_text(DEFINITION.replace('actions: []', chr(10).join(centos_lines)) + centos_repositories + chr(10))
         image_source_compat.normalize(self.root)
         normalized=self.snapshot()
         image_source_compat.normalize(self.root)
@@ -137,6 +142,48 @@ class ImageSourceRefreshTests(unittest.TestCase):
         self.assertNotIn('mirror1.hs-esslingen.de',centos_action)
         self.assertEqual(centos_action.count('https://mirror.stream.centos.org/'),3)
         self.assertIn('gpgcheck=1',centos_action)
+        repositories=verify(centos.read_text())['packages']['repositories']
+        self.assertNotIn('mirror1.hs-esslingen.de',repositories[0]['url'])
+        self.assertIn('https://mirror.stream.centos.org/',repositories[0]['url'])
+        self.assertIn('gpgcheck=1',repositories[0]['url'])
+
+    def test_centos_stream_source_override_uses_a_slash_terminated_mirror_root(self):
+        for repository in ('lxc_amd64_images','lxc_arm_images','lxd_images','incus_images'):
+            script=Path(__file__).resolve().parents[2].parent / repository / 'build_images.sh'
+            if not script.is_file():
+                continue
+            source=script.read_text()
+            self.assertIn('source.url=https://mirror.stream.centos.org/',source)
+
+    def test_almalinux_bls_normalization_preserves_efi_wrapper_and_is_idempotent(self):
+        path = self.root / 'images_yaml/almalinux.yaml'
+        source = '''image:
+  distribution: almalinux
+source:
+  downloader: fixture
+actions:
+- trigger: post-files
+  types: [vm]
+  releases: [9]
+  action: |
+    #!/bin/sh
+    set -eu
+    target=/boot/efi/EFI/almalinux/grub.cfg
+    grub2-mkconfig -o "${target}"
+    grubby --update-kernel=/boot/vmlinuz-${kver} --args="root=${DISTROBUILDER_ROOT_UUID} ro"
+mappings:
+  architecture_map: {}
+'''
+        path.write_text(source)
+        hooks.normalize_el_boot(path)
+        normalized_action = verify(path.read_text())['actions'][0]['action']
+        self.assertIn('target=/boot/grub2/grub.cfg', normalized_action)
+        self.assertNotIn('target=/boot/efi/EFI/almalinux/grub.cfg', normalized_action)
+        self.assertIn('hosted-compatible-bls', normalized_action)
+        self.assertIn('kernel="/boot/vmlinuz-${kver}"', normalized_action)
+        normalized = path.read_bytes()
+        hooks.normalize_el_boot(path)
+        self.assertEqual(path.read_bytes(), normalized)
 
     def test_failed_partial_source_refresh_preserves_every_original(self):
         before = self.snapshot()

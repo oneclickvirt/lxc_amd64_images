@@ -27,50 +27,8 @@ if [ "$is_build_image" == true ] && command -v apt-get >/dev/null 2>&1; then
     if ! command -v jq >/dev/null 2>&1; then
         sudo apt-get install jq -y
     fi
-    uname_output=$(uname -a)
-    if [[ $uname_output != *ARM* && $uname_output != *arm* && $uname_output != *aarch* ]]; then
-        if ! command -v snap >/dev/null 2>&1; then
-            sudo apt-get install snapd -y
-        fi
-        sudo systemctl start snapd
-        if ! command -v distrobuilder >/dev/null 2>&1; then
-            sudo snap install distrobuilder --classic
-        fi
-    else
-        # if ! command -v snap >/dev/null 2>&1; then
-        #     sudo apt-get install snapd -y
-        # fi
-        # sudo systemctl start snapd
-        # if ! command -v distrobuilder >/dev/null 2>&1; then
-        #     sudo snap install distrobuilder --classic
-        # fi
-        if ! command -v distrobuilder >/dev/null 2>&1 && ! $HOME/goprojects/bin/distrobuilder --version >/dev/null 2>&1; then
-            sudo apt-get install build-essential -y
-            export CGO_ENABLED=1
-            export CC=gcc
-            wget https://go.dev/dl/go1.21.6.linux-arm64.tar.gz
-            chmod 777 go1.21.6.linux-arm64.tar.gz
-            rm -rf /usr/local/go && tar -C /usr/local -xzf go1.21.6.linux-arm64.tar.gz
-            export GOROOT=/usr/local/go
-            export PATH=$GOROOT/bin:$PATH
-            export GOPATH=$HOME/goprojects/
-            go version
-            apt-get install -q -y debootstrap rsync gpg squashfs-tools git make
-            git config --global user.name "daily-update"
-            git config --global user.email "tg@spiritlhl.top"
-            mkdir -p $HOME/go/src/github.com/lxc/
-            cd $HOME/go/src/github.com/lxc/
-            git clone https://github.com/lxc/distrobuilder
-            cd ./distrobuilder
-            make
-            export PATH=$HOME/goprojects/bin/distrobuilder:$PATH
-            echo $PATH
-            find $HOME -name distrobuilder -type f 2>/dev/null
-            $HOME/goprojects/bin/distrobuilder --version
-            cd "$opath"
-        fi
-        # wget https://api.ilolicon.com/distrobuilder.deb
-        # dpkg -i distrobuilder.deb
+    if ! command -v distrobuilder >/dev/null 2>&1; then
+        bash .github/scripts/install_distrobuilder.sh
     fi
     if ! command -v debootstrap >/dev/null 2>&1; then
         sudo apt-get install debootstrap -y
@@ -82,6 +40,7 @@ build_or_list_images() {
     local versions=()
     local ver_nums=()
     local variants=()
+    local -a EXTRA_ARGS=() BUILDER_CMD=()
     read -ra versions <<< "$1"
     read -ra ver_nums <<< "$2"
     read -ra variants <<< "$3"
@@ -135,44 +94,47 @@ build_or_list_images() {
                     echo "Unsupported distribution: $run_funct"
                     exit 1
                 fi
-                EXTRA_ARGS=""
+                EXTRA_ARGS=()
                 if [[ "$run_funct" == "centos" ]]; then
                     [ "${arch}" = "amd64" ] && arch="x86_64"
                     [ "${arch}" = "arm64" ] && arch="aarch64"
                     if [ "$version" = "7" ] && [ "${arch}" != "amd64" ] && [ "${arch}" != "x86_64" ]; then
-                        EXTRA_ARGS="-o source.url=http://mirror.math.princeton.edu/pub/centos-altarch/ -o source.skip_verification=true"
+                        EXTRA_ARGS=(-o source.url=http://mirror.math.princeton.edu/pub/centos-altarch/ -o source.skip_verification=true)
                     fi
                     if [ "$version" = "8-Stream" ] || [ "$version" = "9-Stream" ] || [ "$version" = "10-Stream" ]; then
-                        EXTRA_ARGS="${EXTRA_ARGS} -o source.variant=boot"
+                        EXTRA_ARGS+=(-o source.variant=boot)
                     fi
                     if [ "$version" = "9-Stream" ] || [ "$version" = "10-Stream" ]; then
-                        EXTRA_ARGS="${EXTRA_ARGS} -o source.url=https://mirror.stream.centos.org"
+                        # The CentOS downloader appends the stream path itself. Keep
+                        # the canonical mirror here so old mirror overrides cannot
+                        # be reintroduced by a scheduled build.
+                        EXTRA_ARGS+=(-o source.url=https://mirror.stream.centos.org/)
                     fi
                 elif [[ "$run_funct" == "rockylinux" ]]; then
                     [ "${arch}" = "amd64" ] && arch="x86_64"
                     [ "${arch}" = "arm64" ] && arch="aarch64"
-                    EXTRA_ARGS="-o source.variant=boot"
+                    EXTRA_ARGS=(-o source.variant=boot)
                 elif [[ "$run_funct" == "almalinux" ]]; then
                     [ "${arch}" = "amd64" ] && arch="x86_64"
                     [ "${arch}" = "arm64" ] && arch="aarch64"
-                    EXTRA_ARGS="-o source.variant=boot"
+                    EXTRA_ARGS=(-o source.variant=boot)
                 elif [[ "$run_funct" == "oracle" ]]; then
                     [ "${arch}" = "amd64" ] && arch="x86_64"
                     [ "${arch}" = "arm64" ] && arch="aarch64"
                     if [[ "$version" == "8" || "$version" == "9" || "$version" == "10" ]]; then
-                        EXTRA_ARGS="-o source.url=https://yum.oracle.com/ISOS/OracleLinux"
+                        EXTRA_ARGS=(-o source.url=https://yum.oracle.com/ISOS/OracleLinux)
                     fi
                 elif [[ "$run_funct" == "archlinux" ]]; then
                     [ "${arch}" = "amd64" ] && arch="x86_64"
                     [ "${arch}" = "arm64" ] && arch="aarch64"
                     if [ "${arch}" != "amd64" ] && [ "${arch}" != "i386" ] && [ "${arch}" != "x86_64" ]; then
-                        EXTRA_ARGS="-o source.url=https://ca.us.mirror.archlinuxarm.org"
+                        EXTRA_ARGS=(-o source.url=https://ca.us.mirror.archlinuxarm.org)
                     fi
                 elif [[ "$run_funct" == "alpine" ]]; then
                     [ "${arch}" = "amd64" ] && arch="x86_64"
                     [ "${arch}" = "arm64" ] && arch="aarch64"
                     if [ "${version}" = "edge" ]; then
-                        EXTRA_ARGS="-o source.same_as=3.19"
+                        EXTRA_ARGS=(-o source.same_as=3.19)
                     fi
                 elif [[ "$run_funct" == "fedora" || "$run_funct" == "openeuler" || "$run_funct" == "opensuse" ]]; then
                     [ "${arch}" = "amd64" ] && arch="x86_64"
@@ -181,9 +143,9 @@ build_or_list_images() {
                     [ "${arch}" = "x86_64" ] && arch="amd64"
                     [ "${arch}" = "aarch64" ] && arch="arm64"
                     if [ "${variant}" = "cloud" ]; then
-                        EXTRA_ARGS="-o source.variant=openrc"
+                        EXTRA_ARGS=(-o source.variant=openrc)
                     else
-                        EXTRA_ARGS="-o source.variant=${variant}"
+                        EXTRA_ARGS=(-o "source.variant=${variant}")
                     fi
                 elif [[ "$run_funct" == "debian" || "$run_funct" == "kali" ]]; then
                     [ "${arch}" = "x86_64" ] && arch="amd64"
@@ -192,63 +154,29 @@ build_or_list_images() {
                     [ "${arch}" = "x86_64" ] && arch="amd64"
                     [ "${arch}" = "aarch64" ] && arch="arm64"
                     if [ "${arch}" != "amd64" ] && [ "${arch}" != "i386" ] && [ "${arch}" != "x86_64" ]; then
-                        EXTRA_ARGS="-o source.url=http://ports.ubuntu.com/ubuntu-ports"
+                        EXTRA_ARGS=(-o source.url=http://ports.ubuntu.com/ubuntu-ports)
                     fi
                 fi
                 if [ "$is_build_image" == true ]; then
                     rm -f -- incus.tar.xz lxd.tar.xz rootfs.squashfs rootfs.tar.xz disk.qcow2 disk_compressed.qcow2
-                    if command -v distrobuilder >/dev/null 2>&1; then
-                        if [[ "$run_funct" == "gentoo" ]]; then
-                            echo "sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} ${EXTRA_ARGS}"
-                            if sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} ${EXTRA_ARGS}; then
-                                echo "Command succeeded"
-                            else
-                                echo "Image builder failed; no new batch will be published" >&2
-                                return 1
-                            fi
-                        elif [[ "$run_funct" != "archlinux" ]]; then
-                            echo "sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.release=${version} -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}"
-                            if sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.release=${version} -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}; then
-                                echo "Command succeeded"
-                            else
-                                echo "Image builder failed; no new batch will be published" >&2
-                                return 1
-                            fi
-                        else
-                            echo "sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}"
-                            if sudo distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}; then
-                                echo "Command succeeded"
-                            else
-                                echo "Image builder failed; no new batch will be published" >&2
-                                return 1
-                            fi
-                        fi
+                    builder_bin=$(command -v distrobuilder) || { echo "distrobuilder is not installed on this runner" >&2; return 1; }
+                    BUILDER_CMD=(sudo "$builder_bin" build-lxc "${opath}/images_yaml/${run_funct}.yaml")
+                    if [[ "$run_funct" != "gentoo" && "$run_funct" != "archlinux" ]]; then
+                        BUILDER_CMD+=(-o "image.release=${version}")
+                    fi
+                    BUILDER_CMD+=(-o "image.architecture=${arch}" -o "image.variant=${variant}")
+                    if [[ "$run_funct" != "gentoo" ]]; then
+                        BUILDER_CMD+=(-o "packages.manager=${manager}")
+                    fi
+                    BUILDER_CMD+=("${EXTRA_ARGS[@]}")
+                    printf 'Running:'
+                    printf ' %q' "${BUILDER_CMD[@]}"
+                    printf '\n'
+                    if "${BUILDER_CMD[@]}"; then
+                        echo "Command succeeded"
                     else
-                        if [[ "$run_funct" == "gentoo" ]]; then
-                            echo "sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} ${EXTRA_ARGS}"
-                            if sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} ${EXTRA_ARGS}; then
-                                echo "Command succeeded"
-                            else
-                                echo "Image builder failed; no new batch will be published" >&2
-                                return 1
-                            fi
-                        elif [[ "$run_funct" != "archlinux" ]]; then
-                            echo "sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.release=${version} -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}"
-                            if sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.release=${version} -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}; then
-                                echo "Command succeeded"
-                            else
-                                echo "Image builder failed; no new batch will be published" >&2
-                                return 1
-                            fi
-                        else
-                            echo "sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}"
-                            if sudo $HOME/goprojects/bin/distrobuilder build-lxc "${opath}/images_yaml/${run_funct}.yaml" -o image.architecture=${arch} -o image.variant=${variant} -o packages.manager=${manager} ${EXTRA_ARGS}; then
-                                echo "Command succeeded"
-                            else
-                                echo "Image builder failed; no new batch will be published" >&2
-                                return 1
-                            fi
-                        fi
+                        echo "Image builder failed; no new batch will be published" >&2
+                        return 1
                     fi
                     # 强制设置架构名字
                     if [[ "$run_funct" == "gentoo" || "$run_funct" == "debian" || "$run_funct" == "ubuntu" || "$run_funct" == "kali" ]]; then
