@@ -114,6 +114,16 @@ kernel_path=$(find /boot -name "vmlinuz-${kver}" || true)"""
 
     path = root / 'images_yaml/opensuse.yaml'
     document = verify(path.read_text())
+    # Upstream removed vim-minimal, so legacy text insertion no longer adds
+    # the default variant's SSH server or certificate-verifying HTTP client.
+    sets = document.setdefault('packages', {}).setdefault('sets', [])
+    existing = {package for entry in sets if entry.get('action') == 'install'
+                and not any(entry.get(key) for key in ('types', 'variants', 'releases', 'architectures'))
+                for package in entry.get('packages', [])}
+    missing = [package for package in ('openssh-server', 'curl', 'ca-certificates')
+               if package not in existing]
+    if missing:
+        sets.append({'packages': missing, 'action': 'install'})
     # New SUSE packages keep vendor SSH defaults under /usr/etc. Install the
     # mutable config before repository customization hooks edit it.
     ssh_hook = {'trigger': 'post-packages', 'action': """#!/bin/sh
@@ -125,9 +135,15 @@ if [ ! -s /etc/ssh/sshd_config ] && [ -s /usr/etc/ssh/sshd_config ]; then
 fi
 mkdir -p /etc/systemd/system/sshd.service.d
 printf '[Service]\\nExecStartPre=/usr/bin/ssh-keygen -A\\n' > /etc/systemd/system/sshd.service.d/10-host-keys.conf
+systemctl enable sshd
 """}
-    if ssh_hook not in document.setdefault('actions', []):
-        document['actions'].append(ssh_hook)
+    actions = document.setdefault('actions', [])
+    for index, entry in enumerate(actions):
+        if 'hosted-suse-ssh-defaults' in entry['action']:
+            actions[index] = ssh_hook
+            break
+    else:
+        actions.append(ssh_hook)
     path.write_text(serialize(document))
 
     path = root / 'images_yaml/oracle.yaml'

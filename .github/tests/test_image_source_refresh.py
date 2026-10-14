@@ -161,6 +161,10 @@ class ImageSourceRefreshTests(unittest.TestCase):
         self.assertEqual(ssh['trigger'], 'post-packages')
         self.assertIn('cp /usr/etc/ssh/sshd_config /etc/ssh/sshd_config', ssh['action'])
         self.assertIn('ExecStartPre=/usr/bin/ssh-keygen -A', ssh['action'])
+        self.assertIn('systemctl enable sshd', ssh['action'])
+        sets = verify((self.root / 'images_yaml/opensuse.yaml').read_text())['packages']['sets']
+        self.assertTrue(any(set(entry['packages']) >= {'openssh-server', 'curl', 'ca-certificates'}
+                            and not entry.get('variants') for entry in sets))
         self.assertEqual(dns['types'], ['container'])
         self.assertIn('touch /etc/resolv.conf', dns['action'])
         self.assertNotIn('NETCONFIG_DNS_POLICY', dns['action'])

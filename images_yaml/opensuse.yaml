@@ -305,6 +305,11 @@ packages:
     - vm
     variants:
     - desktop-kde
+  - packages:
+    - openssh-server
+    - curl
+    - ca-certificates
+    action: install
 actions:
 - trigger: post-unpack
   action: |-
@@ -535,6 +540,7 @@ actions:
     fi
     mkdir -p /etc/systemd/system/sshd.service.d
     printf '[Service]\nExecStartPre=/usr/bin/ssh-keygen -A\n' > /etc/systemd/system/sshd.service.d/10-host-keys.conf
+    systemctl enable sshd
 - trigger: post-files
   types:
   - container

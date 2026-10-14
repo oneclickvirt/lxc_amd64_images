@@ -6,8 +6,11 @@ source .github/scripts/ci_network.sh
 ci_retry sudo apt-get update -y
 ci_retry sudo apt-get install -y --no-install-recommends curl jq unzip xz-utils squashfs-tools qemu-utils qemu-system-x86 qemu-system-arm ovmf qemu-efi-aarch64 cloud-image-utils openssh-client sshpass
 if [[ -c /dev/kvm ]]; then sudo chmod a+rw /dev/kvm; fi
+if [[ "$runtime" == qemu || "${RUNNER_ARCH:-}" == ARM64 || ! -c /dev/kvm ]]; then
+    ci_retry sudo apt-get install -y --no-install-recommends libguestfs-tools linux-image-generic policycoreutils
+    bash .github/scripts/prepare_selinux_appliance.sh
+fi
 if [[ "$runtime" == qemu ]]; then exit 0; fi
-if [[ "${RUNNER_ARCH:-}" == ARM64 ]]; then ci_retry sudo apt-get install -y --no-install-recommends libguestfs-tools; fi
 if [[ "$runtime" == lxd ]]; then
     ci_retry sudo snap install lxd --channel=5.21/stable
     sudo /snap/bin/lxd waitready --timeout=120
