@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "entries": [
+    {
+      "distro": "opensuse",
+      "release": "16.0",
+      "arch": "amd64",
+      "kind": "container",
+      "reason": "Guest outbound HTTPS routing failed validation; previous assets retained and manual repair remains available",
+      "evidence": "https://github.com/oneclickvirt/lxc_amd64_images/actions/runs/38663169556"
+    },
+    {
+      "distro": "oracle",
+      "release": "8",
+      "arch": "amd64",
+      "kind": "container",
+      "reason": "Oracle ISO rootfs copying failed while reading a security.selinux extended attribute; previous assets retained and manual repair remains available",
+      "evidence": "https://github.com/oneclickvirt/lxc_amd64_images/actions/runs/38620187200"
+    }
+  ]
+}

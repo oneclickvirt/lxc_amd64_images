@@ -70,6 +70,7 @@ jobs:
     timeout-minutes: 10
     outputs:
       matrix: ${{ steps.catalog.outputs.matrix }}
+      count: ${{ steps.catalog.outputs.count }}
     steps:
     -
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -77,6 +78,7 @@ jobs:
         persist-credentials: false
     - id: catalog
       env:
+        CI_IMAGE_AUTOMATIC: ${{ github.event_name == 'schedule' }}
         DISTRO: ${{ inputs.distro || 'all' }}
         ARCH: ${{ inputs.arch || 'all' }}
         SCOPE: ${{ inputs.scope || 'current' }}
@@ -87,6 +89,7 @@ jobs:
         "$ARCH" --scope "$SCOPE" --kind "$KIND" --release "$RELEASE" --variant "$VARIANT"
   build-test-publish:
     needs: catalog
+    if: needs.catalog.outputs.count != '0'
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 180
     permissions:

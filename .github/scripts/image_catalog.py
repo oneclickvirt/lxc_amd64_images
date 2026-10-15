@@ -63,7 +63,6 @@ def refresh_catalog(root, commit, deadline):
 
 
 def matrix(data, repo, distro='all', scope='current', kind='container', architecture='all', exact_release='', variant=''):
-    if repo.startswith('lxc_') and kind != 'container': raise ValueError('LXC repositories only build containers')
     if distro != 'all' and distro not in DISTROS: raise ValueError('unknown distribution')
     arches = ['amd64'] if repo=='lxc_amd64_images' else ['arm64'] if repo=='lxc_arm_images' else ['amd64','arm64']
     if architecture != 'all': arches=[a for a in arches if a==architecture]
@@ -83,6 +82,26 @@ def matrix(data, repo, distro='all', scope='current', kind='container', architec
     return {'include':rows}
 
 
+def automatic_matrix(value, policy):
+    """Quarantine confirmed failures in schedules; manual repair stays usable."""
+    if policy.get('schema') != 1 or not isinstance(policy.get('entries'), list):
+        raise ValueError('invalid automated image quarantine')
+    blocked = set()
+    for entry in policy['entries']:
+        if (set(entry) != {'distro', 'release', 'arch', 'kind', 'reason', 'evidence'}
+                or entry['distro'] not in DISTROS or entry['arch'] not in ('amd64', 'arm64')
+                or entry['kind'] not in ('container', 'vm')
+                or not re.fullmatch('[A-Za-z0-9_.-]+', entry['release'])
+                or not entry['reason'] or not re.fullmatch(r'https://github\.com/oneclickvirt/[A-Za-z0-9_.-]+/actions/runs/[0-9]+', entry['evidence'])):
+            raise ValueError('invalid quarantined image entry')
+        key = tuple(entry[field] for field in ('distro', 'release', 'arch', 'kind'))
+        if key in blocked:
+            raise ValueError('duplicate quarantined image entry')
+        blocked.add(key)
+    return {'include': [row for row in value['include']
+                        if tuple(row[field] for field in ('distro', 'release', 'arch', 'kind')) not in blocked]}
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('command',choices=['selection','matrix'])
     parser.add_argument('--catalog',default='.github/image-catalog.json');parser.add_argument('--distro',default='all')
@@ -97,7 +116,14 @@ def main():
         print(' '.join(config['variants']))
     else:
         value=matrix(data,os.environ['GITHUB_REPOSITORY'].split('/')[-1],args.distro,args.scope,args.kind,args.arch,args.release,args.variant)
+        if os.environ.get('CI_IMAGE_AUTOMATIC') == 'true':
+            original_count = len(value['include'])
+            policy = json.loads(Path('.github/image-build-quarantine.json').read_text())
+            value = automatic_matrix(value, policy)
+            print(f'Automated image policy: {len(value["include"])} selected, {original_count-len(value["include"])} quarantined; previous assets retained')
         encoded=json.dumps(value,separators=(',',':'));print(encoded)
-        with open(os.environ['GITHUB_OUTPUT'],'a') as output:print('matrix='+encoded,file=output)
+        with open(os.environ['GITHUB_OUTPUT'],'a') as output:
+            print('matrix='+encoded,file=output)
+            print('count='+str(len(value['include'])),file=output)
 
 if __name__=='__main__': main()
