@@ -55,6 +55,13 @@ class RPMBootTests(unittest.TestCase):
             self.assertIn('grub_platforms_efi-64', efi['action'])
             euler = verify((definitions / 'openeuler.yaml').read_text())
             self.assertTrue(any('grub2-efi-aa64' in s['packages'] for s in euler['packages']['sets']))
+            for distro in ('almalinux', 'centos', 'rockylinux', 'fedora'):
+                rpm = verify((definitions / (distro + '.yaml')).read_text())
+                drivers = next(f for f in rpm['files'] if f['path'] == '/etc/dracut.conf.d/50-hosted-storage.conf')
+                self.assertEqual(drivers['types'], ['vm'])
+                self.assertIn('hostonly="no"', drivers['content'])
+                for module in ('virtio_scsi', 'virtio_blk', 'virtio_pci', 'sd_mod', 'ext4'):
+                    self.assertIn(module, drivers['content'].split())
             debian = verify((definitions / 'debian.yaml').read_text())
             hook = next(a['action'] for a in debian['actions'] if 'hosted-debian-ssh-hostkeys' in a['action'])
             self.assertIn('ExecStartPre=\\nExecStartPre=/usr/bin/ssh-keygen -A', hook)

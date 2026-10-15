@@ -128,7 +128,7 @@ class ImageIdentityTests(unittest.TestCase):
             finally:
                 os.chdir(previous)
 
-    def test_oracle_repair_targets_link_labels_and_preserves_target_attributes(self):
+    def test_oracle_container_repair_removes_only_selinux_labels_from_all_entry_types(self):
         import json
         import shlex
         import yaml
@@ -136,13 +136,14 @@ class ImageIdentityTests(unittest.TestCase):
         if not NATIVE_IMAGE_ARCHIVES:
             self.skipTest('Native SquashFS import repair does not alter raw archives')
         definition = yaml.safe_load((Path(__file__).resolve().parents[2] / 'images_yaml/oracle.yaml').read_text())
-        hook = next(a for a in definition['actions'] if 'hosted-oracle-symlink-labels' in a['action'])
+        hook = next(a for a in definition['actions'] if 'hosted-oracle-container-labels' in a['action'])
         self.assertEqual(hook['types'], ['container'])
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             files = root / 'rootfs'
             files.mkdir()
             (files / 'target').write_text('unchanged package')
+            (files / 'labelled-directory').mkdir()
             (files / 'labelled link').symlink_to('target')
             (files / 'unlabelled-link').symlink_to('target')
             binary = root / 'bin'
@@ -152,16 +153,22 @@ class ImageIdentityTests(unittest.TestCase):
                 command.write_text('#!' + sys.executable + '\nimport json,os,sys\n'
                     'with open(os.environ["CALLS"], "a") as f: f.write(json.dumps([os.path.basename(sys.argv[0]),*sys.argv[1:]])+"\\n")\n'
                     'assert sys.argv[1:5] in (["-h","-n","security.selinux","--"],["-h","-x","security.selinux","--"])\n'
-                    'assert os.path.islink(sys.argv[5])\n'
-                    'sys.exit(0 if sys.argv[5].endswith("labelled link") else 1)\n')
+                    'labelled=os.path.basename(sys.argv[5]) in ("target","labelled link","labelled-directory")\n'
+                    'if os.path.basename(sys.argv[0])=="setfattr" and os.environ.get("FAIL_WRITE"): sys.exit(9)\n'
+                    'sys.exit(0 if labelled else 1)\n')
                 command.chmod(0o755)
             subprocess.run(['sh', '-c', hook['action'].replace('find / -xdev', 'find ' + shlex.quote(str(files)) + ' -xdev')],
                            check=True, env=dict(os.environ, PATH=str(binary)+os.pathsep+os.environ['PATH'], CALLS=str(root/'calls')),
                            capture_output=True, timeout=10)
             calls = [json.loads(line) for line in (root/'calls').read_text().splitlines()]
             removed = [call for call in calls if call[0] == 'setfattr']
-            self.assertEqual(removed, [['setfattr', '-h', '-x', 'security.selinux', '--', str(files/'labelled link')]])
+            self.assertEqual(sorted(call[-1] for call in removed),
+                             sorted(str(files/name) for name in ('target', 'labelled link', 'labelled-directory')))
             self.assertEqual((files/'target').read_text(), 'unchanged package')
+            result = subprocess.run(['sh', '-c', hook['action'].replace('find / -xdev', 'find ' + shlex.quote(str(files)) + ' -xdev')],
+                                    env=dict(os.environ, PATH=str(binary)+os.pathsep+os.environ['PATH'], CALLS=str(root/'calls'), FAIL_WRITE='1'),
+                                    capture_output=True, timeout=10)
+            self.assertNotEqual(result.returncode, 0)
 
 
 if __name__ == '__main__':

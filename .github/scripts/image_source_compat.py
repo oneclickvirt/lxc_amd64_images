@@ -18,6 +18,14 @@ def instance_identity(document):
 
 def rpm_vm_compat(document, distro):
     """Keep EL firmware, BLS entries and the actual root partition in sync."""
+    # A loop-backed build host must not decide the guest initramfs drivers.
+    # In particular ARM hosted validation and some consumers use virtio-blk.
+    drivers = {'path': '/etc/dracut.conf.d/50-hosted-storage.conf',
+               'generator': 'dump', 'types': ['vm'],
+               'content': 'hostonly="no"\nadd_drivers+=" virtio_scsi virtio_blk virtio_pci virtio_console sd_mod ext4 "\n'}
+    files = document.setdefault('files', [])
+    if drivers not in files:
+        files.append(drivers)
     sets = document.setdefault('packages', {}).setdefault('sets', [])
     for entry in sets:
         if 'architectures' in entry:
@@ -393,14 +401,14 @@ systemctl set-default multi-user.target
     if target_hook not in document.setdefault('actions', []):
         document['actions'].append(target_hook)
     if NATIVE_IMAGE_ARCHIVES:
-        # Oracle's ISO labels symbolic links. setfattr without -h follows the
-        # link and leaves its own label behind; unsquashfs then cannot import
-        # it into an Ubuntu user namespace. Preserve all regular-file labels,
-        # capabilities and ACLs, and never apply this container repair to VMs.
+        # Oracle's ISO carries SELinux labels on links, files and directories.
+        # An unprivileged Ubuntu container cannot restore any of these labels.
+        # Strip only that attribute; retain capabilities, ACLs and file data.
+        # Container policy is enforced by the host; VM labels stay intact.
         label_hook = {'trigger': 'post-files', 'types': ['container'], 'action': r'''#!/bin/sh
 set -eu
-# hosted-oracle-symlink-labels
-find / -xdev -type l -exec sh -ec '
+# hosted-oracle-container-labels
+find / -xdev -exec sh -ec '
   for path do
     if getfattr -h -n security.selinux -- "$path" >/dev/null 2>&1; then
       setfattr -h -x security.selinux -- "$path"
@@ -408,8 +416,19 @@ find / -xdev -type l -exec sh -ec '
   done
 ' sh {} +
 '''}
-        if label_hook not in document['actions']:
-            document['actions'].append(label_hook)
+        labels = []
+        replaced = False
+        for entry in document['actions']:
+            if any(marker in entry['action'] for marker in
+                   ('hosted-oracle-symlink-labels', 'hosted-oracle-container-labels')):
+                if not replaced:
+                    labels.append(label_hook)
+                    replaced = True
+            else:
+                labels.append(entry)
+        if not replaced:
+            labels.append(label_hook)
+        document['actions'] = labels
     path.write_text(serialize(document))
 
     path = root / 'images_yaml/centos.yaml'
