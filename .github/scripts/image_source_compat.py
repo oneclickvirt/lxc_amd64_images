@@ -258,6 +258,35 @@ MIRRORS
     if mirror_hook not in actions:
         # Configure mirrors before the upstream pacman-keyring bootstrap hook.
         actions.insert(0, mirror_hook)
+    rootvar = ('LXD_IMAGEBUILDER_ROOT_UUID' if any('LXD_IMAGEBUILDER_ROOT_UUID' in a['action']
+                                                for a in actions) else 'DISTROBUILDER_ROOT_UUID')
+    initramfs = {'trigger': 'post-files', 'types': ['vm'], 'architectures': ['aarch64'],
+                'action': r'''#!/bin/sh
+set -eu
+# hosted-arch-arm-initramfs
+test -s /boot/initramfs-linux.img
+case "${DISTROBUILDER_ROOT_UUID}" in UUID=?*) ;; *) echo 'Expected UUID root device' >&2; exit 1;; esac
+if ! grep -Fq '# hosted-arm-initramfs-selection' /etc/default/grub; then
+  cat >> /etc/default/grub <<'CONF'
+
+# hosted-arm-initramfs-selection
+GRUB_EARLY_INITRD_LINUX_CUSTOM="${GRUB_EARLY_INITRD_LINUX_CUSTOM:+${GRUB_EARLY_INITRD_LINUX_CUSTOM} }initramfs-linux.img"
+CONF
+fi
+# The vendor hook generates grub.cfg before mkinitcpio and GRUB does not
+# automatically associate ARM's unversioned Image with initramfs-linux.img.
+grub-mkconfig -o /boot/grub/grub.cfg
+sed "s#root=[^ ]*#root=${DISTROBUILDER_ROOT_UUID}#g" /boot/grub/grub.cfg > /boot/grub/grub.cfg.hosted
+cat /boot/grub/grub.cfg.hosted > /boot/grub/grub.cfg
+rm /boot/grub/grub.cfg.hosted
+grep -Eq '^[[:space:]]*initrd[[:space:]].*/initramfs-linux\.img([[:space:]]|$)' /boot/grub/grub.cfg
+'''.replace('DISTROBUILDER_ROOT_UUID', rootvar)}
+    for index, entry in enumerate(actions):
+        if 'hosted-arch-arm-initramfs' in entry['action']:
+            actions[index] = initramfs
+            break
+    else:
+        actions.append(initramfs)
     path.write_text(serialize(document))
 
     path = root / 'images_yaml/gentoo.yaml'
