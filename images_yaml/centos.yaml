@@ -1037,21 +1037,6 @@ actions:
   variants:
   - cloud
   - default
-- trigger: post-files
-  types:
-  - container
-  action: |
-    #!/bin/sh
-    set -eu
-    # hosted-consumer-dns-file
-    if [ -L /etc/resolv.conf ]; then
-      case "$(readlink /etc/resolv.conf)" in
-        /run/*|../run/*|/var/run/*|../var/run/*)
-          rm /etc/resolv.conf
-          touch /etc/resolv.conf
-          ;;
-      esac
-    fi
 - trigger: post-packages
   types:
   - vm
@@ -1146,4 +1131,19 @@ actions:
     else
       echo 'Cloud image has no supported cloud-init service manager' >&2
       exit 1
+    fi
+- trigger: post-files
+  types:
+  - container
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-consumer-dns-file
+    if [ -L /etc/resolv.conf ]; then
+      case "$(readlink /etc/resolv.conf)" in
+        /run/*|../run/*|/var/run/*|../var/run/*)
+          rm /etc/resolv.conf
+          touch /etc/resolv.conf
+          ;;
+      esac
     fi
