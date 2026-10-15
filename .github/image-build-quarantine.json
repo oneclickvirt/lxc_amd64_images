@@ -1,13 +1,4 @@
 {
   "schema": 1,
-  "entries": [
-    {
-      "distro": "opensuse",
-      "release": "16.0",
-      "arch": "amd64",
-      "kind": "container",
-      "reason": "Guest outbound HTTPS routing failed validation; previous assets retained and manual repair remains available",
-      "evidence": "https://github.com/oneclickvirt/lxc_amd64_images/actions/runs/38664873219"
-    }
-  ]
+  "entries": []
 }
