@@ -123,6 +123,8 @@ class RPMBootTests(unittest.TestCase):
                 (boot / 'initramfs-1.img').write_text('initramfs')
                 entry = boot / 'loader/entries/test.conf'
                 entry.write_text('linux /var/cache/distrobuilder.fixture/rootfs/boot/vmlinuz-1\ninitrd /var/cache/lxd-imagebuilder.fixture/rootfs/boot/initramfs-1.img\noptions $kernelopts\n')
+                literal = boot / 'loader/entries/literal.conf'
+                literal.write_text('linux /boot/vmlinuz-1\ninitrd /boot/initramfs-1.img\noptions root=/dev/loop0p2 quiet audit=1 console=ttyS0,115200 console=tty0 root=/dev/loop1p2\n')
                 binary = root / 'bin'
                 binary.mkdir()
                 editenv = binary / 'grub2-editenv'
@@ -142,6 +144,14 @@ class RPMBootTests(unittest.TestCase):
                 self.assertIn('linux ' + str(boot / 'vmlinuz-1'), entry.read_text())
                 self.assertIn('initrd ' + str(boot / 'initramfs-1.img'), entry.read_text())
                 self.assertNotIn('/var/cache/', entry.read_text())
+                for record in (entry, literal):
+                    options = next(line for line in record.read_text().splitlines() if line.startswith('options '))
+                    self.assertEqual(options.count('root='), 1)
+                    self.assertIn('root=UUID=fixture-root', options)
+                    self.assertNotIn('/dev/loop', options)
+                    self.assertEqual(options.count('console=ttyS0'), 1)
+                    self.assertEqual(options.count('console=ttyAMA0'), 1)
+                self.assertIn('quiet audit=1 console=ttyS0,115200 console=tty0', literal.read_text())
                 for directory in [vendor, 'BOOT']:
                     config = (boot / 'efi/EFI' / directory / 'grub.cfg').read_text()
                     self.assertIn('search --no-floppy --fs-uuid --set=dev fixture-root', config)

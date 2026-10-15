@@ -58,7 +58,24 @@ for entry in /boot/loader/entries/*.conf; do
   # RPM may record the builder host's mount prefix in a BLS entry.
   # Resolve kernel/initramfs basenames against the guest's actual /boot;
   # the existence gate below still rejects missing or unexpected images.
-  awk '
+  awk -v guest_root="$guest_root" '
+    $1 == "options" {
+      # BLS can carry a literal build-time loop device. kernelopts alone
+      # cannot correct it; retain vendor options and replace every root=.
+      printf "options"
+      serial=0; armserial=0
+      for (i=2; i<=NF; i++) {
+        if ($i ~ /^root=/) continue
+        if ($i ~ /^console=ttyS0(,|$)/) serial=1
+        if ($i ~ /^console=ttyAMA0(,|$)/) armserial=1
+        printf " %s", $i
+      }
+      printf " root=%s", guest_root
+      if (!serial) printf " console=ttyS0"
+      if (!armserial) printf " console=ttyAMA0"
+      printf "\n"
+      next
+    }
     $1 == "linux" || $1 == "initrd" {
       for (i=2; i<=NF; i++) {
         name=$i; sub(/^.*\//, "", name)
