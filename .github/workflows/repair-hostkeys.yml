@@ -1,0 +1,85 @@
+name: Replace inherited SSH identities in published container images
+'on':
+  workflow_dispatch:
+    inputs:
+      distro:
+        description: Current maintained distribution or all
+        type: string
+        default: all
+      arch:
+        description: Hosted runner architecture
+        type: choice
+        options: [all, amd64, arm64]
+        default: all
+permissions:
+  contents: write
+concurrency:
+  group: repair-image-hostkeys-${{ inputs.distro }}-${{ inputs.arch }}
+  cancel-in-progress: false
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+jobs:
+  catalog:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      matrix: ${{ steps.catalog.outputs.matrix }}
+      count: ${{ steps.catalog.outputs.count }}
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        persist-credentials: false
+    - id: catalog
+      env:
+        CI_IMAGE_AUTOMATIC: 'true'
+        DISTRO: ${{ inputs.distro }}
+        ARCH: ${{ inputs.arch }}
+      run: python3 .github/scripts/image_catalog.py matrix --distro "$DISTRO" --arch "$ARCH" --scope current --kind container
+  repair:
+    needs: catalog
+    if: needs.catalog.outputs.count != '0'
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix: ${{ fromJSON(needs.catalog.outputs.matrix) }}
+    env:
+      CI_IMAGE_RELEASES: ${{ matrix.release }}
+      DISTRO: ${{ matrix.distro }}
+      ARCH: ${{ matrix.arch }}
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        persist-credentials: false
+    - name: Prepare disposable hosted consumer
+      run: |
+        bash .github/scripts/prepare_hosted_runtime.sh incus
+        sudo apt-get install -y --no-install-recommends squashfs-tools
+    - name: Download verified assets, remove inherited identities and test every variant
+      env:
+        GH_TOKEN: ${{ github.token }}
+      shell: bash
+      run: |
+        set -euo pipefail
+        output=$(bash build_images.sh "$DISTRO" false "$ARCH" | tail -n 1)
+        read -r -a assets <<< "$output"
+        [[ ${#assets[@]} -gt 0 ]]
+        for file in "${assets[@]}"; do
+          IMAGE="$file" TAG="$DISTRO" python3 .github/scripts/published_image_suite.py download
+        done
+        sudo python3 .github/scripts/repair_image_hostkeys.py "${assets[@]}"
+        python3 .github/scripts/verify_image_outputs.py "${assets[@]}"
+        for file in "${assets[@]}"; do
+          python3 .github/scripts/hosted_image_test.py --file "$file" --runtime incus
+        done
+        printf '%s\n' "${assets[@]}" > "$RUNNER_TEMP/validated-images.txt"
+    - name: Publish only the completely validated repaired image set
+      env:
+        GH_TOKEN: ${{ github.token }}
+      shell: bash
+      run: |
+        set -euo pipefail
+        mapfile -t assets < "$RUNNER_TEMP/validated-images.txt"
+        python3 .github/scripts/release_assets.py "$DISTRO" "${assets[@]}"
+        printf 'Repaired SSH identity and validated all selected variants before publication.\n' >> "$GITHUB_STEP_SUMMARY"

@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import tarfile
 import zipfile
+from image_ssh_identity import KEY_PATH
 
 
 def verify(path, minimum=None, maximum=2 * 1024 * 1024 * 1024):
@@ -42,6 +43,8 @@ def verify(path, minimum=None, maximum=2 * 1024 * 1024 * 1024):
             names = {entry.name.removeprefix("./") for entry in archive}
             if not names:
                 raise ValueError("Empty tar image archive")
+            if any(KEY_PATH.fullmatch(name) for name in names):
+                raise ValueError("Image contains a shared builder SSH host identity")
             if alpine and "etc/alpine-release" not in names:
                 raise ValueError("Alpine root filesystem identity is missing")
             if openwrt and "etc/openwrt_release" not in names:

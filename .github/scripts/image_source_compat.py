@@ -2,8 +2,18 @@
 from pathlib import Path
 from append_image_actions import serialize, normalize_el_boot
 from verify_image_definitions import verify
+from image_ssh_identity import BUILD_HOOK
 
 NATIVE_IMAGE_ARCHIVES = False
+
+
+def instance_identity(document):
+    actions = document.setdefault('actions', [])
+    actions[:] = [entry for entry in actions if 'hosted-instance-ssh-identity' not in entry['action']]
+    for entry in actions:
+        entry['action'] = entry['action'].replace('    ssh-keygen -A || true\n', '').replace('ssh-keygen -A || true\n', '')
+        entry['action'] = entry['action'].replace('    /usr/sbin/sshd || true\n', '').replace('/usr/sbin/sshd || true\n', '')
+    actions.append({'trigger': 'post-files', 'action': BUILD_HOOK})
 
 
 def rpm_vm_compat(document, distro):
@@ -348,6 +358,24 @@ systemctl set-default multi-user.target
 """}
     if target_hook not in document.setdefault('actions', []):
         document['actions'].append(target_hook)
+    if NATIVE_IMAGE_ARCHIVES:
+        # Oracle's ISO labels symbolic links. setfattr without -h follows the
+        # link and leaves its own label behind; unsquashfs then cannot import
+        # it into an Ubuntu user namespace. Preserve all regular-file labels,
+        # capabilities and ACLs, and never apply this container repair to VMs.
+        label_hook = {'trigger': 'post-files', 'types': ['container'], 'action': r'''#!/bin/sh
+set -eu
+# hosted-oracle-symlink-labels
+find / -xdev -type l -exec sh -ec '
+  for path do
+    if getfattr -h -n security.selinux -- "$path" >/dev/null 2>&1; then
+      setfattr -h -x security.selinux -- "$path"
+    fi
+  done
+' sh {} +
+'''}
+        if label_hook not in document['actions']:
+            document['actions'].append(label_hook)
     path.write_text(serialize(document))
 
     path = root / 'images_yaml/centos.yaml'
@@ -425,6 +453,7 @@ fi
             # Raw LXC consumers instead provide a resolver file via templates.
             actions[:] = [entry for entry in actions
                           if 'hosted-consumer-dns-file' not in entry['action']]
+            instance_identity(document)
             path.write_text(serialize(document))
             continue
         for index, entry in enumerate(actions):
@@ -433,4 +462,5 @@ fi
                 break
         else:
             actions.append(dns_hook)
+        instance_identity(document)
         path.write_text(serialize(document))
