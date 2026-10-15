@@ -139,6 +139,23 @@ UNIT
 """}
     if keys not in actions:
         actions.append(keys)
+    if distro == 'fedora':
+        # Fedora's 45-second device deadline expires while ARM TCG is still
+        # coldplugging devices. Keep EFI mandatory, with a finite allowance
+        # for software virtualization rather than accepting emergency mode.
+        devices = {'trigger': 'post-files', 'types': ['vm'], 'architectures': ['aarch64'],
+                   'action': r'''#!/bin/sh
+set -eu
+# hosted-fedora-arm-device-deadline
+mkdir -p /etc/systemd/system.conf.d
+cat > /etc/systemd/system.conf.d/50-image-arm-devices.conf <<'CONF'
+[Manager]
+DefaultDeviceTimeoutSec=180s
+CONF
+'''}
+        if devices not in actions:
+            actions.append(devices)
+
 
 
 def raw_cloud_compat(document):

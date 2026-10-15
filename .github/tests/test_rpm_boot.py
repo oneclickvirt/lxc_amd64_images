@@ -38,6 +38,13 @@ class RPMBootTests(unittest.TestCase):
             self.assertEqual(snapshot, {p.name: p.read_bytes() for p in definitions.iterdir()})
             fedora = verify((definitions / 'fedora.yaml').read_text())
             self.assertTrue(any(a['trigger'] == 'post-packages' and a['action'] == 'systemd-machine-id-setup' for a in fedora['actions']))
+            devices = next(a for a in fedora['actions'] if 'hosted-fedora-arm-device-deadline' in a['action'])
+            self.assertEqual(devices['types'], ['vm'])
+            self.assertEqual(devices['architectures'], ['aarch64'])
+            command = devices['action'].replace('/etc/systemd/system.conf.d', str(root / 'system.conf.d'))
+            subprocess.run(['sh', '-c', command], check=True, timeout=5)
+            self.assertEqual((root / 'system.conf.d/50-image-arm-devices.conf').read_text(),
+                             '[Manager]\nDefaultDeviceTimeoutSec=180s\n')
             gentoo = verify((definitions / 'gentoo.yaml').read_text())
             self.assertTrue(any('app-admin/syslog-ng' in s['packages'] and 'cloud' in s['variants'] for s in gentoo['packages']['sets']))
             for action in ('emerge gentoo-kernel-bin', 'grub-install --target=arm64-efi'):
