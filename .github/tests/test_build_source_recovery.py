@@ -40,9 +40,38 @@ Path('disk.qcow2').write_bytes(b'complete')
 
     def test_compile_and_signature_failures_do_not_retry(self):
         for message in ['compile hook failed', "E: Couldn't download packages: GPG check FAILED"]:
-            value, calls, _ = self.execute('Path("calls").write_text("x")\nprint('+repr(message)+')\nsys.exit(17)\n')
+            value, calls, _ = self.execute('p=Path("calls"); p.write_text((p.read_text() if p.exists() else "")+"x")\nprint('+repr(message)+')\nsys.exit(17)\n')
             self.assertEqual(value.returncode, 17, value.stderr)
             self.assertEqual(calls, 'x')
+
+    def test_iso_selinux_enodata_retries_a_fresh_builder_and_cleans_outputs(self):
+        value, calls, output = self.execute('''p=Path('calls'); count=len(p.read_text()) if p.exists() else 0
+p.write_text('x'*(count+1))
+if count==0:
+ Path('disk.qcow2').write_bytes(b'partial')
+ print('rsync: [generator] get_xattr_data: lgetxattr("/rootfs/usr/share/zoneinfo/right/Indian/Cocos","security.selinux",30) failed: No data available (61)')
+ print('Error: Failed to unpack ISO: Failed to run "rsync": exit status 23')
+ sys.exit(23)
+assert not Path('disk.qcow2').exists()
+Path('disk.qcow2').write_bytes(b'complete')
+''')
+        self.assertEqual(value.returncode, 0, value.stderr)
+        self.assertEqual(calls, 'xx')
+        self.assertEqual(output, b'complete')
+
+    def test_permanent_xattr_errors_and_integrity_failures_do_not_retry(self):
+        transient = 'rsync: get_xattr_data: lgetxattr("/rootfs/file","security.selinux",30) failed: No data available (61)'
+        for message in (transient, 'Failed to unpack ISO: ' + transient.replace('No data available (61)', 'Operation not permitted (1)'),
+                        'Failed to unpack ISO: ' + transient + '\nGPG check FAILED'):
+            value, calls, _ = self.execute('p=Path("calls"); p.write_text((p.read_text() if p.exists() else "")+"x")\nprint('+repr(message)+')\nsys.exit(23)\n')
+            self.assertEqual(value.returncode, 23, value.stderr)
+            self.assertEqual(calls, 'x')
+
+    def test_persistent_iso_label_read_failure_stops_after_two_attempts(self):
+        message = 'Failed to unpack ISO: rsync: get_xattr_data: lgetxattr("/rootfs/file","security.selinux",30) failed: No data available (61)'
+        value, calls, _ = self.execute('p=Path("calls"); p.write_text((p.read_text() if p.exists() else "")+"x")\nprint('+repr(message)+')\nsys.exit(23)\n')
+        self.assertEqual(value.returncode, 23, value.stderr)
+        self.assertEqual(calls, 'xx')
 
     def test_stuck_builder_is_terminated_without_resetting_the_budget(self):
         with tempfile.TemporaryDirectory() as temporary:
