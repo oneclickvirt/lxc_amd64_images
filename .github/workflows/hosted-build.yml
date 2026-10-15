@@ -98,6 +98,9 @@ jobs:
     needs: catalog
     if: needs.catalog.outputs.count != '0'
     runs-on: ${{ matrix.runner }}
+    concurrency:
+      group: image-assets-${{ matrix.distro }}-${{ matrix.release }}-${{ matrix.arch }}-${{ matrix.kind }}
+      cancel-in-progress: false
     timeout-minutes: 180
     permissions:
       contents: write
