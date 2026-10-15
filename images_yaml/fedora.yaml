@@ -221,6 +221,12 @@ packages:
     - libsss_nss_idmap
     - sssd-client
     action: remove
+  - packages:
+    - grub2-tools
+    - grubby
+    action: install
+    types:
+    - vm
 actions:
 - trigger: post-unpack
   action: |-
@@ -313,7 +319,7 @@ actions:
     # Remove the "Container Image" string as this is going to be am VM
     sed -i 's/[ ]*(Container Image)//;/^VARIANT/d' /etc/os-release
 
-    target=/boot/efi/EFI/fedora/grub.cfg
+    target=/boot/grub2/grub.cfg
     grub2-mkconfig -o "${target}"
     sed -i "s#root=[^ ]*#root=${DISTROBUILDER_ROOT_UUID}#g" "${target}"
 
@@ -479,3 +485,79 @@ actions:
           ;;
       esac
     fi
+- trigger: post-files
+  types:
+  - vm
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-rpm-efi-forwarder
+    guest_root=${DISTROBUILDER_ROOT_UUID}
+    case "$guest_root" in UUID=*) guest_uuid=${guest_root#UUID=};; *) echo 'Expected UUID root device' >&2; exit 1;; esac
+    test -n "$guest_uuid"
+    mkdir -p /boot/grub2 /boot/loader/entries
+    if [ ! -s /boot/grub2/grub.cfg ]; then
+      test -s /boot/efi/EFI/fedora/grub.cfg
+      cp /boot/efi/EFI/fedora/grub.cfg /boot/grub2/grub.cfg
+    fi
+    test -s /boot/grub2/grub.cfg
+    entries=0
+    for entry in /boot/loader/entries/*.conf; do
+      [ -f "$entry" ] || continue
+      # RPM may record the builder host's mount prefix in a BLS entry.
+      # Resolve kernel/initramfs basenames against the guest's actual /boot;
+      # the existence gate below still rejects missing or unexpected images.
+      awk '
+        $1 == "linux" || $1 == "initrd" {
+          for (i=2; i<=NF; i++) {
+            name=$i; sub(/^.*\//, "", name)
+            if (name ~ /^(vmlinuz-|initramfs-)/) $i="/boot/" name
+          }
+        }
+        { print }
+      ' "$entry" > "$entry.hosted"
+      cat "$entry.hosted" > "$entry"
+      rm "$entry.hosted"
+      for image_path in $(awk '$1 == "linux" || $1 == "initrd" {for (i=2; i<=NF; i++) print $i}' "$entry"); do
+        test -s "$image_path" || { echo "Missing BLS boot image: $image_path" >&2; exit 1; }
+      done
+      entries=$((entries + 1))
+    done
+    if grep -q 'blscfg' /boot/grub2/grub.cfg; then
+      test "$entries" -gt 0
+      if [ ! -s /boot/grub2/grubenv ]; then grub2-editenv /boot/grub2/grubenv create; fi
+      grub2-editenv /boot/grub2/grubenv set blsdir=/boot/loader/entries
+      grub2-editenv /boot/grub2/grubenv set "kernelopts=root=$guest_root ro console=tty1 console=ttyS0 console=ttyAMA0"
+    fi
+    for vendor in fedora BOOT; do
+      mkdir -p "/boot/efi/EFI/$vendor"
+      cat > "/boot/efi/EFI/$vendor/grub.cfg" <<EOF
+    search --no-floppy --fs-uuid --set=dev $guest_uuid
+    set prefix=(\$dev)/boot/grub2
+    export prefix
+    configfile \$prefix/grub.cfg
+    EOF
+    done
+- trigger: post-files
+  types:
+  - vm
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-rpm-ssh-hostkeys
+    mkdir -p /etc/systemd/system/sshd.service.d
+    cat > /etc/systemd/system/hosted-ssh-hostkeys.service <<'UNIT'
+    [Unit]
+    Description=Generate missing SSH host keys before SSH starts
+    After=local-fs.target
+    Before=sshd.service
+    [Service]
+    Type=oneshot
+    ExecStart=/usr/bin/ssh-keygen -A
+    RemainAfterExit=yes
+    UNIT
+    cat > /etc/systemd/system/sshd.service.d/10-host-keys.conf <<'UNIT'
+    [Unit]
+    Requires=hosted-ssh-hostkeys.service
+    After=hosted-ssh-hostkeys.service
+    UNIT

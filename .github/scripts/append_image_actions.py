@@ -89,7 +89,7 @@ def normalize_el10(path):
 def normalize_el_boot(path):
     document = verify(path.read_text())
     for entry in document.get('actions', []):
-        for vendor in ('almalinux', 'centos', 'rocky'):
+        for vendor in ('almalinux', 'centos', 'rocky', 'fedora'):
             entry['action'] = entry['action'].replace(
                 'target=/boot/efi/EFI/' + vendor + '/grub.cfg', 'target=/boot/grub2/grub.cfg')
         if 'hosted-compatible-bls' in entry['action']:

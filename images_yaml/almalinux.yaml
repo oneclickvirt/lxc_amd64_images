@@ -697,9 +697,6 @@ actions:
 - trigger: post-files
   types:
   - vm
-  releases:
-  - '9'
-  - '10'
   action: |
     #!/bin/sh
     set -eu
@@ -750,6 +747,9 @@ actions:
     configfile \$prefix/grub.cfg
     EOF
     done
+  releases:
+  - '9'
+  - '10'
 - trigger: post-files
   types:
   - container
@@ -789,3 +789,26 @@ actions:
           ;;
       esac
     fi
+- trigger: post-files
+  types:
+  - vm
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-rpm-ssh-hostkeys
+    mkdir -p /etc/systemd/system/sshd.service.d
+    cat > /etc/systemd/system/hosted-ssh-hostkeys.service <<'UNIT'
+    [Unit]
+    Description=Generate missing SSH host keys before SSH starts
+    After=local-fs.target
+    Before=sshd.service
+    [Service]
+    Type=oneshot
+    ExecStart=/usr/bin/ssh-keygen -A
+    RemainAfterExit=yes
+    UNIT
+    cat > /etc/systemd/system/sshd.service.d/10-host-keys.conf <<'UNIT'
+    [Unit]
+    Requires=hosted-ssh-hostkeys.service
+    After=hosted-ssh-hostkeys.service
+    UNIT

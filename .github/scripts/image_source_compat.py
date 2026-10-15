@@ -80,16 +80,38 @@ configfile \$prefix/grub.cfg
 EOF
 done
 """.replace('DISTROBUILDER_ROOT_UUID', rootvar).replace('VENDOR', {
-        'almalinux': 'almalinux', 'centos': 'centos', 'rockylinux': 'rocky'}[distro])
-    hook = {'trigger': 'post-files', 'types': ['vm'],
-            'releases': ['9-Stream', '10-Stream'] if distro == 'centos' else ['9', '10'],
-            'action': action}
+        'almalinux': 'almalinux', 'centos': 'centos', 'rockylinux': 'rocky', 'fedora': 'fedora'}[distro])
+    hook = {'trigger': 'post-files', 'types': ['vm'], 'action': action}
+    if distro != 'fedora':
+        hook['releases'] = ['9-Stream', '10-Stream'] if distro == 'centos' else ['9', '10']
     for index, entry in enumerate(actions):
         if 'hosted-rpm-efi-forwarder' in entry['action']:
             actions[index] = hook
             break
     else:
         actions.append(hook)
+    keys = {'trigger': 'post-files', 'types': ['vm'], 'action': r"""#!/bin/sh
+set -eu
+# hosted-rpm-ssh-hostkeys
+mkdir -p /etc/systemd/system/sshd.service.d
+cat > /etc/systemd/system/hosted-ssh-hostkeys.service <<'UNIT'
+[Unit]
+Description=Generate missing SSH host keys before SSH starts
+After=local-fs.target
+Before=sshd.service
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/ssh-keygen -A
+RemainAfterExit=yes
+UNIT
+cat > /etc/systemd/system/sshd.service.d/10-host-keys.conf <<'UNIT'
+[Unit]
+Requires=hosted-ssh-hostkeys.service
+After=hosted-ssh-hostkeys.service
+UNIT
+"""}
+    if keys not in actions:
+        actions.append(keys)
 
 
 def raw_cloud_compat(document):
@@ -204,6 +226,17 @@ MIRRORS
     for entry in document.get('actions', []):
         if 'sshd_config' in entry['action']:
             entry['variants'] = ['cloud', 'openrc', 'systemd']
+        if entry.get('types') == ['vm'] and entry.get('variants') == ['openrc']:
+            entry['variants'] = ['openrc', 'cloud']
+    efi_hook = {'trigger': 'post-unpack', 'types': ['vm'], 'variants': ['openrc', 'cloud'],
+                'action': """#!/bin/sh
+set -eu
+# hosted-gentoo-efi-platform
+mkdir -p /etc/portage/package.use
+printf 'sys-boot/grub grub_platforms_efi-64\\n' > /etc/portage/package.use/hosted-grub
+"""}
+    if efi_hook not in document.setdefault('actions', []):
+        document['actions'].insert(0, efi_hook)
     action = {'trigger': 'post-files', 'action': """#!/bin/sh
 set -eu
 command -v sshd >/dev/null
@@ -330,7 +363,7 @@ systemctl set-default multi-user.target
     path.write_text(serialize(document))
 
     for path in (root / 'images_yaml').glob('*.yaml'):
-        if path.stem in ('almalinux', 'centos', 'rockylinux'):
+        if path.stem in ('almalinux', 'centos', 'rockylinux', 'fedora'):
             normalize_el_boot(path)
         document = verify(path.read_text())
         if path.stem == 'openeuler':
@@ -355,7 +388,7 @@ done
 """}
             if kernel_hook not in document.setdefault('actions', []):
                 document['actions'].append(kernel_hook)
-        if path.stem in ('almalinux', 'centos', 'rockylinux'):
+        if path.stem in ('almalinux', 'centos', 'rockylinux', 'fedora'):
             rpm_vm_compat(document, path.stem)
         if not NATIVE_IMAGE_ARCHIVES and any(entry.get('generator') == 'cloud-init'
                                                for entry in document.get('files', [])):

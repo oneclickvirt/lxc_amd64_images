@@ -26,6 +26,9 @@ class RPMBootTests(unittest.TestCase):
                     document['actions'].append({'trigger': 'post-unpack', 'types': ['vm'], 'action': 'systemd-machine-id-setup'})
                 if distro == 'gentoo':
                     document['packages'] = {'sets': [{'packages': ['app-admin/syslog-ng', 'sys-boot/grub'], 'action': 'install', 'types': ['vm'], 'variants': ['openrc']}]}
+                    document['actions'].extend([
+                        {'trigger': 'post-files', 'types': ['vm'], 'variants': ['openrc'], 'action': action}
+                        for action in ('emerge gentoo-kernel-bin', 'grub-install --target=arm64-efi')])
                 if distro == 'openeuler':
                     document['packages'] = {'sets': [{'packages': ['grub2-efi-aarch64'], 'action': 'install', 'types': ['vm'], 'architectures': ['aarch64']}]}
                 (definitions / (distro + '.yaml')).write_text(serialize(document))
@@ -37,12 +40,44 @@ class RPMBootTests(unittest.TestCase):
             self.assertTrue(any(a['trigger'] == 'post-packages' and a['action'] == 'systemd-machine-id-setup' for a in fedora['actions']))
             gentoo = verify((definitions / 'gentoo.yaml').read_text())
             self.assertTrue(any('app-admin/syslog-ng' in s['packages'] and 'cloud' in s['variants'] for s in gentoo['packages']['sets']))
+            for action in ('emerge gentoo-kernel-bin', 'grub-install --target=arm64-efi'):
+                self.assertTrue(any(a['action'] == action and 'cloud' in a['variants'] for a in gentoo['actions']))
+            efi = next(a for a in gentoo['actions'] if 'hosted-gentoo-efi-platform' in a['action'])
+            self.assertEqual(efi['types'], ['vm'])
+            self.assertEqual(efi['variants'], ['openrc', 'cloud'])
+            self.assertIn('grub_platforms_efi-64', efi['action'])
             euler = verify((definitions / 'openeuler.yaml').read_text())
             self.assertTrue(any('grub2-efi-aa64' in s['packages'] for s in euler['packages']['sets']))
             debian = verify((definitions / 'debian.yaml').read_text())
             hook = next(a['action'] for a in debian['actions'] if 'hosted-debian-ssh-hostkeys' in a['action'])
             self.assertIn('ExecStartPre=\\nExecStartPre=/usr/bin/ssh-keygen -A', hook)
             self.assertIn('ExecStartPre=/usr/sbin/sshd -t', hook)
+
+    def test_missing_ssh_keys_are_generated_at_boot_without_replacing_existing_keys(self):
+        import configparser
+        document = {'actions': []}
+        rpm_vm_compat(document, 'centos')
+        hook = next(a for a in document['actions'] if 'hosted-rpm-ssh-hostkeys' in a['action'])
+        self.assertEqual(hook['types'], ['vm'])
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            command = hook['action'].replace('/etc/systemd/system', str(root / 'etc/systemd/system'))
+            subprocess.run(['sh', '-c', command], check=True, timeout=5)
+            self.assertFalse((root / 'etc/ssh').exists())
+            service = configparser.ConfigParser(interpolation=None)
+            service.read(root / 'etc/systemd/system/hosted-ssh-hostkeys.service')
+            dropin = configparser.ConfigParser(interpolation=None)
+            dropin.read(root / 'etc/systemd/system/sshd.service.d/10-host-keys.conf')
+            self.assertEqual(dropin['Unit']['Requires'], 'hosted-ssh-hostkeys.service')
+            self.assertEqual(dropin['Unit']['After'], 'hosted-ssh-hostkeys.service')
+            self.assertEqual(service['Unit']['Before'], 'sshd.service')
+            (root / 'etc/ssh').mkdir()
+            args = service['Service']['ExecStart'].split() + ['-f', str(root)]
+            subprocess.run(args, check=True, capture_output=True, timeout=15)
+            keys = {p.name: p.read_bytes() for p in (root / 'etc/ssh').glob('ssh_host_*_key')}
+            self.assertIn('ssh_host_ed25519_key', keys)
+            subprocess.run(args, check=True, capture_output=True, timeout=15)
+            self.assertEqual(keys, {p.name: p.read_bytes() for p in (root / 'etc/ssh').glob('ssh_host_*_key')})
 
     def test_raw_cloud_generator_disable_flag_is_removed_and_services_restored(self):
         import re
@@ -77,7 +112,7 @@ class RPMBootTests(unittest.TestCase):
                              ['enable cloud-init-local.service', 'enable cloud-init-main.service'])
 
     def test_efi_forwarding_and_bls_paths_match_the_root_partition(self):
-        for distro, vendor in [('almalinux', 'almalinux'), ('centos', 'centos'), ('rockylinux', 'rocky')]:
+        for distro, vendor in [('almalinux', 'almalinux'), ('centos', 'centos'), ('rockylinux', 'rocky'), ('fedora', 'fedora')]:
             with self.subTest(distro=distro), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)
                 boot = root / 'boot'

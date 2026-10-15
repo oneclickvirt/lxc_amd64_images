@@ -1229,6 +1229,18 @@ packages:
     action: install
 actions:
 - trigger: post-unpack
+  types:
+  - vm
+  variants:
+  - openrc
+  - cloud
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-gentoo-efi-platform
+    mkdir -p /etc/portage/package.use
+    printf 'sys-boot/grub grub_platforms_efi-64\n' > /etc/portage/package.use/hosted-grub
+- trigger: post-unpack
   action: |-
     #!/bin/sh
     # Generate machine-id in order for the kernel stuff to be configured properly
@@ -1309,6 +1321,7 @@ actions:
   - vm
   variants:
   - openrc
+  - cloud
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -1353,6 +1366,7 @@ actions:
   - vm
   variants:
   - openrc
+  - cloud
 - trigger: post-files
   action: |-
     #!/bin/sh
