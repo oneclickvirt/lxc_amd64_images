@@ -55,7 +55,7 @@ class RPMBootTests(unittest.TestCase):
                 (boot / 'vmlinuz-1').write_text('kernel')
                 (boot / 'initramfs-1.img').write_text('initramfs')
                 entry = boot / 'loader/entries/test.conf'
-                entry.write_text('linux /vmlinuz-1\ninitrd /initramfs-1.img\noptions $kernelopts\n')
+                entry.write_text('linux /var/cache/distrobuilder.fixture/rootfs/boot/vmlinuz-1\ninitrd /var/cache/lxd-imagebuilder.fixture/rootfs/boot/initramfs-1.img\noptions $kernelopts\n')
                 binary = root / 'bin'
                 binary.mkdir()
                 editenv = binary / 'grub2-editenv'
@@ -74,6 +74,7 @@ class RPMBootTests(unittest.TestCase):
                     subprocess.run(['sh', '-c', command], env=environment, check=True, timeout=5)
                 self.assertIn('linux ' + str(boot / 'vmlinuz-1'), entry.read_text())
                 self.assertIn('initrd ' + str(boot / 'initramfs-1.img'), entry.read_text())
+                self.assertNotIn('/var/cache/', entry.read_text())
                 for directory in [vendor, 'BOOT']:
                     config = (boot / 'efi/EFI' / directory / 'grub.cfg').read_text()
                     self.assertIn('search --no-floppy --fs-uuid --set=dev fixture-root', config)
