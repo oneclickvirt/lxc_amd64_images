@@ -1,28 +1,23 @@
-# Image build recovery
+# Hosted image maintenance
 
-Build/list commands use the same exact release selector (`CI_IMAGE_RELEASES`). Listing is read-only. Unknown or empty catalogs fail before publication; a failed builder never publishes partial output. Image archives are validated according to their actual ZIP or tar.xz format. The publisher stages and checks the entire batch before replacing existing release assets and restores previous assets if replacement fails.
+## Builds and runtime checks
 
-Legacy full-catalog Incus/LXD container and VM generation and the ARM LXC catalog are manual while their upstream bootstrap sources need per-release verification. Select distro, release and architecture in workflow_dispatch. Scheduled index refresh remains enabled and uses already complete metadata/rootfs pairs. Existing downloadable images are retained. Rocky 10 automatic builds are paused because the configured upstream signing key does not validate its packages; GPG verification must remain enabled. AMD64 Rocky scheduled builds select 8/9; Ubuntu selects jammy/noble/resolute. Other manual historical releases are not certified by this change.
+Image production uses disposable GitHub-hosted Ubuntu AMD64/ARM64 runners. Containers use Incus or LXD. VM tests use KVM when it can create a VM; otherwise they use bounded QEMU software emulation. No scheduled image workflow requires a private runner.
 
-AMD64 CentOS schedules only 9-Stream; retired 7/8-Stream are manual. Debian schedules bookworm/trixie; development forky and retired bullseye are manual. The checked-in Debian/Ubuntu release catalogs remain a bounded fallback when upstream catalog retrieval fails. Empty unknown catalogs still fail and retain prior assets.
+The validated upstream catalog drives both listing and building. `CI_IMAGE_RELEASES` and the manual release/architecture/variant inputs select exact outputs. Listing is read-only. Scheduled builds select the supported current catalog; development releases such as edge, snapshot and forky remain manual.
 
-Image definitions are parsed with duplicate-key rejection before runner provisioning and in Action policy. OpenWrt 25.12/snapshot use apk and older lines use opkg; OpenWrt schedules select stable 25.12, with snapshot manual. Oracle 9/10 use the official ISO endpoint rather than the stale mirror; Oracle 10 is manual until separately verified. ARM Alma/Rocky definitions retain vendor GPG keys and no longer fall back to disabling package/ISO verification.
+Every accepted image must pass archive/OS identity checks, guest execution, an SSH listener, certificate-verified HTTPS/DNS and a changed boot ID after restart. A job with no accepted output cannot claim image validation. Software-emulation success does not certify a separate production Proxmox host.
 
-OpenWrt and Oracle 10 require distrobuilder 3.4.0. These workflow paths compile the official SHA256-pinned, vendored release using the upstream build tags; the older stable Snap is not a compatible fallback. Failed download/checksum/compilation stops before image publication.
+## Failed sources and publication
 
-Oracle 8/9/10 use the official ISO host on these distrobuilder paths. The pinned 3.4.0 source receives one checked compatibility patch for the official OL8 versioned ISO filename; GPG package verification remains enabled. This avoids relying on the intermittently unreachable third-party OL8 mirror.
+`.github/image-build-quarantine.json` identifies observed failing distribution/release/architecture/type combinations and links their evidence. Scheduled builds omit those combinations and retain previous assets. An empty automatic matrix explicitly skips its build job. Manual dispatch can retry quarantined combinations without bypassing any acceptance gate. Remove a hold only after all affected variants pass real validation and publication; a cloud-only pass does not certify default or systemd variants.
 
-OpenWrt rootfs archives can validly be smaller than 10 MiB. They use a 1 MiB compressed size floor plus full XZ/tar integrity and an etc/openwrt_release identity check; other images retain the 10 MiB floor. ZIP CRC checks and maximum size limits remain enabled.
+Classified transient downloads can retry once within a shared build budget. Signature, checksum and certificate failures remain errors. The publisher stages and validates a complete batch before replacing release assets and restores earlier assets if replacement fails. Failed builders and leftover intermediate files cannot satisfy publication checks.
 
-Gentoo also uses the pinned 3.4.0 builder because its definition contains the newer VM boot_size field; even LXC-only construction must successfully parse the complete definition.
+## Upstream refreshes
 
-Gentoo automatic publication selects the cloud variant. openrc/systemd or all variants remain explicitly selectable by workflow_dispatch, and old assets remain available. Listing/building use the same CI_IMAGE_VARIANTS filter; an unknown selection fails without publishing.
+A refresh stages all 14 definitions, reapplies compatibility fixes, validates the full catalog and release indexes, then promotes the snapshot transactionally. Download, timeout, malformed YAML, duplicate keys, empty indexes and concurrent maintenance failures retain the validated previous snapshot. The quarantine policy and maintained scripts are outside generated paths.
 
+Compatibility normalization preserves Fedora bootstrap ordering; Debian first-boot SSH host keys; Gentoo cloud boot dependencies; SUSE SSH packages, cloud-init local stage and resolver ownership; vendor ARM EFI package names; and EL kernel, BLS and EFI paths. Native SUSE archives retain vendor-managed DNS symlinks. Raw LXC cloud images remove the disable flag written by the LXC cloud-init generator and restore their cloud-init services. Consumers still provide their own NoCloud/network/DNS data.
 
-## Hosted build and schedule safeguards
-
-The hosted workflows use GitHub's Ubuntu AMD64/ARM64 runners. Native containers and AMD64 VMs use the available runtime; ARM64 or unavailable KVM uses bounded QEMU software emulation. A build is published only after archive checks and actual guest execution, SSH listening, certificate-verified HTTPS/DNS and a changed boot ID after restart. Software-emulation success does not certify a separate production Proxmox host.
-
-`.github/image-build-quarantine.json` holds exact distribution/release/architecture/type combinations with failed build or boot evidence. Scheduled jobs omit those combinations, retain existing assets and report the selection count. An empty automated matrix skips the build job; it does not produce an image validation marker. Manual dispatch still accepts those rows for repair. Remove an entry only after a real successful validation of the affected combination. Upstream definition/catalog refresh does not replace this policy.
-
-Every upstream refresh reapplies repository compatibility fixes, including SUSE resolver ownership and cloud-init's local stage, EL ARM package names and EFI/BLS paths, Fedora bootstrap ordering, Debian SSH host-key regeneration at boot and Gentoo cloud dependencies. Refreshes validate the entire staged snapshot before promotion. Native SUSE archives retain the vendor-managed DNS symlink; raw LXC consumers supply their own DNS and NoCloud configuration.
+Definitions and catalog axes come from one resolved LXC CI commit. The builder compiles the official SHA256-pinned distrobuilder 3.4.0 release with vendored dependencies and checked Oracle ISO/CentOS mirror compatibility repairs. Failed integrity or compilation checks stop publication. The old stable Snap is not a compatible fallback for current OpenWrt and Gentoo definitions.
