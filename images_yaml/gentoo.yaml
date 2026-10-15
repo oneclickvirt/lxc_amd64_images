@@ -1467,8 +1467,12 @@ actions:
   action: |
     #!/bin/sh
     set -eu
+    # hosted-gentoo-runtime-ssh-keys
     command -v sshd >/dev/null
-    ssh-keygen -A
+    command -v ssh-keygen >/dev/null
+    # Both packaged Gentoo init systems generate absent keys before sshd starts.
+    # Never distribute a key inherited from the stage3 rootfs or a build hook.
+    rm -f /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub /etc/ssh/ssh_host_*_key-cert.pub
     if command -v rc-update >/dev/null 2>&1; then
       rc-update add sshd default
     elif command -v systemctl >/dev/null 2>&1; then

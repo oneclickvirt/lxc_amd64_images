@@ -239,8 +239,12 @@ printf 'sys-boot/grub grub_platforms_efi-64\\n' > /etc/portage/package.use/hoste
         document['actions'].insert(0, efi_hook)
     action = {'trigger': 'post-files', 'action': """#!/bin/sh
 set -eu
+# hosted-gentoo-runtime-ssh-keys
 command -v sshd >/dev/null
-ssh-keygen -A
+command -v ssh-keygen >/dev/null
+# Both packaged Gentoo init systems generate absent keys before sshd starts.
+# Never distribute a key inherited from the stage3 rootfs or a build hook.
+rm -f /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub /etc/ssh/ssh_host_*_key-cert.pub
 if command -v rc-update >/dev/null 2>&1; then
   rc-update add sshd default
 elif command -v systemctl >/dev/null 2>&1; then
@@ -250,7 +254,12 @@ else
   exit 1
 fi
 """}
-    if action not in document['actions']:
+    for index, entry in enumerate(document['actions']):
+        if ('hosted-gentoo-runtime-ssh-keys' in entry['action'] or
+                'command -v sshd >/dev/null\nssh-keygen -A\nif command -v rc-update' in entry['action']):
+            document['actions'][index] = action
+            break
+    else:
         document['actions'].append(action)
     path.write_text(serialize(document))
 
