@@ -752,6 +752,29 @@ actions:
   - '10'
 - trigger: post-files
   types:
+  - vm
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-rpm-ssh-hostkeys
+    mkdir -p /etc/systemd/system/sshd.service.d
+    cat > /etc/systemd/system/hosted-ssh-hostkeys.service <<'UNIT'
+    [Unit]
+    Description=Generate missing SSH host keys before SSH starts
+    After=local-fs.target
+    Before=sshd.service
+    [Service]
+    Type=oneshot
+    ExecStart=/usr/bin/ssh-keygen -A
+    RemainAfterExit=yes
+    UNIT
+    cat > /etc/systemd/system/sshd.service.d/10-host-keys.conf <<'UNIT'
+    [Unit]
+    Requires=hosted-ssh-hostkeys.service
+    After=hosted-ssh-hostkeys.service
+    UNIT
+- trigger: post-files
+  types:
   - container
   variants:
   - cloud
@@ -789,26 +812,3 @@ actions:
           ;;
       esac
     fi
-- trigger: post-files
-  types:
-  - vm
-  action: |
-    #!/bin/sh
-    set -eu
-    # hosted-rpm-ssh-hostkeys
-    mkdir -p /etc/systemd/system/sshd.service.d
-    cat > /etc/systemd/system/hosted-ssh-hostkeys.service <<'UNIT'
-    [Unit]
-    Description=Generate missing SSH host keys before SSH starts
-    After=local-fs.target
-    Before=sshd.service
-    [Service]
-    Type=oneshot
-    ExecStart=/usr/bin/ssh-keygen -A
-    RemainAfterExit=yes
-    UNIT
-    cat > /etc/systemd/system/sshd.service.d/10-host-keys.conf <<'UNIT'
-    [Unit]
-    Requires=hosted-ssh-hostkeys.service
-    After=hosted-ssh-hostkeys.service
-    UNIT
