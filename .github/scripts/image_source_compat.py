@@ -3,6 +3,8 @@ from pathlib import Path
 from append_image_actions import serialize
 from verify_image_definitions import verify
 
+NATIVE_IMAGE_ARCHIVES = False
+
 
 def normalize(root):
     path = root / 'images_yaml/fedora.yaml'
@@ -138,6 +140,12 @@ printf '[Service]\\nExecStartPre=/usr/bin/ssh-keygen -A\\n' > /etc/systemd/syste
 systemctl enable sshd
 """}
     actions = document.setdefault('actions', [])
+    for entry in actions:
+        # The local stage renders DHCP configuration before networkd starts.
+        # Enabling only cloud-init.service leaves Leap 16's NIC unmanaged.
+        entry['action'] = entry['action'].replace(
+            'systemctl enable cloud-init.service cloud-config.service cloud-final.service',
+            'systemctl enable cloud-init-local.service cloud-init.service cloud-config.service cloud-final.service')
     for index, entry in enumerate(actions):
         if 'hosted-suse-ssh-defaults' in entry['action']:
             actions[index] = ssh_hook
@@ -218,6 +226,13 @@ if [ -L /etc/resolv.conf ]; then
 fi
 """}
         actions = document.setdefault('actions', [])
+        if NATIVE_IMAGE_ARCHIVES and path.stem == 'opensuse':
+            # Native SUSE archives rely on netconfig/resolved's live symlink.
+            # Raw LXC consumers instead provide a resolver file via templates.
+            actions[:] = [entry for entry in actions
+                          if 'hosted-consumer-dns-file' not in entry['action']]
+            path.write_text(serialize(document))
+            continue
         for index, entry in enumerate(actions):
             if 'hosted-consumer-dns-file' in entry['action']:
                 actions[index] = dns_hook

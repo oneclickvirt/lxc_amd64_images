@@ -154,10 +154,25 @@ class ImageSourceRefreshTests(unittest.TestCase):
 
     def test_suse_dns_template_target_and_vendor_ssh_defaults_survive_refresh(self):
         import image_source_compat
+        path = self.root / 'images_yaml/opensuse.yaml'
+        document = verify(path.read_text())
+        document['actions'] = [
+            {'trigger': 'post-packages', 'variants': ['cloud'],
+             'action': 'systemctl enable cloud-init.service cloud-config.service cloud-final.service'},
+            {'trigger': 'post-packages', 'releases': ['16.0'],
+             'action': 'ln -sf ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf'},
+            {'trigger': 'post-files', 'types': ['container'],
+             'action': '# hosted-consumer-dns-file\nrm /etc/resolv.conf; touch /etc/resolv.conf'},
+        ]
+        path.write_text(hooks.serialize(document))
         image_source_compat.normalize(self.root)
         actions = verify((self.root / 'images_yaml/opensuse.yaml').read_text())['actions']
+        cloud = next(a for a in actions if 'systemctl enable cloud-init' in a['action'])
+        self.assertIn('cloud-init-local.service', cloud['action'])
+        self.assertEqual(cloud['variants'], ['cloud'])
+        self.assertTrue(any('ln -sf ../run/systemd/resolve/stub-resolv.conf' in a['action'] for a in actions))
         ssh = next(a for a in actions if 'hosted-suse-ssh-defaults' in a['action'])
-        dns = next(a for a in actions if 'hosted-consumer-dns-file' in a['action'])
+        dns = [a for a in actions if 'hosted-consumer-dns-file' in a['action']]
         self.assertEqual(ssh['trigger'], 'post-packages')
         self.assertIn('cp /usr/etc/ssh/sshd_config /etc/ssh/sshd_config', ssh['action'])
         self.assertIn('ExecStartPre=/usr/bin/ssh-keygen -A', ssh['action'])
@@ -165,9 +180,13 @@ class ImageSourceRefreshTests(unittest.TestCase):
         sets = verify((self.root / 'images_yaml/opensuse.yaml').read_text())['packages']['sets']
         self.assertTrue(any(set(entry['packages']) >= {'openssh-server', 'curl', 'ca-certificates'}
                             and not entry.get('variants') for entry in sets))
-        self.assertEqual(dns['types'], ['container'])
-        self.assertIn('touch /etc/resolv.conf', dns['action'])
-        self.assertNotIn('NETCONFIG_DNS_POLICY', dns['action'])
+        if image_source_compat.NATIVE_IMAGE_ARCHIVES:
+            self.assertEqual(dns, [])
+        else:
+            self.assertEqual(len(dns), 1)
+            self.assertEqual(dns[0]['types'], ['container'])
+            self.assertIn('touch /etc/resolv.conf', dns[0]['action'])
+            self.assertNotIn('NETCONFIG_DNS_POLICY', dns[0]['action'])
         previous = self.snapshot()
         image_source_compat.normalize(self.root)
         self.assertEqual(previous, self.snapshot())
