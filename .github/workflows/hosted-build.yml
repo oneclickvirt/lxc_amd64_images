@@ -2,6 +2,10 @@ name: Hosted image build and boot validation
 'on':
   workflow_dispatch:
     inputs:
+      automatic:
+        description: Apply quarantine when dispatched by upstream refresh
+        type: boolean
+        default: false
       distro:
         description: Distribution name or all
         type: string
@@ -39,6 +43,9 @@ name: Hosted image build and boot validation
   - cron: 41 1 * * 0
   workflow_call:
     inputs:
+      automatic:
+        type: boolean
+        default: false
       distro:
         type: string
         default: all
@@ -78,7 +85,7 @@ jobs:
         persist-credentials: false
     - id: catalog
       env:
-        CI_IMAGE_AUTOMATIC: ${{ github.event_name == 'schedule' }}
+        CI_IMAGE_AUTOMATIC: ${{ github.event_name == 'schedule' || inputs.automatic }}
         DISTRO: ${{ inputs.distro || 'all' }}
         ARCH: ${{ inputs.arch || 'all' }}
         SCOPE: ${{ inputs.scope || 'current' }}

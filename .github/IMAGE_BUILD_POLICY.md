@@ -10,7 +10,7 @@ Every accepted image must pass archive/OS identity checks, guest execution, an S
 
 ## Failed sources and publication
 
-`.github/image-build-quarantine.json` identifies observed failing distribution/release/architecture/type combinations and links their evidence. Scheduled builds omit those combinations and retain previous assets. An empty automatic matrix explicitly skips its build job. Manual dispatch can retry quarantined combinations without bypassing any acceptance gate. Remove a hold only after all affected variants pass real validation and publication; a cloud-only pass does not certify default or systemd variants.
+`.github/image-build-quarantine.json` identifies observed failing distribution/release/architecture/type combinations and links their evidence. Scheduled builds and automatic builds triggered by upstream refresh omit those combinations and retain previous assets. An empty automatic matrix explicitly skips its build job. Manual dispatch can retry quarantined combinations without bypassing any acceptance gate. Remove a hold only after all affected variants pass real validation and publication; a cloud-only pass does not certify default or systemd variants.
 
 Classified transient downloads can retry once within a shared build budget. Signature, checksum and certificate failures remain errors. The publisher stages and validates a complete batch before replacing release assets and restores earlier assets if replacement fails. Failed builders and leftover intermediate files cannot satisfy publication checks.
 

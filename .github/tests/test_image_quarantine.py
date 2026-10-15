@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 import json
+import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / '.github/scripts'))
@@ -14,6 +15,42 @@ from image_catalog import automatic_matrix
 
 
 class AutomatedImagePolicyTests(unittest.TestCase):
+    def test_upstream_refresh_dispatch_preserves_automatic_quarantine(self):
+        workflow = yaml.safe_load((ROOT / '.github/workflows/clone_yaml.yml').read_text())
+        step = next(item for item in workflow['jobs']['clone_yaml']['steps']
+                    if item.get('name') == 'Commit validated source snapshot')
+        with tempfile.TemporaryDirectory() as temporary:
+            folder = Path(temporary)
+            def git(*args):
+                return subprocess.run(['git', *args], cwd=folder, check=True,
+                                      capture_output=True, text=True)
+            git('init', '-q')
+            git('config', 'user.name', 'fixture')
+            git('config', 'user.email', 'fixture@example.invalid')
+            (folder / 'images_yaml').mkdir()
+            (folder / '.github/scripts').mkdir(parents=True)
+            (folder / 'images_yaml/fixture.yaml').write_text('old definition\n')
+            (folder / 'all_images.txt').write_text('fixture\n')
+            (folder / '.github/image-catalog.json').write_text('{}\n')
+            (folder / '.github/scripts/ci_network.sh').write_text(
+                'ci_retry() { printf "%s\\n" "$*" >> "$DISPATCH_CALLS"; }\n')
+            (folder / '.github/scripts/push_image_snapshot.py').write_text('pass\n')
+            (folder / 'image-definition-check/bin').mkdir(parents=True)
+            (folder / 'image-definition-check/bin/python').symlink_to(sys.executable)
+            git('add', '.')
+            git('commit', '-qm', 'baseline')
+            (folder / 'images_yaml/fixture.yaml').write_text('new definition\n')
+            calls = folder / 'calls'
+            environment = dict(os.environ, RUNNER_TEMP=str(folder), BUILD_IMAGES='true',
+                               GITHUB_REPOSITORY='oneclickvirt/' + ROOT.name,
+                               GITHUB_REF_NAME='main', DISPATCH_CALLS=str(calls))
+            subprocess.run(['bash', '-c', step['run']], cwd=folder, env=environment,
+                           check=True, capture_output=True, timeout=15)
+            dispatches = calls.read_text().splitlines()
+            self.assertEqual(len(dispatches), 1 if ROOT.name.startswith('lxc_') else 2)
+            self.assertTrue(all('--field automatic=true' in call for call in dispatches))
+            self.assertTrue(all('workflow run hosted-build.yml' in call for call in dispatches))
+
     def test_only_the_exact_failed_architecture_and_kind_are_quarantined(self):
         rows = [{'distro': 'debian', 'release': 'trixie', 'arch': arch, 'kind': kind}
                 for arch in ['amd64', 'arm64'] for kind in ['container', 'vm']]
