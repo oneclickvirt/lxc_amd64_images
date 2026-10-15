@@ -44,6 +44,38 @@ class RPMBootTests(unittest.TestCase):
             self.assertIn('ExecStartPre=\\nExecStartPre=/usr/bin/ssh-keygen -A', hook)
             self.assertIn('ExecStartPre=/usr/sbin/sshd -t', hook)
 
+    def test_raw_cloud_generator_disable_flag_is_removed_and_services_restored(self):
+        import re
+        from image_source_compat import raw_cloud_compat
+        document = {'actions': []}
+        raw_cloud_compat(document)
+        raw_cloud_compat(document)
+        self.assertEqual(len(document['actions']), 1)
+        hook = document['actions'][0]
+        self.assertEqual(hook['variants'], ['cloud'])
+        self.assertEqual(hook['types'], ['container'])
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            disabled = root / 'etc/cloud/cloud-init.disabled'
+            disabled.parent.mkdir(parents=True)
+            disabled.touch()
+            units = root / 'usr/lib/systemd/system'
+            units.mkdir(parents=True)
+            for name in ['cloud-init-local', 'cloud-init-main']:
+                (units / (name + '.service')).touch()
+            binary = root / 'bin'
+            binary.mkdir()
+            systemctl = binary / 'systemctl'
+            systemctl.write_text('#!/bin/sh\nprintf "%s\\n" "$*" >> "$CALLS"\n')
+            systemctl.chmod(0o755)
+            command = re.sub(r'/usr/lib/systemd/system|/lib/systemd/system|/etc/cloud|/etc/init.d',
+                             lambda match: str(root / match.group().lstrip('/')), hook['action'])
+            subprocess.run(['sh', '-c', command], check=True, timeout=5,
+                           env=dict(os.environ, PATH=str(binary) + ':' + os.environ['PATH'], CALLS=str(root / 'calls')))
+            self.assertFalse(disabled.exists())
+            self.assertEqual((root / 'calls').read_text().splitlines(),
+                             ['enable cloud-init-local.service', 'enable cloud-init-main.service'])
+
     def test_efi_forwarding_and_bls_paths_match_the_root_partition(self):
         for distro, vendor in [('almalinux', 'almalinux'), ('centos', 'centos'), ('rockylinux', 'rocky')]:
             with self.subTest(distro=distro), tempfile.TemporaryDirectory() as temporary:

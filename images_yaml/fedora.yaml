@@ -455,3 +455,27 @@ actions:
         cp "$modules/vmlinuz" "/boot/vmlinuz-$version"
       fi
     done
+- trigger: post-files
+  types:
+  - container
+  variants:
+  - cloud
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-raw-cloud-enable
+    rm -f /etc/cloud/cloud-init.disabled
+    if command -v systemctl >/dev/null 2>&1; then
+      for unit in cloud-init-local cloud-init cloud-init-main cloud-config cloud-final; do
+        if [ -f "/usr/lib/systemd/system/$unit.service" ] || [ -f "/lib/systemd/system/$unit.service" ]; then
+          systemctl enable "$unit.service"
+        fi
+      done
+    elif command -v rc-update >/dev/null 2>&1; then
+      for service in cloud-init-local cloud-init cloud-config cloud-final; do
+        if [ -x "/etc/init.d/$service" ]; then rc-update add "$service" default; fi
+      done
+    else
+      echo 'Cloud image has no supported cloud-init service manager' >&2
+      exit 1
+    fi

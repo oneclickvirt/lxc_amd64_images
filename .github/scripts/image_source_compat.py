@@ -92,6 +92,33 @@ done
         actions.append(hook)
 
 
+def raw_cloud_compat(document):
+    """Undo the LXC generator's deliberate cloud-init disablement for cloud images."""
+    hook = {'trigger': 'post-files', 'types': ['container'], 'variants': ['cloud'],
+            'action': r"""#!/bin/sh
+set -eu
+# hosted-raw-cloud-enable
+rm -f /etc/cloud/cloud-init.disabled
+if command -v systemctl >/dev/null 2>&1; then
+  for unit in cloud-init-local cloud-init cloud-init-main cloud-config cloud-final; do
+    if [ -f "/usr/lib/systemd/system/$unit.service" ] || [ -f "/lib/systemd/system/$unit.service" ]; then
+      systemctl enable "$unit.service"
+    fi
+  done
+elif command -v rc-update >/dev/null 2>&1; then
+  for service in cloud-init-local cloud-init cloud-config cloud-final; do
+    if [ -x "/etc/init.d/$service" ]; then rc-update add "$service" default; fi
+  done
+else
+  echo 'Cloud image has no supported cloud-init service manager' >&2
+  exit 1
+fi
+"""}
+    actions = document.setdefault('actions', [])
+    if hook not in actions:
+        actions.append(hook)
+
+
 def normalize(root):
     path = root / 'images_yaml/debian.yaml'
     document = verify(path.read_text())
@@ -330,6 +357,9 @@ done
                 document['actions'].append(kernel_hook)
         if path.stem in ('almalinux', 'centos', 'rockylinux'):
             rpm_vm_compat(document, path.stem)
+        if not NATIVE_IMAGE_ARCHIVES and any(entry.get('generator') == 'cloud-init'
+                                               for entry in document.get('files', [])):
+            raw_cloud_compat(document)
         for entry in document.get('actions', []):
             entry['action'] = entry['action'].replace('PubkeyAuthentication no', 'PubkeyAuthentication yes')
         # /run is recreated at boot. Dangling resolvers in SUSE and older
