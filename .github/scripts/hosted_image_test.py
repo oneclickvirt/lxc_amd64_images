@@ -170,10 +170,10 @@ def native_test(folder, metadata, rootfs, vm=False, cli='incus'):
         if vm: command+=['--vm','-c','security.secureboot=false']
         run(command)
         if vm and cli == 'incus':
-            # The upstream agent setup tries 9p, virtio-fs, then this CD.
-            # Keep native agent/SSH/network/reboot assertions unchanged even
-            # when an enterprise kernel omits a share filesystem driver.
-            run(prefix+['config','device','add',name,'agent-config','disk','source=agent:config'])
+            # Incus derives the CD serial from its device name. The upstream
+            # loader expects scsi-0QEMU_QEMU_CD-ROM_incus_agent, so this must
+            # be named agent, including on kernels without 9p or virtio-fs.
+            run(prefix+['config','device','add',name,'agent','disk','source=agent:config'])
         if metadata.name=='metadata.tar.xz':
             address=run(prefix+['network','get','imagebr0','ipv4.address'],capture_output=True,text=True).stdout.strip()
             gateway=str(ipaddress.IPv4Interface(address).ip)
