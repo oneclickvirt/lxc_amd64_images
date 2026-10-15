@@ -330,7 +330,7 @@ mappings:
     def test_generator_timeout_uses_validated_fallback_without_file_changes(self):
         scripts = self.root / ".github/scripts"
         scripts.mkdir(parents=True)
-        for name in ["append_image_actions.py", "verify_image_definitions.py", "ci_network.sh", "image_catalog.py", "image_source_compat.py"]:
+        for name in ["append_image_actions.py", "verify_image_definitions.py", "ci_network.sh", "image_catalog.py", "image_source_compat.py", "image_ssh_identity.py"]:
             shutil.copy2(SCRIPTS / name, scripts / name)
         (scripts / "refresh_image_definitions.sh").write_text("#!/bin/bash\nsleep 30\n")
         for name in ["bash_insert_content.text", "sh_insert_content.text"]:

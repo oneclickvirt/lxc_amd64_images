@@ -2,6 +2,7 @@
 """Repair public container archives without changing application/package files."""
 import argparse
 import io
+import lzma
 import os
 from pathlib import Path, PurePosixPath
 import shutil
@@ -34,7 +35,7 @@ def repair_tar(path, target):
     removed = 0
     # Streaming preserves modes, owners, symlinks, hardlinks, PAX attributes
     # and file contents. Private key members are skipped, never extracted.
-    with tarfile.open(path, 'r|xz') as source, tarfile.open(target, 'w|xz', preset=3) as output:
+    with tarfile.open(path, 'r|xz') as source, lzma.open(target, 'wb', preset=3) as compressed, tarfile.open(fileobj=compressed, mode='w|') as output:
         for member in source:
             name = member_name(member.name)
             if KEY_PATH.fullmatch(name):

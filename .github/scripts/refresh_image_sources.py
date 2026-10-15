@@ -135,7 +135,7 @@ def prepare(root, stage, repo, deadline):
         shutil.copy2(root / name, stage / name)
     scripts = stage / ".github/scripts"
     scripts.mkdir(parents=True)
-    for name in ["append_image_actions.py", "verify_image_definitions.py", "ci_network.sh", "image_catalog.py", "image_source_compat.py"]:
+    for name in ["append_image_actions.py", "verify_image_definitions.py", "ci_network.sh", "image_catalog.py", "image_source_compat.py", "image_ssh_identity.py"]:
         shutil.copy2(root / ".github/scripts" / name, scripts / name)
     legacy = (root / ".github/scripts/refresh_image_definitions.sh").read_text()
     source_commit = api_json("/repos/lxc/lxc-ci/commits/main", deadline)["sha"]
