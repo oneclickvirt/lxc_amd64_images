@@ -348,6 +348,12 @@ packages:
     - vm
     architectures:
     - aarch64
+  - packages:
+    - grub2-tools
+    - grubby
+    action: install
+    types:
+    - vm
 actions:
 - trigger: post-unpack
   action: |-
@@ -702,4 +708,49 @@ actions:
       if [ -s "$modules/vmlinuz" ] && [ ! -s "/boot/vmlinuz-$version" ]; then
         cp "$modules/vmlinuz" "/boot/vmlinuz-$version"
       fi
+    done
+- trigger: post-files
+  types:
+  - vm
+  releases:
+  - '9'
+  - '10'
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-rpm-efi-forwarder
+    guest_root=${DISTROBUILDER_ROOT_UUID}
+    case "$guest_root" in UUID=*) guest_uuid=${guest_root#UUID=};; *) echo 'Expected UUID root device' >&2; exit 1;; esac
+    test -n "$guest_uuid"
+    mkdir -p /boot/grub2 /boot/loader/entries
+    if [ ! -s /boot/grub2/grub.cfg ]; then
+      test -s /boot/efi/EFI/almalinux/grub.cfg
+      cp /boot/efi/EFI/almalinux/grub.cfg /boot/grub2/grub.cfg
+    fi
+    test -s /boot/grub2/grub.cfg
+    entries=0
+    for entry in /boot/loader/entries/*.conf; do
+      [ -f "$entry" ] || continue
+      sed -E 's#^(linux|initrd)[[:space:]]+/(vmlinuz-|initramfs-)#\1 /boot/\2#' "$entry" > "$entry.hosted"
+      cat "$entry.hosted" > "$entry"
+      rm "$entry.hosted"
+      for image_path in $(awk '$1 == "linux" || $1 == "initrd" {for (i=2; i<=NF; i++) print $i}' "$entry"); do
+        test -s "$image_path" || { echo "Missing BLS boot image: $image_path" >&2; exit 1; }
+      done
+      entries=$((entries + 1))
+    done
+    if grep -q 'blscfg' /boot/grub2/grub.cfg; then
+      test "$entries" -gt 0
+      if [ ! -s /boot/grub2/grubenv ]; then grub2-editenv /boot/grub2/grubenv create; fi
+      grub2-editenv /boot/grub2/grubenv set blsdir=/boot/loader/entries
+      grub2-editenv /boot/grub2/grubenv set "kernelopts=root=$guest_root ro console=tty1 console=ttyS0 console=ttyAMA0"
+    fi
+    for vendor in almalinux BOOT; do
+      mkdir -p "/boot/efi/EFI/$vendor"
+      cat > "/boot/efi/EFI/$vendor/grub.cfg" <<EOF
+    search --no-floppy --fs-uuid --set=dev $guest_uuid
+    set prefix=(\$dev)/boot/grub2
+    export prefix
+    configfile \$prefix/grub.cfg
+    EOF
     done

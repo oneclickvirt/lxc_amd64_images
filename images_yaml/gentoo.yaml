@@ -1221,6 +1221,7 @@ packages:
     - vm
     variants:
     - openrc
+    - cloud
   - packages:
     - net-misc/openssh
     - net-misc/curl

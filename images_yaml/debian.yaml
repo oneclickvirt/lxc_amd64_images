@@ -1419,5 +1419,14 @@ actions:
           ;;
       esac
     fi
+- trigger: post-files
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-debian-ssh-hostkeys
+    mkdir -p /etc/systemd/system/ssh.service.d
+    printf '[Service]\nExecStartPre=\nExecStartPre=/usr/bin/ssh-keygen -A\nExecStartPre=/usr/sbin/sshd -t\n' > /etc/systemd/system/ssh.service.d/10-host-keys.conf
+    rm -f /etc/ssh/sshd_not_to_be_run
+    systemctl enable ssh.service
 mappings:
   architecture_map: debian

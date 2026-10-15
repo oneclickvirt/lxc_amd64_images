@@ -267,7 +267,7 @@ packages:
     architectures:
     - x86_64
   - packages:
-    - grub2-efi-aarch64
+    - grub2-efi-aa64
     action: install
     types:
     - vm

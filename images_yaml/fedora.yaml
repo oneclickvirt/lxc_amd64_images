@@ -298,7 +298,7 @@ actions:
     systemctl mask dhcpcd
   variants:
   - cloud
-- trigger: post-unpack
+- trigger: post-packages
   action: |-
     #!/bin/sh
     # Generate machine-id in order for the kernel stuff to be configured properly

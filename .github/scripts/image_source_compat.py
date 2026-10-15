@@ -1,16 +1,113 @@
 """Apply compatibility fixes after every upstream definition refresh."""
 from pathlib import Path
-from append_image_actions import serialize
+from append_image_actions import serialize, normalize_el_boot
 from verify_image_definitions import verify
 
 NATIVE_IMAGE_ARCHIVES = False
 
 
+def rpm_vm_compat(document, distro):
+    """Keep EL firmware, BLS entries and the actual root partition in sync."""
+    sets = document.setdefault('packages', {}).setdefault('sets', [])
+    for entry in sets:
+        if 'architectures' in entry:
+            entry['architectures'] = ['aarch64' if arch == 'aaarch64' else arch
+                                      for arch in entry['architectures']]
+        entry['packages'] = ['grub2-efi-aa64' if package == 'grub2-efi-aarch64' else package
+                             for package in entry.get('packages', [])]
+    required = {'packages': ['grub2-tools', 'grubby'], 'action': 'install', 'types': ['vm']}
+    if required not in sets:
+        sets.append(required)
+    # CentOS's upstream ARM selector omits EL9/EL10 entirely.
+    if distro == 'centos':
+        required = {'packages': ['grub2-efi-aa64'], 'action': 'install',
+                    'types': ['vm'], 'architectures': ['aarch64'],
+                    'releases': ['9-Stream', '10-Stream']}
+        if required not in sets:
+            sets.append(required)
+    actions = document.setdefault('actions', [])
+    rootvar = ('LXD_IMAGEBUILDER_ROOT_UUID' if any('LXD_IMAGEBUILDER_ROOT_UUID' in a['action']
+                                                for a in actions) else 'DISTROBUILDER_ROOT_UUID')
+    # These images have EFI + one root partition; /boot is on that root.
+    # RPM assumes a separate /boot in both the firmware prefix and BLS paths.
+    action = r"""#!/bin/sh
+set -eu
+# hosted-rpm-efi-forwarder
+guest_root=${DISTROBUILDER_ROOT_UUID}
+case "$guest_root" in UUID=*) guest_uuid=${guest_root#UUID=};; *) echo 'Expected UUID root device' >&2; exit 1;; esac
+test -n "$guest_uuid"
+mkdir -p /boot/grub2 /boot/loader/entries
+if [ ! -s /boot/grub2/grub.cfg ]; then
+  test -s /boot/efi/EFI/VENDOR/grub.cfg
+  cp /boot/efi/EFI/VENDOR/grub.cfg /boot/grub2/grub.cfg
+fi
+test -s /boot/grub2/grub.cfg
+entries=0
+for entry in /boot/loader/entries/*.conf; do
+  [ -f "$entry" ] || continue
+  sed -E 's#^(linux|initrd)[[:space:]]+/(vmlinuz-|initramfs-)#\1 /boot/\2#' "$entry" > "$entry.hosted"
+  cat "$entry.hosted" > "$entry"
+  rm "$entry.hosted"
+  for image_path in $(awk '$1 == "linux" || $1 == "initrd" {for (i=2; i<=NF; i++) print $i}' "$entry"); do
+    test -s "$image_path" || { echo "Missing BLS boot image: $image_path" >&2; exit 1; }
+  done
+  entries=$((entries + 1))
+done
+if grep -q 'blscfg' /boot/grub2/grub.cfg; then
+  test "$entries" -gt 0
+  if [ ! -s /boot/grub2/grubenv ]; then grub2-editenv /boot/grub2/grubenv create; fi
+  grub2-editenv /boot/grub2/grubenv set blsdir=/boot/loader/entries
+  grub2-editenv /boot/grub2/grubenv set "kernelopts=root=$guest_root ro console=tty1 console=ttyS0 console=ttyAMA0"
+fi
+for vendor in VENDOR BOOT; do
+  mkdir -p "/boot/efi/EFI/$vendor"
+  cat > "/boot/efi/EFI/$vendor/grub.cfg" <<EOF
+search --no-floppy --fs-uuid --set=dev $guest_uuid
+set prefix=(\$dev)/boot/grub2
+export prefix
+configfile \$prefix/grub.cfg
+EOF
+done
+""".replace('DISTROBUILDER_ROOT_UUID', rootvar).replace('VENDOR', {
+        'almalinux': 'almalinux', 'centos': 'centos', 'rockylinux': 'rocky'}[distro])
+    hook = {'trigger': 'post-files', 'types': ['vm'],
+            'releases': ['9-Stream', '10-Stream'] if distro == 'centos' else ['9', '10'],
+            'action': action}
+    for index, entry in enumerate(actions):
+        if 'hosted-rpm-efi-forwarder' in entry['action']:
+            actions[index] = hook
+            break
+    else:
+        actions.append(hook)
+
+
 def normalize(root):
+    path = root / 'images_yaml/debian.yaml'
+    document = verify(path.read_text())
+    # Cloud generators remove build-time host keys. Debian's ssh.service
+    # tests the configuration before it generates keys, so regenerate at
+    # each first boot before that test without shipping shared host keys.
+    ssh_hook = {'trigger': 'post-files', 'action': r"""#!/bin/sh
+set -eu
+# hosted-debian-ssh-hostkeys
+mkdir -p /etc/systemd/system/ssh.service.d
+printf '[Service]\nExecStartPre=\nExecStartPre=/usr/bin/ssh-keygen -A\nExecStartPre=/usr/sbin/sshd -t\n' > /etc/systemd/system/ssh.service.d/10-host-keys.conf
+rm -f /etc/ssh/sshd_not_to_be_run
+systemctl enable ssh.service
+"""}
+    if ssh_hook not in document.setdefault('actions', []):
+        document['actions'].append(ssh_hook)
+    path.write_text(serialize(document))
+
     path = root / 'images_yaml/fedora.yaml'
     document = verify(path.read_text())
     # fedora-http expects Koji's /packages tree, not the release ISO directory.
     document['source']['url'] = 'https://kojipkgs.fedoraproject.org'
+    for entry in document.get('actions', []):
+        # Current Fedora bootstrap rootfs does not contain this tool until
+        # the systemd package transaction has completed.
+        if entry['trigger'] == 'post-unpack' and 'systemd-machine-id-setup' in entry['action']:
+            entry['trigger'] = 'post-packages'
     path.write_text(serialize(document))
 
     path = root / 'images_yaml/openwrt.yaml'
@@ -56,6 +153,11 @@ MIRRORS
     # The old sudo anchor is now app-admin/sudo. Install runtime capabilities
     # independently of textual anchors and enable the selected init system.
     sets = document.setdefault('packages', {}).setdefault('sets', [])
+    for entry in sets:
+        if ('app-admin/syslog-ng' in entry.get('packages', [])
+                and entry.get('variants') == ['openrc']):
+            # The cloud variant uses the same OpenRC boot hook.
+            entry['variants'] = ['openrc', 'cloud']
     existing = {p for s in sets if s.get('action') == 'install' and not s.get('types')
                 for p in s.get('packages', [])}
     missing = [p for p in ['net-misc/openssh', 'net-misc/curl', 'app-misc/ca-certificates'] if p not in existing]
@@ -190,7 +292,14 @@ systemctl set-default multi-user.target
     path.write_text(serialize(document))
 
     for path in (root / 'images_yaml').glob('*.yaml'):
+        if path.stem in ('almalinux', 'centos', 'rockylinux'):
+            normalize_el_boot(path)
         document = verify(path.read_text())
+        if path.stem == 'openeuler':
+            # Verified against the vendor's current aarch64 RPM catalog.
+            for entry in document.get('packages', {}).get('sets', []):
+                entry['packages'] = ['grub2-efi-aa64' if p == 'grub2-efi-aarch64' else p
+                                     for p in entry.get('packages', [])]
         if path.stem in ('almalinux', 'centos', 'rockylinux', 'fedora', 'openeuler'):
             # Current kernel-core packages can keep their bootable image in
             # /usr/lib/modules, while the VM hooks expect it under /boot.
@@ -208,6 +317,8 @@ done
 """}
             if kernel_hook not in document.setdefault('actions', []):
                 document['actions'].append(kernel_hook)
+        if path.stem in ('almalinux', 'centos', 'rockylinux'):
+            rpm_vm_compat(document, path.stem)
         for entry in document.get('actions', []):
             entry['action'] = entry['action'].replace('PubkeyAuthentication no', 'PubkeyAuthentication yes')
         # /run is recreated at boot. Dangling resolvers in SUSE and older

@@ -89,6 +89,9 @@ def normalize_el10(path):
 def normalize_el_boot(path):
     document = verify(path.read_text())
     for entry in document.get('actions', []):
+        for vendor in ('almalinux', 'centos', 'rocky'):
+            entry['action'] = entry['action'].replace(
+                'target=/boot/efi/EFI/' + vendor + '/grub.cfg', 'target=/boot/grub2/grub.cfg')
         if 'hosted-compatible-bls' in entry['action']:
             entry['action'] = entry['action'].replace(
                 'target=/boot/efi/EFI/almalinux/grub.cfg', 'target=/boot/grub2/grub.cfg')
@@ -102,7 +105,7 @@ def normalize_el_boot(path):
         # YAML block indentation is already stripped when parsing.
         before = before.strip()
         if action.count(before) != 1:
-            raise ValueError('unexpected AlmaLinux boot entry hook')
+            raise ValueError('unexpected RPM boot entry hook')
         replacement = '# hosted-compatible-bls: retain upstream grubby and supply missing RPM boot metadata\nmkdir -p /boot/grub2 /boot/loader/entries\nif [ ! -f /boot/grub2/grubenv ]; then\n  grub2-editenv /boot/grub2/grubenv create\nfi\ntest -s "/boot/vmlinuz-${kver}"\nif ! grubby --update-kernel=/boot/vmlinuz-${kver} --args="root=${DISTROBUILDER_ROOT_UUID} ro"; then\n  printf \'title AlmaLinux\nversion %s\nlinux /vmlinuz-%s\ninitrd /initramfs-%s.img\noptions root=%s ro console=tty0 console=ttyS0 console=ttyAMA0\n\' "${kver}" "${kver}" "${kver}" "${DISTROBUILDER_ROOT_UUID}" > "/boot/loader/entries/hosted-${kver}.conf"\n  grubby --update-kernel=/boot/vmlinuz-${kver} --args="root=${DISTROBUILDER_ROOT_UUID} ro"\nfi'
         rendered = replacement.replace('DISTROBUILDER_ROOT_UUID', rootvar)
         rendered = rendered.replace(
