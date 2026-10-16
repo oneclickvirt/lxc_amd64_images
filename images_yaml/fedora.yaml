@@ -548,6 +548,20 @@ actions:
     UNIT
 - trigger: post-files
   types:
+  - vm
+  architectures:
+  - aarch64
+  action: |
+    #!/bin/sh
+    set -eu
+    # hosted-fedora-arm-device-deadline
+    mkdir -p /etc/systemd/system.conf.d
+    cat > /etc/systemd/system.conf.d/50-image-arm-devices.conf <<'CONF'
+    [Manager]
+    DefaultDeviceTimeoutSec=180s
+    CONF
+- trigger: post-files
+  types:
   - container
   variants:
   - cloud
@@ -585,20 +599,6 @@ actions:
           ;;
       esac
     fi
-- trigger: post-files
-  types:
-  - vm
-  architectures:
-  - aarch64
-  action: |
-    #!/bin/sh
-    set -eu
-    # hosted-fedora-arm-device-deadline
-    mkdir -p /etc/systemd/system.conf.d
-    cat > /etc/systemd/system.conf.d/50-image-arm-devices.conf <<'CONF'
-    [Manager]
-    DefaultDeviceTimeoutSec=180s
-    CONF
 - trigger: post-files
   action: |
     #!/bin/sh
