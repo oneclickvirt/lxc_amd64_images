@@ -191,10 +191,33 @@ class ImageSourceRefreshTests(unittest.TestCase):
         image_source_compat.normalize(self.root)
         self.assertEqual(previous, self.snapshot())
 
+    def test_native_resolver_links_survive_compatibility_refresh(self):
+        import image_source_compat
+        for distro in ('debian', 'ubuntu', 'gentoo'):
+            path = self.root / ('images_yaml/' + distro + '.yaml')
+            document = verify(path.read_text())
+            original = {'trigger': 'post-files', 'types': ['container'],
+                        'action': 'ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf'}
+            destructive = {'trigger': 'post-files', 'types': ['container'],
+                           'action': '# hosted-consumer-dns-file\nrm /etc/resolv.conf; touch /etc/resolv.conf'}
+            document['actions'] = [original, destructive]
+            path.write_text(hooks.serialize(document))
+        with mock.patch.object(image_source_compat, 'NATIVE_IMAGE_ARCHIVES', True):
+            image_source_compat.normalize(self.root)
+            for distro in ('debian', 'ubuntu', 'gentoo'):
+                actions = verify((self.root / ('images_yaml/' + distro + '.yaml')).read_text())['actions']
+                self.assertFalse(any('hosted-consumer-dns-file' in entry['action'] for entry in actions))
+                self.assertTrue(any('ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf' in entry['action']
+                                    for entry in actions))
+            previous = self.snapshot()
+            image_source_compat.normalize(self.root)
+            self.assertEqual(previous, self.snapshot())
+
     def test_dangling_run_resolver_becomes_a_writable_consumer_target(self):
         import image_source_compat
         import subprocess
-        image_source_compat.normalize(self.root)
+        with mock.patch.object(image_source_compat, 'NATIVE_IMAGE_ARCHIVES', False):
+            image_source_compat.normalize(self.root)
         actions = verify((self.root / 'images_yaml/ubuntu.yaml').read_text())['actions']
         hook = next(a['action'] for a in actions if 'hosted-consumer-dns-file' in a['action'])
         directory = self.root / 'resolver-fixture'

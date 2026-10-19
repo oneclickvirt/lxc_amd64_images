@@ -530,9 +530,10 @@ if [ -L /etc/resolv.conf ]; then
 fi
 """}
         actions = document.setdefault('actions', [])
-        if NATIVE_IMAGE_ARCHIVES and path.stem == 'opensuse':
-            # Native SUSE archives rely on netconfig/resolved's live symlink.
-            # Raw LXC consumers instead provide a resolver file via templates.
+        if NATIVE_IMAGE_ARCHIVES:
+            # Native archives rely on their DHCP resolver service and its live
+            # symlink. An empty file disconnects resolved/netconfig/dhcpcd.
+            # Raw LXC consumers instead receive DNS from their provisioner.
             actions[:] = [entry for entry in actions
                           if 'hosted-consumer-dns-file' not in entry['action']]
             instance_identity(document)
