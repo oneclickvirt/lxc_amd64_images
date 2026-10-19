@@ -33,6 +33,7 @@ if source.count(before) != 2:
     raise SystemExit('CentOS repository compatibility patch does not match the verified source')
 path.write_text(source.replace(before, 'https://mirror.stream.centos.org/'))
 PY
+python3 .github/scripts/patch_oracle_rootfs.py "$task_dir/distrobuilder-${version}"
 
 sudo apt-get update
 sudo apt-get install -y build-essential debootstrap rsync gpg squashfs-tools xz-utils umoci btrfs-progs dosfstools qemu-utils parted
@@ -45,6 +46,7 @@ sudo apt-get install -y build-essential debootstrap rsync gpg squashfs-tools xz-
   # expire independently of the builder. Compile the package here; runtime
   # image builds still enforce each source's current signature/checksum.
   timeout --kill-after=30s 600s go test -run '^$' -tags=containers_image_storage_stub,containers_image_docker_daemon_stub,containers_image_openpgp ./sources
+  timeout --kill-after=30s 120s go test -run '^TestHostedOracleRootfs' -tags=containers_image_storage_stub,containers_image_docker_daemon_stub,containers_image_openpgp ./sources
   go build -trimpath \
     -tags=containers_image_storage_stub,containers_image_docker_daemon_stub,containers_image_openpgp \
     -o "$task_dir/distrobuilder" ./distrobuilder
