@@ -400,6 +400,7 @@ packages:
     - jammy
     - noble
     - resolute
+    - stonking
     action: install
   - packages:
     - curl
@@ -443,11 +444,13 @@ packages:
     releases:
     - noble
     - resolute
+    - stonking
   - packages:
     - systemd-timesyncd
     action: install
     releases:
     - resolute
+    - stonking
   - packages:
     - grub-efi-amd64-signed
     - shim-signed
@@ -564,6 +567,7 @@ actions:
   releases:
   - noble
   - resolute
+  - stonking
 - trigger: post-packages
   action: |-
     #!/bin/sh
