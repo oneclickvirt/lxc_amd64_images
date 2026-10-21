@@ -123,3 +123,5 @@ ubuntu_25.10_questing_x86_64_cloud.tar.xz
 ubuntu_25.10_questing_x86_64_default.tar.xz
 ubuntu_26.04_resolute_x86_64_cloud.tar.xz
 ubuntu_26.04_resolute_x86_64_default.tar.xz
+ubuntu_stonking_stonking_x86_64_cloud.tar.xz
+ubuntu_stonking_stonking_x86_64_default.tar.xz
