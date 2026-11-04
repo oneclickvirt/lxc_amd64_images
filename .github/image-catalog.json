@@ -129,6 +129,10 @@
         {
           "release": "44",
           "version": "44"
+        },
+        {
+          "release": "45",
+          "version": "45"
         }
       ],
       "variants": [
@@ -302,5 +306,5 @@
     }
   },
   "schema": 1,
-  "source_commit": "3725a895254aceb5ba2929cfcb5fb904bf6100ca"
+  "source_commit": "ae6cd3a2385770171d1657f52d3d768b2f9d915d"
 }
