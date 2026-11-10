@@ -31,10 +31,6 @@
       ],
       "releases": [
         {
-          "release": "3.21",
-          "version": "3.21"
-        },
-        {
           "release": "3.22",
           "version": "3.22"
         },
@@ -200,6 +196,10 @@
           "version": "16.0"
         },
         {
+          "release": "16.1",
+          "version": "16.1"
+        },
+        {
           "release": "tumbleweed",
           "version": "tumbleweed"
         }
@@ -306,5 +306,5 @@
     }
   },
   "schema": 1,
-  "source_commit": "ae6cd3a2385770171d1657f52d3d768b2f9d915d"
+  "source_commit": "807784316313e56ea87c280231fc42c0479372c3"
 }
