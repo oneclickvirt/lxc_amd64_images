@@ -82,6 +82,8 @@ opensuse_15.6_15.6_x86_64_cloud.tar.xz
 opensuse_15.6_15.6_x86_64_default.tar.xz
 opensuse_16.0_16.0_x86_64_cloud.tar.xz
 opensuse_16.0_16.0_x86_64_default.tar.xz
+opensuse_16.1_16.1_x86_64_cloud.tar.xz
+opensuse_16.1_16.1_x86_64_default.tar.xz
 opensuse_tumbleweed_tumbleweed_x86_64_cloud.tar.xz
 opensuse_tumbleweed_tumbleweed_x86_64_default.tar.xz
 openwrt_21.02_21.02_x86_64_cloud.tar.xz
